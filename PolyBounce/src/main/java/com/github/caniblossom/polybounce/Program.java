@@ -10,7 +10,7 @@ package com.github.caniblossom.polybounce;
  * @author Jani Salo
  */
 public class Program {
-    public static void Main(String [] args) {
+    public static void main(String [] args) {
         System.out.println("Poly Bounce");
     }
 }
