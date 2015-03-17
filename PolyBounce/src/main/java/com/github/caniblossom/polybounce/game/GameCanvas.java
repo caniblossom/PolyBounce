@@ -42,6 +42,8 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glViewport;
 import org.lwjgl.opengl.PixelFormat;
 
+// TODO Rename and move to different, OpenGL related package.
+
 /**
  * An OpenGL canvas for displaying game visuals.
  * @author Jani Salo
