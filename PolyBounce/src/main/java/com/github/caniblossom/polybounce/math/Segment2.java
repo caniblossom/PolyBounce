@@ -35,6 +35,8 @@ package com.github.caniblossom.polybounce.math;
  */
 public class Segment2 {
     private final Vector2 a, b, ab;
+    
+    private final Vector2 normal;
     private final Vector2 rightNormal;
     
     /**
@@ -49,8 +51,9 @@ public class Segment2 {
         // Precompute a vector from a to b.
         this.ab = b.difference(a);
         
-        // Precompute a normal orthogonal to the line defined by the segment.
-        this.rightNormal = (new Vector2(ab.getY(), -ab.getX())).normal();
+        // Precompute normals.
+        this.normal = (new Vector2(ab.getX(), ab.getY())).normal();
+        this.rightNormal = new Vector2(normal.getY(), -normal.getX());
     }
     
     /**
@@ -82,23 +85,98 @@ public class Segment2 {
     }
 
     /**
-     * @return right normal for the line defined by the segment
+     * @return normal for the line defined by the segment
+     */
+    public Vector2 getNormal() {
+        return normal;
+    }
+
+    /**
+     * @return normal orthogonal to the line defined by the segment
      */
     public Vector2 getRightNormal() {
         return rightNormal;
     }
     
-    /**
-     * Returns a value representing the position of the point to be tested
-     * relative to the line defined by this segment. The value is negative for
-     * points on left, positive for points on right and zero for points on line.
-     * @param v point to be tested
-     * @return the dot product between right normal and a vector from a to v
+     /**
+     * Projects a point on the line defined by the segment.
+     * @param v the point to be projected
+     * @return the dot product between the segment normal and av
      */
-    public float testPoint(final Vector2 v) {
+    public float projectPointOnNormal(final Vector2 v) {
+        return normal.dot(v.difference(a));
+    }
+
+    /**
+     * Projects a point on a line orthogonal to the line defined by the segment. 
+     * @param v the point to be projected
+     * @return the dot product between right normal and av
+     */
+    public float projectPointOnRightNormal(final Vector2 v) {
         return rightNormal.dot(v.difference(a));
     }
+
+    // TODO Handle the case with the 
     
-    // TODO Add projection.
-    // TODO Add intersection test.
+    /**
+     * Intersects another segment against this segment.
+     * @param s segment to be intersected against this segment
+     * @return intersection result
+     */
+    public Intersection intersect(final Segment2 s) {
+        final float pa = projectPointOnRightNormal(s.getA());
+        final float pb = projectPointOnRightNormal(s.getB());
+        
+        // Return if no intersection is possible or the segments lie on the same line.
+        // For sake of simplicity it is assumed that no intersection is possible in the latter case.
+        if (pa * pb > 0.0f || pa == 0.0f && pb == 0.0f) {
+            return new Intersection();
+        } 
+
+        final float shortestDistance = Math.abs(rightNormal.dot(s.getA().difference(getA())));
+        final float cosAngle = Math.abs(rightNormal.dot(s.getNormal())); 
+
+        final float distance = (cosAngle > 0.0f) ? (shortestDistance / cosAngle) : 0.0f;
+        final Vector2 position = s.getA().sum(s.getNormal().scale(distance));
+        
+        // At this point we have the intersection on the line defined by this segment. 
+        // The last thing to do is to check whether the intersection lies on the segment itself.
+        final float projection = projectPointOnNormal(position);
+        if (projection < 0.0f || projection > ab.length()) return new Intersection();
+        
+        return new Intersection(distance, position);
+    }
+    
+    /**
+     * @param o segment to compare to
+     * @return true if the vectors are equal
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Segment2) {
+            final Segment2 s = (Segment2) o;
+            return a.equals(s.a) && b.equals(s.b);
+        }
+        
+        return false;
+    }
+
+    /**
+     * @return hash
+     */
+    @Override
+    public int hashCode() {
+        int hash = 71;
+        hash = 71 * hash + a.hashCode();
+        hash = 71 * hash + b.hashCode();
+        return hash;
+    }
+    
+    /**
+     * @return a string representing the segment
+     */
+    @Override
+    public String toString() {
+        return a.toString() + " -> " + b.toString();
+    }
 }

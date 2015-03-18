@@ -27,57 +27,58 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.game;
+package com.github.caniblossom.polybounce.math;
 
-import com.github.caniblossom.polybounce.opengl.RenderCanvas;
-import javax.swing.JFrame;
-import org.lwjgl.LWJGLException;
+// TODO Add tests.
 
 /**
- * Encapsulates the user interface for the game.
+ * A class for representing an intersection.
  * @author Jani Salo
  */
-public class UserInterface {
-    private final int width;
-    private final int height;
-    
-    private JFrame frame;
-    private RenderCanvas canvas;
-    
+public class Intersection {
+    private final boolean status;
+
+    private final float distance;
+    private final Vector2 position;
+
     /**
-     * Constructs a new game user interface.
-     * @param width width of the game canvas in pixels
-     * @param height height of the game canvas in pixels
-     * @throws org.lwjgl.LWJGLException
+     * Constructs a new intersection with distance and position
+     * @param distance distance to the intersection
+     * @param position position of the intersection
      */
-    public UserInterface(final int width, final int height) throws LWJGLException {
-        this.width = width;
-        this.height = height;
-        canvas = new RenderCanvas();
+    public Intersection(final float distance, final Vector2 position) {
+        this.status = true;
+        this.distance = distance;
+        this.position = position;
     }
     
     /**
-     * Constructs a new game user interface with preset dimensions in pixels.
-     * @throws org.lwjgl.LWJGLException
+     * Constructs a new object representing no intersection
      */
-    public UserInterface() throws LWJGLException {
-        this(800, 600);
+    public Intersection() {
+        this.status = false;
+        this.distance = 0.0f;
+        this.position = new Vector2();
     }
-
+    
     /**
-     * Creates and shows the frame for the user interface.
-     * Only call from the EDT.
+     * @return true if an intersection did take place
      */
-    public void createAndShowFrame() {
-        frame = new JFrame("Poly Bounce");
-        
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(width, height);
-
-        frame.add(canvas);
-        frame.getContentPane().validate();
-        frame.getContentPane().repaint();
-
-        frame.setVisible(true);        
+    public boolean didIntersect() {
+        return status;
+    }
+    
+    /**
+     * @return distance to the intersection, if an intersection did take place, otherwise zero
+     */
+    public float getDistance() {
+        return distance;
+    }
+    
+    /**
+     * @return position to the intersection, if an intersection took place, otherwise a default constructed vector
+     */
+    public Vector2 getPosition() {
+        return position;
     }
 }

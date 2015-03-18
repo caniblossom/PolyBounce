@@ -52,6 +52,7 @@
                     </targetClasses>
                     <excludedMethods>
                         <param>hashCode</param>
+                        <param>toString</param>
                     </excludedMethods>
                 </configuration>
             </plugin>

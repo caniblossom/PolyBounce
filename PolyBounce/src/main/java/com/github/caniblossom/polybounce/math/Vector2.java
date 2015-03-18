@@ -98,7 +98,13 @@ public class Vector2 {
         return new Vector2(x - rhs.x, y - rhs.y);
     }
 
-    // TODO Add scalar product.
+    /**
+     * @param lhs left hand side of the scalar multiplication
+     * @return new vector representing this multiplied by lhs
+     */
+    public Vector2 scale(final float lhs) {
+        return new Vector2(lhs * x, lhs * y);
+    }
     
     /**
      * @param rhs right hand side of the dot product
@@ -141,5 +147,13 @@ public class Vector2 {
         hash = 13 * hash + Float.floatToIntBits(this.x);
         hash = 13 * hash + Float.floatToIntBits(this.y);
         return hash;
+    }
+    
+    /**
+     * @return a string representing the vector
+     */
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ")";
     }
 }

@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.game;
+package com.github.caniblossom.polybounce.opengl;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -42,13 +42,14 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glViewport;
 import org.lwjgl.opengl.PixelFormat;
 
-// TODO Rename and move to different, OpenGL related package.
+// TODO Fix the resize induced flicker, if possible. The problem is caused by
+//      the content pane momentarily showing when the canvas is resized.
 
 /**
- * An OpenGL canvas for displaying game visuals.
+ * An OpenGL canvas for rendering visuals.
  * @author Jani Salo
  */
-public class GameCanvas extends AWTGLCanvas {
+public class RenderCanvas extends AWTGLCanvas {
     /**
      * @return default graphics device for the host system
      */
@@ -69,7 +70,7 @@ public class GameCanvas extends AWTGLCanvas {
     private static ContextAttribs getDefaultContextAttributes() {
         return new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true);
     }
-
+    
     /**
      * Indirectly called by the EDT to repaint the canvas.
      */
@@ -81,13 +82,13 @@ public class GameCanvas extends AWTGLCanvas {
             makeCurrent();
            
             glViewport(0, 0, getWidth(), getHeight());
-            glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+            glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
             swapBuffers();
         } catch (LWJGLException e) {
             // TODO Handle this. Should probably be a fatal error.
-            Logger.getLogger(GameCanvas.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(RenderCanvas.class.getName()).log(Level.SEVERE, null, e);
         }
         
         repaint();
@@ -99,7 +100,7 @@ public class GameCanvas extends AWTGLCanvas {
      * @param height canvas height in pixels
      * @throws LWJGLException 
      */
-    public GameCanvas(final int width, final int height) throws LWJGLException {
+    public RenderCanvas(final int width, final int height) throws LWJGLException {
         // LWJGL documentation isn't very good - so far it seems that this is
         // the only way to set the OpenGL context version, which is necessary
         // to us, as using any OpenGL 3.0+ API requires for it to be specified. 
@@ -115,7 +116,7 @@ public class GameCanvas extends AWTGLCanvas {
      * Constructs a new game canvas with minimal size.
      * @throws LWJGLException 
      */
-    public GameCanvas() throws LWJGLException {
+    public RenderCanvas() throws LWJGLException {
         this(1, 1);
     }
 }

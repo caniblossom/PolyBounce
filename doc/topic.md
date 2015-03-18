@@ -5,6 +5,16 @@ The goal of this project is to implement a simple physics engine for convex two 
 
 The goal of the game is to guide a simple polygon through a environment made out of other polygons. The challenge is that the environment will disintegrate as a result of player action (and gravity), as the player tries to leverage it to reach the goal.
 
+### User actions
+##### Menu actions
+- reset game level
+- resize game window
+- pause game
+- generate new level (optional)
+
+##### Game actions
+- Move player character
+
 ### Engine targets
 - simple vector and matrix arithmetic
 - convex 2D objects
@@ -16,3 +26,4 @@ The goal of the game is to guide a simple polygon through a environment made out
 - controls with rolling and jumping
 - simple GUI for resetting / quitting the game
 - rendered with OpenGL using LWJGL
+

@@ -84,6 +84,25 @@ public class Segment2Test {
     }
 
     @Test
+    public void testGetNormal() {
+        final Vector2 a = new Vector2(  0.0f,   0.0f);
+        final Vector2 b = new Vector2(123.0f,   0.0f);
+        final Vector2 c = new Vector2(  0.0f, 456.0f);
+
+        final Segment2 u = new Segment2(a, b); 
+        final Segment2 v = new Segment2(a, c); 
+        final Segment2 w = new Segment2(a, a); 
+        
+        final Vector2 uNormal = new Vector2(1.0f, 0.0f); 
+        final Vector2 vNormal = new Vector2(0.0f, 1.0f); 
+        final Vector2 wNormal = new Vector2(); 
+
+        assertTrue(u.getNormal().equals(uNormal));
+        assertTrue(v.getNormal().equals(vNormal));
+        assertTrue(w.getNormal().equals(wNormal));
+    }
+    
+    @Test
     public void testGetRightNormal() {
         final Vector2 a = new Vector2(  0.0f,   0.0f);
         final Vector2 b = new Vector2(123.0f,   0.0f);
@@ -103,7 +122,26 @@ public class Segment2Test {
     }
 
     @Test
-    public void testTestPoint() {
+    public void testProjectPointOntNormal() {
+        final Vector2 a = new Vector2(124.0f, 456.0f);
+        final Vector2 b = new Vector2(248.0f, 912.0f);
+        
+        final Vector2 u = new Vector2(-124.0f, -456.0f);
+        final Vector2 v = new Vector2( 248.0f,  912.0f);
+        final Vector2 w = new Vector2( 352.0f,  394.0f);        
+        
+        final Segment2 s = new Segment2(a, b);
+        
+        assertTrue(s.projectPointOnNormal(u) < 0.0f);
+        assertTrue(s.projectPointOnNormal(v) > 0.0f);
+
+        final float epsilon = Math.abs(s.projectPointOnNormal(w));
+        
+        assertTrue(epsilon < 0.000001f);
+    }  
+
+    @Test
+    public void testProjectPointOnRightNormal() {
         final Vector2 a = new Vector2(124.0f, 456.0f);
         final Vector2 b = new Vector2(248.0f, 912.0f);
 
@@ -113,11 +151,89 @@ public class Segment2Test {
         
         final Segment2 s = new Segment2(a, b);
         
-        assertTrue(s.testPoint(u) < 0.0f);
-        assertTrue(s.testPoint(v) > 0.0f);
+        assertTrue(s.projectPointOnRightNormal(u) < 0.0f);
+        assertTrue(s.projectPointOnRightNormal(v) > 0.0f);
 
-        final float epsilon = Math.abs(s.testPoint(w));
+        final float epsilon = Math.abs(s.projectPointOnRightNormal(w));
         
         assertTrue(epsilon < 0.000001f);
     }  
+
+    @Test
+    public void testIntersect() {
+        // TODO Improve the test if you have the time.
+        
+        final Vector2 a = new Vector2(2.0f, 2.0f);
+        final Vector2 b = new Vector2(4.0f, 2.0f);
+        final Vector2 c = new Vector2(4.0f, 4.0f);
+        final Vector2 d = new Vector2(2.0f, 4.0f);
+        final Vector2 e = new Vector2(3.0f, 4.0f);
+        final Vector2 f = new Vector2(3.0f, 6.0f);
+        final Vector2 g = new Vector2(0.0f, 3.0f);
+        final Vector2 h = new Vector2(3.0f, 3.0f);
+        final Vector2 i = new Vector2(3.0f, 3.0f);
+        
+        final Segment2 ac = new Segment2(a, c);
+        final Segment2 ad = new Segment2(a, d);
+        final Segment2 af = new Segment2(a, f);
+        final Segment2 bc = new Segment2(b, c);
+        final Segment2 bd = new Segment2(b, d);
+        final Segment2 be = new Segment2(b, e);
+        final Segment2 gb = new Segment2(g, b);
+        final Segment2 hi = new Segment2(h, i); 
+        
+        final Intersection achi = ac.intersect(hi);
+        final Intersection adac = ad.intersect(ac);
+        final Intersection adbc = ad.intersect(bc);
+        final Intersection adbd = ad.intersect(bd);
+        final Intersection afbe = af.intersect(be);
+        final Intersection afgb = af.intersect(gb);
+        final Intersection beaf = be.intersect(af);
+        final Intersection hiac = hi.intersect(ac);
+        
+        assertFalse(achi.didIntersect());
+        assertTrue(adac.didIntersect());
+        assertFalse(adbc.didIntersect());
+        assertTrue(adbd.didIntersect());       
+        assertFalse(afbe.didIntersect());
+        assertTrue(afgb.didIntersect());
+        assertFalse(beaf.didIntersect());
+        assertFalse(hiac.didIntersect());
+
+        assertEquals(adac.getDistance(), 0.0f, 0.0f);
+        assertEquals(adbd.getDistance(), 2.828427f, 0.000001f);
+
+        assertTrue(adac.getPosition().equals(a));        
+    }  
+    
+    @Test
+    public void testEquals() {
+        final Vector2 a = new Vector2(1.0f, 2.0f);
+        final Vector2 b = new Vector2(3.0f, 4.0f);
+        final Vector2 c = new Vector2(3.0f, 4.0f);
+        final Vector2 d = new Vector2(5.0f, 6.0f);
+        final Vector2 n = null;
+        
+        final Segment2 ab = new Segment2(a, b);
+        final Segment2 ac = new Segment2(a, c);
+        final Segment2 ad = new Segment2(a, d);
+        final Segment2 ba = new Segment2(b, a);
+        
+        assertTrue(ab.equals(ab));
+        assertTrue(ab.equals(ac));
+        assertFalse(ab.equals(ba));
+        assertFalse(ab.equals(ad));
+        assertFalse(ab.equals(n));
+    }
+
+    @Test
+    public void testHash() {
+        final Vector2 a = new Vector2(456.0f, 789.0f);
+        final Vector2 b = new Vector2(456.0f, 789.0f);
+
+        assertEquals(a.hashCode(), a.hashCode());
+        assertEquals(a.hashCode(), b.hashCode());
+    }
+    
+    // TODO Add test for toString.
 }

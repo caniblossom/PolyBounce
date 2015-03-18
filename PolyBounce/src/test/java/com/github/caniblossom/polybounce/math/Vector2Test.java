@@ -107,6 +107,21 @@ public class Vector2Test {
     }
 
     @Test
+    public void testScale() {
+        final Vector2 v = new Vector2(3.0f, 2.0f);
+        final Vector2 a = v.scale(-3.0f);
+        final Vector2 b = v.scale( 0.0f);
+        final Vector2 c = v.scale( 3.0f);
+   
+        assertEquals(a.getX(), -9.0f, 0.0f);
+        assertEquals(a.getY(), -6.0f, 0.0f);
+        assertEquals(b.getX(),  0.0f, 0.0f);
+        assertEquals(b.getY(),  0.0f, 0.0f);
+        assertEquals(c.getX(),  9.0f, 0.0f);
+        assertEquals(c.getY(),  6.0f, 0.0f);
+    }
+    
+    @Test
     public void testDot() {
         final Vector2 a = new Vector2( 2.0f,  1.0f);
         final Vector2 b = new Vector2( 0.0f,  3.0f);
@@ -147,10 +162,17 @@ public class Vector2Test {
 
     @Test
     public void testHash() {
-        final Vector2 a = new Vector2(456.0f, 789.0f);
-        final Vector2 b = new Vector2(456.0f, 789.0f);
+        final Vector2 a = new Vector2(123.0f, 345.0f);
+        final Vector2 b = new Vector2(456.0f, 567.0f);
+        final Vector2 c = new Vector2(123.0f, 345.0f);
+        final Vector2 d = new Vector2(456.0f, 567.0f);
 
-        assertEquals(a.hashCode(), a.hashCode());
-        assertEquals(a.hashCode(), b.hashCode());
+        final Segment2 ab = new Segment2(a, b);
+        final Segment2 cd = new Segment2(c, d);
+        
+        assertEquals(ab.hashCode(), ab.hashCode());
+        assertEquals(ab.hashCode(), cd.hashCode());
     }
+    
+    // TODO Add test for toString.
 }
