@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.opengl;
+package com.github.caniblossom.polybounce.renderer;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -42,6 +42,7 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glViewport;
 import org.lwjgl.opengl.PixelFormat;
 
+// TODO See if it's possible to test this.
 // TODO Fix the resize induced flicker, if possible. The problem is caused by
 //      the content pane momentarily showing when the canvas is resized.
 
@@ -50,6 +51,9 @@ import org.lwjgl.opengl.PixelFormat;
  * @author Jani Salo
  */
 public class RenderCanvas extends AWTGLCanvas {
+    // TODO For testing, remove!
+    private final TriangleRenderTask testTask = new TriangleRenderTask();
+    
     /**
      * @return default graphics device for the host system
      */
@@ -85,6 +89,9 @@ public class RenderCanvas extends AWTGLCanvas {
             glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
+            // TODO Remove, for testing purposes.
+            testTask.run();
+            
             swapBuffers();
         } catch (LWJGLException e) {
             // TODO Handle this. Should probably be a fatal error.

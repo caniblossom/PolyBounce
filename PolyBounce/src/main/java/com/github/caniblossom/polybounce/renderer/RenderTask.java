@@ -27,57 +27,13 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.game;
-
-import com.github.caniblossom.polybounce.renderer.RenderCanvas;
-import javax.swing.JFrame;
-import org.lwjgl.LWJGLException;
+package com.github.caniblossom.polybounce.renderer;
 
 /**
- * Encapsulates the user interface for the game.
+ * An interface for anything that might represent OpenGL rendering- or other
+ * tasks that require an active OpenGL context to be present.
  * @author Jani Salo
  */
-public class UserInterface {
-    private final int width;
-    private final int height;
-    
-    private JFrame frame;
-    private RenderCanvas canvas;
-    
-    /**
-     * Constructs a new game user interface.
-     * @param width width of the game canvas in pixels
-     * @param height height of the game canvas in pixels
-     * @throws org.lwjgl.LWJGLException
-     */
-    public UserInterface(final int width, final int height) throws LWJGLException {
-        this.width = width;
-        this.height = height;
-        canvas = new RenderCanvas();
-    }
-    
-    /**
-     * Constructs a new game user interface with preset dimensions in pixels.
-     * @throws org.lwjgl.LWJGLException
-     */
-    public UserInterface() throws LWJGLException {
-        this(800, 600);
-    }
-
-    /**
-     * Creates and shows the frame for the user interface.
-     * Only call from the EDT.
-     */
-    public void createAndShowFrame() {
-        frame = new JFrame("Poly Bounce");
-        
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(width, height);
-
-        frame.add(canvas);
-        frame.getContentPane().validate();
-        frame.getContentPane().repaint();
-
-        frame.setVisible(true);        
-    }
+public interface RenderTask {
+    public void run();
 }

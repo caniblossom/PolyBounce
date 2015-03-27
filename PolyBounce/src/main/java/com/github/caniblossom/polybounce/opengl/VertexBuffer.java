@@ -27,57 +27,65 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.game;
+package com.github.caniblossom.polybounce.opengl;
 
-import com.github.caniblossom.polybounce.renderer.RenderCanvas;
-import javax.swing.JFrame;
-import org.lwjgl.LWJGLException;
+import java.nio.FloatBuffer;
+import org.lwjgl.opengl.GL15;
+
+// TODO Add tests if it's not too difficult.
+// TODO Add a method for releasing the buffer object / invalidating the class instance.
 
 /**
- * Encapsulates the user interface for the game.
+ * An wrapper for an OpenGL array buffer with some added functionality. 
+ * Will probably explode if constructed when there is no proper OpenGL context around.
  * @author Jani Salo
  */
-public class UserInterface {
-    private final int width;
-    private final int height;
-    
-    private JFrame frame;
-    private RenderCanvas canvas;
+public class VertexBuffer {
+    private final int bufferName;
+    private int elementCount = 0;
     
     /**
-     * Constructs a new game user interface.
-     * @param width width of the game canvas in pixels
-     * @param height height of the game canvas in pixels
-     * @throws org.lwjgl.LWJGLException
+     * Constructs a new vertex buffer.
+     * @throws RuntimeException 
      */
-    public UserInterface(final int width, final int height) throws LWJGLException {
-        this.width = width;
-        this.height = height;
-        canvas = new RenderCanvas();
+    public VertexBuffer() throws RuntimeException {
+        bufferName = GL15.glGenBuffers();
+
+        if (bufferName == 0) {
+            throw new RuntimeException("Error creating vertex buffer");
+        }
     }
     
     /**
-     * Constructs a new game user interface with preset dimensions in pixels.
-     * @throws org.lwjgl.LWJGLException
+     * Binds the related buffer as current GL_ARRAY_BUFFER.
      */
-    public UserInterface() throws LWJGLException {
-        this(800, 600);
+    public void bind() {
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, bufferName);
+    }
+    
+    /**
+     * Binds null object as current GL_ARRAY_BUFFER.
+     */
+    public void unbind() {
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
     }
 
     /**
-     * Creates and shows the frame for the user interface.
-     * Only call from the EDT.
+     * Writes contents of an list to the buffer. Any old data is lost.
+     * @param buffer float buffer containing the vertex data.
      */
-    public void createAndShowFrame() {
-        frame = new JFrame("Poly Bounce");
-        
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(width, height);
+    public void write(FloatBuffer buffer) {
+        elementCount = buffer.remaining();
 
-        frame.add(canvas);
-        frame.getContentPane().validate();
-        frame.getContentPane().repaint();
-
-        frame.setVisible(true);        
+        bind();
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_DYNAMIC_DRAW);
+        unbind();
     }
+    
+    /**
+     * @return current element count
+     */
+    public int getElementCount() {
+        return elementCount;
+    }    
 }
