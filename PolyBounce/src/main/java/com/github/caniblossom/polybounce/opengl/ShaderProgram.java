@@ -31,6 +31,7 @@ package com.github.caniblossom.polybounce.opengl;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
 
 // TODO Again, do tests if reasonable, seems unlikely here though.
 // TODO Add method for deleting the shader / invalidating the class instance.
@@ -62,7 +63,7 @@ public class ShaderProgram {
         if (shaderName == 0) {
             throw new RuntimeException("Error creating shader.");
         }
-
+        
         // I pray to god this works, I've had enough trouble doing properly with C/C++
         GL20.glShaderSource(shaderName, source);
         GL20.glCompileShader(shaderName);
@@ -82,9 +83,11 @@ public class ShaderProgram {
      * Creates a new (shader) program from vertex and fragment shader.
      * @param vertexShaderName name of the vertex shader object
      * @param fragmentShaderName name of the fragment shader object
+     * @param inputNameList list of N shader input names in the order they are to be bound from 0 to N - 1
+     * @param outputNameList list of N shader output names in the order they are to be bound from 0 to N - 1
      * @return name of the program object
      */
-    private int createProgram(final int vertexShaderName, final int fragmentShaderName, final String[] inputNameList) {
+    private int createProgram(final int vertexShaderName, final int fragmentShaderName, final String[] inputNameList, final String[] outputNameList) {
         programName = GL20.glCreateProgram();
 
         if (programName == 0) {
@@ -94,12 +97,16 @@ public class ShaderProgram {
         GL20.glAttachShader(programName, vertexShaderName);
         GL20.glAttachShader(programName, fragmentShaderName);
     
-        // Bind inputs in the order they appear on the list. I'm too tired to explain 
-        // what this means but it's an inconvenience caused by older OpenGL version.
+        // Bind inputs in the order they appear on the list.
         for (int i = 0; i < inputNameList.length; i++) {
             GL20.glBindAttribLocation(programName, i, inputNameList[i]);
         }
             
+        // Bind outputin the order they appear on the list.
+        for (int i = 0; i < outputNameList.length; i++) {
+            GL30.glBindFragDataLocation(programName, i, outputNameList[i]);
+        }
+
         GL20.glLinkProgram(programName);
     
         // See the comments above for shader info log.
@@ -118,9 +125,10 @@ public class ShaderProgram {
      * @param vertexShaderSource source for the vertex shader
      * @param fragmentShaderSource source for the fragment shader
      * @param inputNameList list of N shader input names in the order they are to be bound from 0 to N - 1
+     * @param outputNameList list of N shader output names in the order they are to be bound from 0 to N - 1
      * @throws RuntimeException 
      */
-    public ShaderProgram(final String vertexShaderSource, final String fragmentShaderSource, final String[] inputNameList) throws RuntimeException {
+    public ShaderProgram(final String vertexShaderSource, final String fragmentShaderSource, final String[] inputNameList, final String[] outputNameList) throws RuntimeException {
         int vertexShaderName = 0;
         int fragmentShaderName = 0;
         
@@ -128,7 +136,7 @@ public class ShaderProgram {
             vertexShaderName = createShader(vertexShaderSource, GL20.GL_VERTEX_SHADER);
             fragmentShaderName = createShader(fragmentShaderSource, GL20.GL_FRAGMENT_SHADER);
             
-            programName = createProgram(vertexShaderName, fragmentShaderName, inputNameList);
+            programName = createProgram(vertexShaderName, fragmentShaderName, inputNameList, outputNameList);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             

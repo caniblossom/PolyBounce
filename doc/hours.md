@@ -1,3 +1,8 @@
+### Week 3
+Total accumulated hours: 30
+- 2015.03.26 /  ~8h: Write class for convex polygons and start working on OpenGL code
+- 2015.03.27 /  ~8h: Work more on the rendering pipeline to get it working + update documentation a little
+
 ### Week 2
 Total accumulated hours: 14
 - 2015.03.17 /  ~2h: Probably wrote a class for 2D vectors

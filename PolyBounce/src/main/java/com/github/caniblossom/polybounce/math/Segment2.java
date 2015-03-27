@@ -116,8 +116,6 @@ public class Segment2 {
         return rightNormal.dot(v.difference(a));
     }
 
-    // TODO Handle the case with the 
-    
     /**
      * Intersects another segment against this segment.
      * @param s segment to be intersected against this segment
@@ -145,6 +143,15 @@ public class Segment2 {
         if (projection < 0.0f || projection > ab.length()) return new Intersection();
         
         return new Intersection(distance, position);
+    }
+    
+    /**
+     * Checks if this segment share a vertex with target segment.
+     * @param s segment to test against
+     * @return true if the segments share a vertex
+     */
+    public boolean sharesVertexWith(Segment2 s) {
+        return a.equals(s.a) || a.equals(s.b) || b.equals(s.a) || b.equals(s.b);
     }
     
     /**

@@ -33,47 +33,90 @@ import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.Segment2;
 import com.github.caniblossom.polybounce.math.Vector2;
 import java.nio.FloatBuffer;
-import java.util.List;
+import java.util.ArrayList;
 
 // TODO Add tests for this.
 // TODO Mock NetBeans for not recognizing the word tessellate.
 
 /**
- * An utility class for tessellating convex polygons into float data (triangles) for rendering.
+ * An utility class for tessellating convex polygons into format used by the game shader.
  * @author Jani Salo
  */
-public class ConvexPolygonTessellator {
-    private FloatBuffer output = null;
+public class Tessellator {
+    private ArrayList<Float> output = null;
      
+    /**
+     * Adds a 3-vector to the output list.
+     * @param x first component
+     * @param y second component
+     * @param z third component
+     */
+    private void outputVector3(final float x, final float y, final float z) {
+        output.add(x);
+        output.add(y);
+        output.add(z);
+    }
+    
+    /**
+     * Adds the color and normal for front triangles to the output list.
+     */
+    private void outputFrontColorAndNormal() {
+        outputVector3(1.0f, 1.0f, 1.0f);
+        outputVector3(0.0f, 0.0f, 1.0f);
+    }
+    
+    /**
+     * Adds the color and normal for side triangles to the output list.
+     * @param s segment defining the edge
+     */
+    private void outputSideColorAndNormal(final Segment2 s) {
+        outputVector3(1.0f, 1.0f, 1.0f);
+        outputVector3(s.getRightNormal().getX(), s.getRightNormal().getY(), 0.0f);
+    }
 
     /**
-     * Adds a position to the output list.
-     * @param pos position
-     * @param depth z component
-     */
-    private void outputPosition(final Vector2 pos, final float depth) {
-        output.put(pos.getX());
-        output.put(pos.getY());
-        output.put(depth);
-    }
-    /**
-     * Adds a triangle to the output list
+     * Adds a front triangle to the output list
      * @param a first vertex
      * @param b second vertex
      * @param c third vertex
      * @param depth z component
      */
-    private void outputTriangle(final Vector2 a, final Vector2 b, final Vector2 c, final float depth) {
-        outputPosition(a, depth);
-        outputPosition(b, depth);
-        outputPosition(c, depth);
+    private void outputFrontTriangle(final Vector2 a, final Vector2 b, final Vector2 c, final float depth) {
+        // There is currently no method for adding back triangles, and might 
+        // never be because the camera will never look at the scene from a
+        // direction where this would be necessary.
+        
+        outputVector3(a.getX(), a.getY(), depth);
+        outputFrontColorAndNormal();
+        outputVector3(b.getX(), b.getY(), depth);
+        outputFrontColorAndNormal();
+        outputVector3(c.getX(), c.getY(), depth);
+        outputFrontColorAndNormal();
+    }
+    
+    private void outputSideQuad(final Segment2 s, final float frontDepth, final float backDepth) {
+        // First triangle.
+        outputVector3(s.getA().getX(), s.getA().getY(), frontDepth);
+        outputSideColorAndNormal(s);
+        outputVector3(s.getA().getX(), s.getA().getY(), backDepth);
+        outputSideColorAndNormal(s);
+        outputVector3(s.getB().getX(), s.getB().getY(), backDepth);
+        outputSideColorAndNormal(s);
+
+        // Second triangle.
+        outputVector3(s.getB().getX(), s.getB().getY(), backDepth);
+        outputSideColorAndNormal(s);
+        outputVector3(s.getB().getX(), s.getB().getY(), frontDepth);
+        outputSideColorAndNormal(s);
+        outputVector3(s.getA().getX(), s.getA().getY(), frontDepth);
+        outputSideColorAndNormal(s);
     }
     
     /**
      * Constructs a new tessellator with output as target
      * @param output output list or null
      */
-    public ConvexPolygonTessellator(FloatBuffer output) {
+    public Tessellator(ArrayList output) {
         this.output = output;
     }
     
@@ -88,10 +131,8 @@ public class ConvexPolygonTessellator {
         }
 
         for (Segment2 s : polygon.getUnmodifiableViewToSegmentList()) {
-            outputTriangle(s.getA(), s.getB(), polygon.getVertexAverage(), frontDepth);
-            outputTriangle(s.getB(), s.getA(), polygon.getVertexAverage(), backDepth);
+            outputFrontTriangle(s.getA(), s.getB(), polygon.getVertexAverage(), frontDepth);
+            outputSideQuad(s, frontDepth, backDepth);
         }
-        
-        // TODO Generate triangles for the sides as well.
     }
 }

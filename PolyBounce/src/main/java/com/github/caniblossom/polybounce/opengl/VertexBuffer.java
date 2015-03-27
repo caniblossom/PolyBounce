@@ -72,11 +72,13 @@ public class VertexBuffer {
 
     /**
      * Writes contents of an list to the buffer. Any old data is lost.
-     * @param buffer float buffer containing the vertex data.
+     * @param buffer float buffer containing the vertex data
+     * @param elementSizeInFloats element size in floats
      */
-    public void write(FloatBuffer buffer) {
-        elementCount = buffer.remaining();
-
+    public void write(FloatBuffer buffer, final int elementSizeInFloats) {
+        assert(buffer.remaining() % elementSizeInFloats == 0);
+        elementCount = buffer.remaining() / elementSizeInFloats;
+        
         bind();
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_DYNAMIC_DRAW);
         unbind();

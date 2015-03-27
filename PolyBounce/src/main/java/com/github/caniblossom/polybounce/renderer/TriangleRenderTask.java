@@ -30,7 +30,11 @@
 package com.github.caniblossom.polybounce.renderer;
 
 import com.github.caniblossom.polybounce.opengl.VertexBuffer;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
@@ -42,13 +46,19 @@ import org.lwjgl.opengl.GL30;
  * @author Jani Salo
  */
 public class TriangleRenderTask implements RenderTask {
+    private static int VERTEX_SIZE_IN_FLOATS = 3 * 3;
+    
     private boolean isInitialized = false;
 
     private int vertexArrayName = 0;
     private VertexBuffer vertexBuffer = null;
-
     private SimpleShaderProgram shaderProgram = null;
 
+    private FloatBuffer triangleBuffer = null;
+    
+    // TODO Remove, for testing.
+    private float rotationCounter = 0.0f;
+    
     /**
      * Sets up the vertex array for rendering.
      */
@@ -56,9 +66,13 @@ public class TriangleRenderTask implements RenderTask {
         GL30.glBindVertexArray(vertexArrayName);
         vertexBuffer.bind();
         
-        // Specify consecutive attributes consisting of two float values.
-        GL20.glVertexAttribPointer(0, 2, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 36, 0 * Float.BYTES);
+        GL20.glVertexAttribPointer(1, 3, GL11.GL_FLOAT, false, 36, 3 * Float.BYTES);
+        GL20.glVertexAttribPointer(2, 3, GL11.GL_FLOAT, false, 36, 6 * Float.BYTES);
+
         GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(1);
+        GL20.glEnableVertexAttribArray(2);
 
         // TODO Enable after verifying the code works.
         // vertexBuffer.unbind();
@@ -89,23 +103,60 @@ public class TriangleRenderTask implements RenderTask {
     }
 
     /**
-     * Empty constructor.
+     * Checks and initializes if necessary.
      */
-    public TriangleRenderTask() {}
- 
-    @Override
-    public void run() {
+    private void checkInitialization() {
         if (!isInitialized) {
             try {
                 // It's safest to construct at the last possible moment to make sure
                 // that an OpenGL context is available and set as current context.
                 initialize();
             } catch (Exception e) {
-                System.out.println("FUCK!");
                 // TODO Handle this.
             }
         }
+    }
 
+    /**
+     * Uploads the data from current triangle buffer to the vertex buffer, if available.
+     */
+    private void uploadTriangleData() {
+        // While reuploading the triangle data every time we render is 
+        // relatively inefficient, it's still way fast enough and makes 
+        // everything a lot simpler
+        if (triangleBuffer != null) {
+            triangleBuffer.rewind();
+            vertexBuffer.write(triangleBuffer, VERTEX_SIZE_IN_FLOATS);
+        }        
+    }
+
+    /**
+     * Enables and sets up the shader program used for rendering the triangles.
+     */
+    private void enableAndSetupShaderProgram() {
+        shaderProgram.use();
+        
+        // TODO Remove, for testing.
+        rotationCounter += 0.01f;
+        
+        // TODO Remove, for testing.
+        FloatBuffer projection = MatrixUtil.createProjection(120.0f, 1.0f, 0.0625f, 16.0f);
+        FloatBuffer view = MatrixUtil.createViewPlaneXY(1.5f * (float) Math.cos(rotationCounter), 1.5f * (float) Math.sin(rotationCounter), 1.5f);
+   
+        shaderProgram.setProjection(projection);
+        shaderProgram.setView(view);
+    }
+    
+    /**
+     * Empty constructor.
+     */
+    public TriangleRenderTask() {}
+ 
+    @Override
+    public void run() {
+        checkInitialization();
+        uploadTriangleData();
+        
         // Short explanation: To render contents of an Array Buffer Object we
         // need to specify how the vertices are laid out in the buffer, this,
         // like everything in OpenGL, is done by setting internal states.
@@ -113,17 +164,26 @@ public class TriangleRenderTask implements RenderTask {
         // state, so that we can simply bind the related VAO when we need to do
         // some rendering. Not only that, but I'm quite sure that OpenGL 3.0
         // requires you to have a VAO around to do any drawing at all.
+
+        enableAndSetupShaderProgram();
         
-        // TODO Set up the shader program.
-        shaderProgram.use();
-        
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+
         GL30.glBindVertexArray(vertexArrayName);
         vertexBuffer.bind();
-        
-        // Draw the triangles.
-        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, vertexBuffer.getElementCount() / 3);
 
+        // Draw the triangles.
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, vertexBuffer.getElementCount());
+        
         vertexBuffer.unbind();
         GL30.glBindVertexArray(0);
+    }
+    
+    /**
+     * Sets the triangle data to be rendered.
+     * @param buffer null or a buffer containing triangle data compatible with the simple shader program.
+     */
+    public void setTriangleBuffer(final FloatBuffer buffer) {
+        triangleBuffer = buffer;
     }
 }

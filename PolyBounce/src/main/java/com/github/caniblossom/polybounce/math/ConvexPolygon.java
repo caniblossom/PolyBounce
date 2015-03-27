@@ -98,7 +98,12 @@ public class ConvexPolygon {
             for (int b = a + 1; b < segmentList.size(); b++) {
                 Segment2 segA = segmentList.get(a);
                 Segment2 segB = segmentList.get(b);
-            
+
+                // Don't count segments that obviously should intersect each other.
+                if (segA.sharesVertexWith(segB)) {
+                    continue;
+                }
+                
                 final Intersection i = segA.intersect(segB);
 
                 if (i.didIntersect()) {

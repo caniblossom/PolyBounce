@@ -54,9 +54,19 @@ public class SimpleShaderProgram extends ShaderProgram {
             "uniform mat4 view;                                                      \n" +
             "                                                                        \n" +
             "in vec3 positionIn;                                                     \n" +
+            "in vec3 colorIn;                                                        \n" +
+            "in vec3 normalIn;                                                       \n" +
+            "                                                                        \n" +
+            "out vec3 color;                                                         \n" +
+            "out vec3 normal;                                                        \n" +
+            "out vec3 position;                                                      \n" +
             "                                                                        \n" +
             "void main() {                                                           \n" +                                                         
-            "    gl_Position = projection * view * vec4(positionIn, 1.0);            \n" +
+            "    color = colorIn;                                                    \n" +
+            "    normal = normalIn;                                                  \n" +
+            "                                                                        \n" +
+            "    position = positionIn;                                              \n" +
+            "    gl_Position = projection * view * vec4(position, 1.0f);             \n" +
             "}                                                                       \n";
     }
 
@@ -67,10 +77,23 @@ public class SimpleShaderProgram extends ShaderProgram {
         return 
             "#version 150                                                            \n" + 
             "                                                                        \n" +
+            "// TODO Remove, used for testing.                                       \n" +
+            "uniform mat4 view;                                                      \n" +
+            "                                                                        \n" +
+            "in vec3 position;                                                       \n" +
+            "in vec3 color;                                                          \n" +
+            "in vec3 normal;                                                         \n" +
+            "                                                                        \n" +
             "out vec4 colorOut;                                                      \n" + 
             "                                                                        \n" +
             "void main() {                                                           \n" +
-            "    colorOut = vec4(1.0, 1.0, 1.0, 1.0);                                \n" +
+            "    // TODO Remove, used for testing.                                   \n" +                
+            "    vec3 lightPos = vec3(2.0f * -view[3][0], 2.0f * -view[3][1], 2.0);  \n" +
+            "    vec3 lightDir = normalize(lightPos - position);                     \n" +
+            "    vec3 lightColor = vec3(1.0, 1.0, 1.0);                              \n" +
+            "                                                                        \n" +
+            "    float alpha = clamp(dot(lightDir, normal), 0.0, 1.0);               \n" +
+            "    colorOut = vec4(alpha * lightColor * color, 1.0);                   \n" +
             "}                                                                       \n";
     }
     
@@ -78,18 +101,25 @@ public class SimpleShaderProgram extends ShaderProgram {
      * @return input name list.
      */
     private static String[] getInputNameList() {
-        return new String[]{"positionIn"};
+        return new String[]{"positionIn", "colorIn", "normalIn"};
     }
 
+    /**
+     * @return output name list.
+     */
+    private static String[] getOutputNameList() {
+        return new String[]{"colorOut"};
+    }
+    
     /**
      * Constructs a new simple shader program.
      * @throws RuntimeException 
      */
     public SimpleShaderProgram() throws RuntimeException {
-        super(getVertexShaderSource(), getFragmentShaderSource(), getInputNameList());
+        super(getVertexShaderSource(), getFragmentShaderSource(), getInputNameList(), getOutputNameList());
         
-        uProjectionName  = GL20.glGetUniformLocation(getProgramName(), "projection");
-        uViewName        = GL20.glGetUniformLocation(getProgramName(), "view");
+        uProjectionName = GL20.glGetUniformLocation(getProgramName(), "projection");
+        uViewName = GL20.glGetUniformLocation(getProgramName(), "view");
         
         if (uProjectionName == -1 || uViewName == -1) {
             // TODO Delete the shader program.
@@ -101,7 +131,7 @@ public class SimpleShaderProgram extends ShaderProgram {
      * @param projection a buffer containing at least 16 floats representing a 4x4 projection matrix
      */
     public void setProjection(final FloatBuffer projection) {        
-        projection.reset();
+        projection.rewind();
         
         if (projection.remaining() < 16) {
             // Fail silently on invalid buffer.
@@ -115,13 +145,13 @@ public class SimpleShaderProgram extends ShaderProgram {
      * @param view a buffer containing at least 16 floats representing a 4x4 view matrix
      */
     public void setView(final FloatBuffer view) {        
-        view.reset();
+        view.rewind();
 
         if (view.remaining() < 16) {
             // Fail silently on invalid buffer.
             return;
         }
         
-        GL20.glUniformMatrix4(uProjectionName, false, view);
+        GL20.glUniformMatrix4(uViewName, false, view);
     }
 }

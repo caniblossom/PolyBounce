@@ -31,15 +31,13 @@ package com.github.caniblossom.polybounce.renderer;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.ContextAttribs;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glViewport;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.PixelFormat;
 
 // TODO See if it's possible to test this.
@@ -51,8 +49,7 @@ import org.lwjgl.opengl.PixelFormat;
  * @author Jani Salo
  */
 public class RenderCanvas extends AWTGLCanvas {
-    // TODO For testing, remove!
-    private final TriangleRenderTask testTask = new TriangleRenderTask();
+    ArrayList<RenderTask> renderTaskList;
     
     /**
      * @return default graphics device for the host system
@@ -84,13 +81,14 @@ public class RenderCanvas extends AWTGLCanvas {
             // Sets the OpenGL context owned by this canvas current.
             // It's probably not necessary to call this, but it won't hurt.
             makeCurrent();
-           
-            glViewport(0, 0, getWidth(), getHeight());
-            glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
 
-            // TODO Remove, for testing purposes.
-            testTask.run();
+            // Again, probably unnecessary, but won't hurt.
+            GL11.glViewport(0, 0, getWidth(), getHeight());
+
+            // Perform render tasks.
+            for (RenderTask t : renderTaskList) {
+                t.run();
+            }
             
             swapBuffers();
         } catch (LWJGLException e) {
@@ -117,6 +115,7 @@ public class RenderCanvas extends AWTGLCanvas {
         super(getDefaultGraphicsDevice(), getDefaultPixelFormat(), null, getDefaultContextAttributes());
 
         setSize(width, height);
+        renderTaskList = new ArrayList();
     }
     
     /**
@@ -125,5 +124,13 @@ public class RenderCanvas extends AWTGLCanvas {
      */
     public RenderCanvas() throws LWJGLException {
         this(1, 1);
+    }
+
+    /**
+     * Adds a new render task to the canvas.
+     * @param task 
+     */
+    public void addRenderTask(RenderTask task) {
+        renderTaskList.add(task);
     }
 }
