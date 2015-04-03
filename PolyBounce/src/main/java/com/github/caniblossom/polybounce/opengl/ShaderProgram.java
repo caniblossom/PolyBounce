@@ -40,6 +40,8 @@ import org.lwjgl.opengl.GL30;
  * @author Jani Salo
  */
 public class ShaderProgram implements GLDependent {
+    private static final int INFO_LOG_DEFAULT_LENGTH = 1024;
+
     private int programName = 0;
 
     /**
@@ -48,7 +50,10 @@ public class ShaderProgram implements GLDependent {
      * @throws RuntimeException 
      */
     private void checkShader(final int shaderName) throws RuntimeException {
-        String infoLog = GL20.glGetShaderInfoLog(shaderName, GL20.glGetShaderi(shaderName, GL20.GL_INFO_LOG_LENGTH));
+        int infoLogLength = GL20.glGetShaderi(shaderName, GL20.GL_INFO_LOG_LENGTH);
+        infoLogLength = infoLogLength > 0 ? infoLogLength : INFO_LOG_DEFAULT_LENGTH;
+
+        String infoLog = GL20.glGetShaderInfoLog(shaderName, infoLogLength);
         
         if (infoLog == null) {
             infoLog = "No info log.";
@@ -113,7 +118,10 @@ public class ShaderProgram implements GLDependent {
      * @throws RuntimeException 
      */
     private void checkProgram(final int programName) throws RuntimeException {
-        String infoLog = GL20.glGetProgramInfoLog(programName, GL20.glGetProgrami(programName, GL20.GL_INFO_LOG_LENGTH));
+        int infoLogLength = GL20.glGetProgrami(programName, GL20.GL_INFO_LOG_LENGTH);
+        infoLogLength = infoLogLength > 0 ? infoLogLength : INFO_LOG_DEFAULT_LENGTH;
+        
+        String infoLog = GL20.glGetProgramInfoLog(programName, infoLogLength);
         
         if (infoLog == null) {
             infoLog = "No info log.";
