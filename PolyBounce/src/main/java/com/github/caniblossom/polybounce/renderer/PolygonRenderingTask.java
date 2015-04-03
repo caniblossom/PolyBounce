@@ -58,9 +58,7 @@ public class PolygonRenderingTask extends SimpleShaderRenderingTask {
     
     private Tessellator tessellator = null;
     
-    /**
-     * Sets up the vertex array for rendering.
-     */
+    // Sets up the vertex array for the format used by the simple shader program.
     private void setupVertexArray() {
         GL30.glBindVertexArray(vertexArrayName);
         vertexBuffer.bind();
@@ -78,9 +76,7 @@ public class PolygonRenderingTask extends SimpleShaderRenderingTask {
         vertexBuffer.unbind();
     }
 
-    /**
-     * Uploads the data from current triangle buffer to the vertex buffer, if available.
-     */
+    // Writes the triangle buffer to the vertex buffer, assuming it exists.
     private void uploadTriangleData() {
         // While reuploading the triangle data every time we render is relatively 
         // inefficient, it's still way fast enough and makes everything a lot simpler
@@ -106,9 +102,7 @@ public class PolygonRenderingTask extends SimpleShaderRenderingTask {
             vertexBuffer = new VertexBuffer();
             setupVertexArray();
         } catch (Exception e) {
-            GL30.glDeleteVertexArrays(vertexArrayName);
-            release();
-
+            deleteGLResources();
             throw e;
         }
         
@@ -118,6 +112,7 @@ public class PolygonRenderingTask extends SimpleShaderRenderingTask {
  
     @Override
     public void run() {
+        assert(isGood());
         uploadTriangleData();
         
         // Short explanation: To render contents of an Array Buffer Object we
@@ -145,8 +140,9 @@ public class PolygonRenderingTask extends SimpleShaderRenderingTask {
      * @param list a list of convex polygons
      */
     public void setPolygonData(final ArrayList<ConvexPolygon> list) {
+        assert isGood();
+        
         triangleList.clear();
-
         for (ConvexPolygon polygon : list) {
             tessellator.generateTriangles(polygon, FRONT_DEPTH, BACK_DEPTH);
         }
@@ -161,19 +157,21 @@ public class PolygonRenderingTask extends SimpleShaderRenderingTask {
     }
     
     /**
-     * @return true if and only if all the OpenGL resources are good.
+     * @return true if and only if all the OpenGL resources are good to use.
      */
     @Override
     public boolean isGood() {
-        return super.isGood() && vertexArrayName != 0;
+        return vertexArrayName != 0 || super.isGood();
     }
     
     /**
-     * Releases all OpenGL resources related to this object.
+     * Deletes all OpenGL resources related to this object.
      */
     @Override
-    public void release() {
+    public final void deleteGLResources() {
         GL30.glDeleteVertexArrays(vertexArrayName);
         vertexArrayName = 0;
+
+        super.deleteGLResources();
     }
 }

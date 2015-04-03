@@ -46,9 +46,7 @@ public class SimpleShaderProgram extends ShaderProgram {
     private final int uLightPositionName;
     private final int uLightColorName;
         
-    /**
-     * @return source for the vertex shader
-     */
+    // Source for the vertex shader.
     private static String getVertexShaderSource() {
         return 
             "#version 150                                                            \n" + 
@@ -73,9 +71,7 @@ public class SimpleShaderProgram extends ShaderProgram {
             "}                                                                       \n";
     }
 
-    /**
-     * @return source for the fragment shader
-     */
+    // Source for the fragment shader.
     private static String getFragmentShaderSource() {
         return 
             "#version 150                                                            \n" + 
@@ -97,16 +93,12 @@ public class SimpleShaderProgram extends ShaderProgram {
             "}                                                                       \n";
     }
     
-    /**
-     * @return input name list.
-     */
+    // Vertex shader inputs.
     private static String[] getInputNameList() {
         return new String[]{"positionIn", "colorIn", "normalIn"};
     }
 
-    /**
-     * @return output name list.
-     */
+    // Fragment shader outputs.
     private static String[] getOutputNameList() {
         return new String[]{"colorOut"};
     }
@@ -125,7 +117,7 @@ public class SimpleShaderProgram extends ShaderProgram {
                 
         if (uProjectionName == -1 || uViewName == -1 || uLightPositionName == -1 || uLightColorName == -1) {
             // Destroy the shader program object that might be lingering around.
-            release();
+            deleteProgram();
 
             throw new RuntimeException("Error getting uniform names.");
         }
@@ -136,8 +128,9 @@ public class SimpleShaderProgram extends ShaderProgram {
      * @param projection a buffer containing at least 16 floats representing a 4x4 projection matrix
      */
     public void setProjection(final FloatBuffer projection) {        
+        assert isGood();        
+
         projection.rewind();
-        
         if (projection.remaining() < 16) {
             return;
         }
@@ -150,8 +143,9 @@ public class SimpleShaderProgram extends ShaderProgram {
      * @param view a buffer containing at least 16 floats representing a 4x4 view matrix
      */
     public void setView(final FloatBuffer view) {        
+        assert isGood();        
+        
         view.rewind();
-
         if (view.remaining() < 16) {
             return;
         }
@@ -166,6 +160,7 @@ public class SimpleShaderProgram extends ShaderProgram {
      * @param z z component of the position
      */
     public void setLightPosition(final float x, final float y, final float z) {        
+        assert isGood();        
         GL20.glUniform3f(uLightPositionName, x, y, z);
     }
 
@@ -176,6 +171,7 @@ public class SimpleShaderProgram extends ShaderProgram {
      * @param b blue component of the light
      */
     public void setLightColor(final float r, final float g, final float b) {        
+        assert isGood();
         GL20.glUniform3f(uLightColorName, r, g, b);
     }
 }

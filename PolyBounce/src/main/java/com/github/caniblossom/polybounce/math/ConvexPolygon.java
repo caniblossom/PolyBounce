@@ -47,10 +47,7 @@ public class ConvexPolygon {
     
     private final Vector2 vertexAverage;
     
-    /**
-     * Checks that the polygon has at least three vertices and that there are no duplicates.
-     * @return true if the polygon is well defined.
-     */
+    // Checks that the polygon has at least three vertices and that there are no duplicates.
     private boolean isWellDefined() {
         if (vertexList.size() < 2) {
             return false;
@@ -68,11 +65,7 @@ public class ConvexPolygon {
         return true;
     }
     
-    /**
-     * Checks that the polygon is wound counter-clockwise all the was. 
-     * This is first of the two tests to ensure that the polygon is convex.
-     * @return true if the polygon is wound counter-clockwise
-     */
+    // Checks that the polygon is wound counter-clockwise. 
     private boolean isWoundCounterClockwise() {
         for (int i = 0; i < segmentList.size(); i++) {
             Segment2 a = segmentList.get((i + 0) % segmentList.size());
@@ -88,24 +81,20 @@ public class ConvexPolygon {
         return true;
     }
 
-    /**
-     * Checks that the polygon doesn't self intersect.
-     * This is second of the two tests to ensure that the polygon is convex.
-     * @return true if the polygon doesn't self intersect.
-     */
+    // Checks that the polygon doesn't self intersect in a bad manner.
     private boolean doesNotSelfIntersect() {
         for (int a = 0; a < segmentList.size(); a++) {
             for (int b = a + 1; b < segmentList.size(); b++) {
                 Segment2 segA = segmentList.get(a);
                 Segment2 segB = segmentList.get(b);
 
-                // Don't count segments that obviously should intersect each other.
+                // Don't count segments that obviously should intersect each other at their ends.
                 if (segA.sharesVertexWith(segB)) {
                     continue;
                 }
                 
                 final Intersection i = segA.intersect(segB);
-
+                
                 if (i.didIntersect()) {
                     return false;
                 }
@@ -115,9 +104,7 @@ public class ConvexPolygon {
         return true;
     }
     
-    /**
-     * @return average for current vertex list.
-     */
+    // Simply sums the vertices together and returns average.
     private Vector2 computeVertexAverage() {
         float x = 0.0f;
         float y = 0.0f;

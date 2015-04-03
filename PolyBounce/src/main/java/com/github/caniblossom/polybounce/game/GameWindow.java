@@ -42,8 +42,8 @@ import org.lwjgl.opengl.PixelFormat;
  * @author Jani Salo
  */
 public class GameWindow {
-    private static final int DEFAULT_WINDOW_WIDTH = 1024;
-    private static final int DEFAULT_WINDOW_HEIGHT = 768;
+    private static final int DEFAULT_WINDOW_WIDTH = 1280;
+    private static final int DEFAULT_WINDOW_HEIGHT = 720;
     
     private RenderingEngine renderingEngine;
            
@@ -98,7 +98,7 @@ public class GameWindow {
             Display.sync(60);
         }
         
-        renderingEngine.release();
+        renderingEngine.deleteGLResources();
         Display.destroy();
     }
 }

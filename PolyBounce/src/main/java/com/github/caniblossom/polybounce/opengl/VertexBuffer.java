@@ -39,7 +39,7 @@ import org.lwjgl.opengl.GL15;
  * Will probably explode if constructed without proper OpenGL context active.
  * @author Jani Salo
  */
-public class VertexBuffer implements GLDependent {
+public class VertexBuffer {
     private int bufferName = 0;
     private int elementCount = 0;
     
@@ -59,6 +59,7 @@ public class VertexBuffer implements GLDependent {
      * Binds the related buffer as current GL_ARRAY_BUFFER.
      */
     public void bind() {
+        assert isGood();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, bufferName);
     }
     
@@ -75,7 +76,7 @@ public class VertexBuffer implements GLDependent {
      * @param elementSizeInFloats element size in floats
      */
     public void write(FloatBuffer buffer, final int elementSizeInFloats) {
-        assert (buffer.remaining() % elementSizeInFloats == 0);
+        assert isGood() || buffer.remaining() % elementSizeInFloats == 0;
         elementCount = buffer.remaining() / elementSizeInFloats;
         
         bind();
@@ -91,18 +92,16 @@ public class VertexBuffer implements GLDependent {
     }    
     
     /**
-     * @return true if and only if the object represents an actual OpenGL buffer object
+     * @return true if and only if the OpenGL buffer object is good to use.
      */
-    @Override
     public boolean isGood() {
         return bufferName != 0;
     }
 
     /**
-     * Forces the destruction of the buffer object.
+     * Deleted the OpenGL buffer object.
      */
-    @Override
-    public void release() {
+    public void deleteBuffer() {
         GL15.glDeleteBuffers(bufferName);
         bufferName = 0;
     }

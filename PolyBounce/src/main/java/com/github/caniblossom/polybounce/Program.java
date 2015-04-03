@@ -32,7 +32,7 @@ package com.github.caniblossom.polybounce;
 import com.github.caniblossom.polybounce.game.GameWindow;
 import javax.swing.JOptionPane;
 
-// TODO Add Checkstyle to the project.
+// TODO Find a plugin for generating properly self-executing jar-file.
 
 /**
  * Main class.

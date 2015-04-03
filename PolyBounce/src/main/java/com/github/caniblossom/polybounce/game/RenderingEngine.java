@@ -31,7 +31,6 @@ package com.github.caniblossom.polybounce.game;
 
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.Vector2;
-import com.github.caniblossom.polybounce.opengl.GLDependent;
 import com.github.caniblossom.polybounce.renderer.ClearRenderingTask;
 import com.github.caniblossom.polybounce.renderer.PolygonRenderingTask;
 import com.github.caniblossom.polybounce.renderer.RenderingManager;
@@ -43,7 +42,7 @@ import java.util.ArrayList;
  * A class representing the rendering engine of the game.
  * @author Jani Salo
  */
-public class RenderingEngine implements GLDependent {
+public class RenderingEngine {
     private final float aspectRatio;
     private final RenderingManager manager;
     
@@ -52,9 +51,7 @@ public class RenderingEngine implements GLDependent {
     
     private float rotationCounter = 0.0f;
 
-    /**
-     * Prepares the rendering engine for, well, rendering.
-     */
+    // Prepares the rendering engine for, well, rendering.
     private void initialize() {
         ArrayList<Vector2> vertexList = new ArrayList();
         ArrayList<ConvexPolygon> polygonList = new ArrayList();
@@ -68,9 +65,7 @@ public class RenderingEngine implements GLDependent {
         polygonTask.setPolygonData(polygonList);
     }
 
-    /**
-     * Updates the internal state in preparation for drawing the next frame.
-     */
+    // Updates the internal state in preparation for drawing the next frame.
     private void update() {        
         rotationCounter += 0.02f;
         
@@ -106,25 +101,23 @@ public class RenderingEngine implements GLDependent {
      * Draws current frame.
      */
     public void drawCurrentFrame() {
+        assert isGood();        
+
         update();
-        
-        // Call all rendering tasks.
         manager.runTasks();
     }
 
     /**
-     * @return true if and only if all OpenGL resources are available.
+     * @return true if and only if all OpenGL resources are good to use.
      */
-    @Override
     public boolean isGood() {
         return polygonTask.isGood();
     }
 
     /**
-     * Releases all OpenGL resources.
+     * Deletes all OpenGL resources related to this object.
      */
-    @Override
-    public void release() {
-        polygonTask.release();
+    public void deleteGLResources() {
+        polygonTask.deleteGLResources();
     }
 }

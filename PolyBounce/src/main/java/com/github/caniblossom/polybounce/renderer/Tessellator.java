@@ -43,42 +43,27 @@ import java.util.ArrayList;
 public class Tessellator {
     private ArrayList<Float> output = null;
      
-    /**
-     * Adds a 3-vector to the output list.
-     * @param x first component
-     * @param y second component
-     * @param z third component
-     */
+    // Adds a 3-vector to the output list.
     private void outputVector3(final float x, final float y, final float z) {
         output.add(x);
         output.add(y);
         output.add(z);
     }
     
-    /**
-     * Adds the color and normal for front triangles to the output list.
-     */
+    
+    // Adds the color and normal for front triangles to the output list.
     private void outputFrontColorAndNormal() {
         outputVector3(1.0f, 1.0f, 1.0f);
         outputVector3(0.0f, 0.0f, 1.0f);
     }
     
-    /**
-     * Adds the color and normal for side triangles to the output list.
-     * @param s segment defining the edge
-     */
+    // Adds the color and normal for front triangles to the output list.
     private void outputSideColorAndNormal(final Segment2 s) {
         outputVector3(1.0f, 1.0f, 1.0f);
         outputVector3(s.getRightNormal().getX(), s.getRightNormal().getY(), 0.0f);
     }
 
-    /**
-     * Adds a front triangle to the output list
-     * @param a first vertex
-     * @param b second vertex
-     * @param c third vertex
-     * @param depth z component
-     */
+    // Adds front triangle to the output list.
     private void outputFrontTriangle(final Vector2 a, final Vector2 b, final Vector2 c, final float depth) {
         // There is currently no method for adding back triangles, and might 
         // never be because the camera will never look at the scene from such an
@@ -92,6 +77,7 @@ public class Tessellator {
         outputFrontColorAndNormal();
     }
     
+    // Adds two triangles making up a side quad to the output list.
     private void outputSideQuad(final Segment2 s, final float frontDepth, final float backDepth) {
         outputVector3(s.getA().getX(), s.getA().getY(), frontDepth);
         outputSideColorAndNormal(s);

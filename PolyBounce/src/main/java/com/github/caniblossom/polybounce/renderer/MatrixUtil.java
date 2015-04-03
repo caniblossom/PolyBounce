@@ -39,6 +39,7 @@ import org.lwjgl.BufferUtils;
  * @author Jani Salo
  */
 public class MatrixUtil {
+    // A helper function for converting arrays to buffers.
     private static FloatBuffer createBufferFromArray(float[] array) {
         FloatBuffer buffer = BufferUtils.createFloatBuffer(array.length);
 
@@ -47,12 +48,9 @@ public class MatrixUtil {
     
         return buffer;
     }
-    
-    /**
-     * Private constructor because there doesn't seem to be a better way of doing this in Java.
-     */
-    private MatrixUtil() {     
-    }
+ 
+    // Private constructor to signify a static class.
+    private MatrixUtil() {}
 
     /**
      * Creates the kind of Projection matrix that plays along with the shader pipeline.

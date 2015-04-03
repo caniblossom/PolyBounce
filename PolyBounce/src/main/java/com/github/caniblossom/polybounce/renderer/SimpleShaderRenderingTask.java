@@ -29,7 +29,6 @@
  */
 package com.github.caniblossom.polybounce.renderer;
 
-import com.github.caniblossom.polybounce.opengl.GLDependent;
 import java.nio.FloatBuffer;
 
 // TODO Implement tests if possible.
@@ -38,7 +37,7 @@ import java.nio.FloatBuffer;
  * An abstract base class for rendering tasks using the simple shader.
  * @author Jani Salo
  */
-public abstract class SimpleShaderRenderingTask implements RenderingTask, GLDependent {
+public abstract class SimpleShaderRenderingTask implements RenderingTask {
     private SimpleShaderProgram shaderProgram = null;
 
     private FloatBuffer projectionMatrix;
@@ -56,6 +55,8 @@ public abstract class SimpleShaderRenderingTask implements RenderingTask, GLDepe
      * Enables and sets up the shader program.
      */
     protected void useAndSetupShaderProgram() {
+        assert isGood();
+
         shaderProgram.use();
                
         shaderProgram.setProjection(projectionMatrix);
@@ -65,6 +66,26 @@ public abstract class SimpleShaderRenderingTask implements RenderingTask, GLDepe
         shaderProgram.setLightColor(lightColorR, lightColorG, lightColorB);
     }
     
+    /**
+     * @return true if and only if the necessary OpenGL resources are good to use.
+     */
+    protected boolean isGood() {
+        if (shaderProgram == null) {
+            return false;
+        } else {
+            return shaderProgram.isGood();
+        }
+    }
+    
+    /**
+     * Deletes any OpenGL resources allocated by this object.
+     */
+    protected void deleteGLResources() {
+        if (shaderProgram != null) {
+            shaderProgram.deleteProgram();
+        }
+    }
+
     /**
      * Constructs a new rendering task.
      */
@@ -87,6 +108,7 @@ public abstract class SimpleShaderRenderingTask implements RenderingTask, GLDepe
      * @param far far clipping plane
      */
     public void setProjectionTransformation(final float fov, final float aspect, final float near, final float far) {
+        assert isGood();
         projectionMatrix = MatrixUtil.createProjection(fov, aspect, near, far);
     }
 
@@ -97,6 +119,7 @@ public abstract class SimpleShaderRenderingTask implements RenderingTask, GLDepe
      * @param distance relative distance in z-direction
      */
     public void setViewTransformation(final float x, final float y, final float distance) {
+        assert isGood();
         viewMatrix = MatrixUtil.createViewPlaneXY(x, y, distance);
     }
     
@@ -107,6 +130,8 @@ public abstract class SimpleShaderRenderingTask implements RenderingTask, GLDepe
      * @param z z component of the position
      */
     public void setLightPosition(final float x, final float y, final float z) {
+        assert isGood();
+
         lightPositionX = x;
         lightPositionY = y;
         lightPositionZ = z;
@@ -119,30 +144,10 @@ public abstract class SimpleShaderRenderingTask implements RenderingTask, GLDepe
      * @param b blue component of the color
      */
     public void setLightColor(final float r, final float g, final float b) {
+        assert isGood();
+
         lightColorR = r;
         lightColorG = g;
         lightColorB = b;        
-    }
-    
-    /**
-     * @return true if and only if the shader program is available.
-     */
-    @Override
-    public boolean isGood() {
-        if (shaderProgram == null) {
-            return false;
-        } else {
-            return shaderProgram.isGood();
-        }
-    }
-    
-    /**
-     * Releases all OpenGL resources related to this task.
-     */
-    @Override
-    public void release() {
-        if (shaderProgram != null) {
-            shaderProgram.release();
-        }
     }
 }
