@@ -27,43 +27,15 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.game;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.SwingUtilities;
-import org.lwjgl.LWJGLException;
+package com.github.caniblossom.polybounce.renderer;
 
 /**
- * Encapsulates the game itself.
+ * An interface for anything that might represent OpenGL rendering tasks.
  * @author Jani Salo
  */
-public class Game {
-    private GameWindow gameWindow = null;
-       
+public interface RenderingTask {
     /**
-     * Constructor.
+     * Called to run the task.
      */
-    public Game() {
-    }
-    
-    /**
-     * Initializes and runs the game.
-     */
-    public void run() {
-        try {
-            gameWindow = new GameWindow(512, 512);
-        } catch (LWJGLException e) {
-            // TODO Handle this. Definitely a fatal exception.
-            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, e);
-        }
-        
-        // Needs to be called from the EDT.
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                gameWindow.createAndShowFrame();
-            }
-        });        
-    }   
+    public void run();
 }

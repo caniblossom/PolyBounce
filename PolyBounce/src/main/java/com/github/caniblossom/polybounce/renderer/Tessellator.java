@@ -32,14 +32,12 @@ package com.github.caniblossom.polybounce.renderer;
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.Segment2;
 import com.github.caniblossom.polybounce.math.Vector2;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
-// TODO Add tests for this.
-// TODO Mock NetBeans for not recognizing the word tessellate.
+// TODO Implement tests if possible.
 
 /**
- * An utility class for tessellating convex polygons into format used by the game shader.
+ * An utility class for tessellating convex polygons into format used by the simple shader.
  * @author Jani Salo
  */
 public class Tessellator {
@@ -83,8 +81,8 @@ public class Tessellator {
      */
     private void outputFrontTriangle(final Vector2 a, final Vector2 b, final Vector2 c, final float depth) {
         // There is currently no method for adding back triangles, and might 
-        // never be because the camera will never look at the scene from a
-        // direction where this would be necessary.
+        // never be because the camera will never look at the scene from such an
+        // angle that they would actually be visible.
         
         outputVector3(a.getX(), a.getY(), depth);
         outputFrontColorAndNormal();
@@ -95,7 +93,6 @@ public class Tessellator {
     }
     
     private void outputSideQuad(final Segment2 s, final float frontDepth, final float backDepth) {
-        // First triangle.
         outputVector3(s.getA().getX(), s.getA().getY(), frontDepth);
         outputSideColorAndNormal(s);
         outputVector3(s.getA().getX(), s.getA().getY(), backDepth);
@@ -103,7 +100,6 @@ public class Tessellator {
         outputVector3(s.getB().getX(), s.getB().getY(), backDepth);
         outputSideColorAndNormal(s);
 
-        // Second triangle.
         outputVector3(s.getB().getX(), s.getB().getY(), backDepth);
         outputSideColorAndNormal(s);
         outputVector3(s.getB().getX(), s.getB().getY(), frontDepth);

@@ -29,114 +29,76 @@
  */
 package com.github.caniblossom.polybounce.game;
 
-import com.github.caniblossom.polybounce.math.ConvexPolygon;
-import com.github.caniblossom.polybounce.math.Vector2;
-import com.github.caniblossom.polybounce.renderer.ClearRenderTask;
-import com.github.caniblossom.polybounce.renderer.Tessellator;
-import com.github.caniblossom.polybounce.renderer.RenderCanvas;
-import com.github.caniblossom.polybounce.renderer.TriangleRenderTask;
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import javax.swing.JFrame;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.ContextAttribs;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.PixelFormat;
+
+// TODO Implement tests if possible.
 
 /**
- * Encapsulates the user interface for the game.
+ * A class representing the game window (and the game itself).
  * @author Jani Salo
  */
 public class GameWindow {
-    private final int width;
-    private final int height;
+    private static final int DEFAULT_WINDOW_WIDTH = 1024;
+    private static final int DEFAULT_WINDOW_HEIGHT = 768;
     
-    private JFrame frame;
-    private RenderCanvas canvas;
-    
-    // TODO Remove, test code.
-    final ClearRenderTask clearTask;
-    final TriangleRenderTask triangleTask;
-    
-    // TODO Remove, used for testing.
-    FloatBuffer floatBuffer = null;
-    
-    // TODO Remove, used for testing.
-    public final void setupRenderTest() {
-
+    private RenderingEngine renderingEngine;
+           
+    /**
+     * @return Pixel format used by the game
+     */
+    private static PixelFormat getDefaultPixelFormat() {
+        return new PixelFormat(8, 16, 0);
     }
-    
-    // TODO Remove, used for testing.
-    public final void InitializeRenderTest() {
-        ArrayList<Vector2> vertexList = new ArrayList();
-        ArrayList<Float> floatList = new ArrayList();
 
-        for (int i = 0; i < 7; i++) {
-            final float r = (float) i / 7.0f * 2.0f * (float) Math.PI;
-            vertexList.add(new Vector2((float) Math.cos(r), (float) Math.sin(r)));
-        }
-        
-        ConvexPolygon testPolygon = new ConvexPolygon(vertexList);
-
-        Tessellator tessellator = new Tessellator(floatList);
-        tessellator.generateTriangles(testPolygon, -1.0f, -2.0f);
-        
-        floatBuffer = BufferUtils.createFloatBuffer(floatList.size());
-
-        for (Float f : floatList) {
-            floatBuffer.put(f);
-        }
-
-        floatBuffer.rewind();
-        triangleTask.setTriangleBuffer(floatBuffer);
+    /**
+     * @return OpenGL context version used by the game
+     */
+    private static ContextAttribs getDefaultContextAttributes() {
+        return new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true);
     }
-    
     
     /**
-     * Constructs a new game user interface.
+     * Constructs a new game window.
      * @param width width of the game canvas in pixels
      * @param height height of the game canvas in pixels
-     * @throws org.lwjgl.LWJGLException
+     * @throws RuntimeException 
      */
-    public GameWindow(final int width, final int height) throws LWJGLException {
-        this.width = width;
-        this.height = height;
-        canvas = new RenderCanvas();
+    public GameWindow(final int width, final int height) throws RuntimeException {
+        try {
+            Display.setTitle("Poly Bounce");
+            Display.setDisplayMode(new DisplayMode(width, height));
+            Display.create(getDefaultPixelFormat(), getDefaultContextAttributes());
+        } catch (LWJGLException e) {
+            throw new RuntimeException("Unable to create OpenGL context: " + e.getMessage());
+        }
         
-        // TODO Remove, used for testing.
-        clearTask = new ClearRenderTask(0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-        triangleTask = new TriangleRenderTask();
-
-        // TODO Remove, used for testing.
-        canvas.addRenderTask(clearTask);
-        canvas.addRenderTask(triangleTask);        
-
-        // TODO Remove, used for testing.
-        InitializeRenderTest();
-        
-        
+        // It's important to create the rendering engine only after the OpenGL context has been created.
+        renderingEngine = new RenderingEngine(width, height);
     }
     
     /**
-     * Constructs a new game user interface with preset dimensions in pixels.
-     * @throws org.lwjgl.LWJGLException
+     * Constructs a new game window with preset dimensions in pixels.
      */
-    public GameWindow() throws LWJGLException {
-        this(800, 600);
+    public GameWindow() throws RuntimeException {
+        this(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
     }
 
     /**
-     * Creates and shows the frame for the user interface.
-     * Only call from the EDT.
+     * Executes the loop running the game window (and the game itself).
      */
-    public void createAndShowFrame() {
-        frame = new JFrame("Poly Bounce");
+    public void run() {
+        while (!Display.isCloseRequested()) {
+            renderingEngine.drawCurrentFrame();
+            
+            Display.update();
+            Display.sync(60);
+        }
         
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(width, height);
-
-        frame.add(canvas);
-        frame.getContentPane().validate();
-        frame.getContentPane().repaint();
-
-        frame.setVisible(true);        
+        renderingEngine.release();
+        Display.destroy();
     }
 }

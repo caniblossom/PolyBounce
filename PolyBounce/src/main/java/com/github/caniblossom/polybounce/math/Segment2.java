@@ -29,6 +29,8 @@
  */
 package com.github.caniblossom.polybounce.math;
 
+// TODO Implement full tests.
+
 /**
  * A class representing a directional, immutable segment made of two 2-vectors.
  * @author Jani Salo
@@ -117,7 +119,8 @@ public class Segment2 {
     }
 
     /**
-     * Intersects another segment against this segment.
+     * Intersects another segment against this segment. Considers cases where 
+     * the segments lie on the same line always as non-intersecting.
      * @param s segment to be intersected against this segment
      * @return intersection result
      */
@@ -125,8 +128,7 @@ public class Segment2 {
         final float pa = projectPointOnRightNormal(s.getA());
         final float pb = projectPointOnRightNormal(s.getB());
         
-        // Return if no intersection is possible or the segments lie on the same line.
-        // For sake of simplicity it is assumed that no intersection is possible in the latter case.
+        // Return if no intersection is possible or if the segments lie on the same line.
         if (pa * pb > 0.0f || pa == 0.0f && pb == 0.0f) {
             return new Intersection();
         } 
@@ -140,7 +142,9 @@ public class Segment2 {
         // At this point we have the intersection on the line defined by this segment. 
         // The last thing to do is to check whether the intersection lies on the segment itself.
         final float projection = projectPointOnNormal(position);
-        if (projection < 0.0f || projection > ab.length()) return new Intersection();
+        if (projection < 0.0f || projection > ab.length()) {
+            return new Intersection();
+        }
         
         return new Intersection(distance, position);
     }

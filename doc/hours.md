@@ -1,3 +1,7 @@
+### Week 4
+Total accumulated hours: 35
+- 2015.04.03 /  ~5h: Clean up and improve the code for the rendering pipeline + update documentation
+
 ### Week 3
 Total accumulated hours: 30
 - 2015.03.26 /  ~8h: Write class for convex polygons and start working on OpenGL code

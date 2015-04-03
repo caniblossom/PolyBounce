@@ -29,11 +29,45 @@
  */
 package com.github.caniblossom.polybounce.renderer;
 
+import java.util.ArrayList;
+
+// TODO Implement tests if possible.
+
 /**
- * An interface for anything that might represent OpenGL rendering- or other
- * tasks that require an active OpenGL context to be present.
+ * A simple manager for handling rendering tasks.
  * @author Jani Salo
  */
-public interface RenderTask {
-    public void run();
+public class RenderingManager {
+    private final ArrayList<RenderingTask> taskList;
+    
+    /**
+     * Constructs a new manager.
+     */
+    public RenderingManager() {
+        taskList = new ArrayList();
+    }
+    
+    /**
+     * Clears all tasks.
+     */
+    public void clearTasks() {
+        taskList.clear();
+    }
+    
+    /**
+     * Adds a new rendering task.
+     * @param task task to be added
+     */
+    public void addTask(RenderingTask task) {
+        taskList.add(task);
+    }
+
+    /**
+     * Performs all the rendering tasks in the order they were added.
+     */
+    public void runTasks() {
+        for (RenderingTask task : taskList) {
+            task.run();
+        }
+    }
 }

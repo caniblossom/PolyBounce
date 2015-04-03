@@ -32,16 +32,15 @@ package com.github.caniblossom.polybounce.opengl;
 import java.nio.FloatBuffer;
 import org.lwjgl.opengl.GL15;
 
-// TODO Add tests if it's not too difficult.
-// TODO Add a method for releasing the buffer object / invalidating the class instance.
+// TODO Implement tests if possible.
 
 /**
  * An wrapper for an OpenGL array buffer with some added functionality. 
- * Will probably explode if constructed when there is no proper OpenGL context around.
+ * Will probably explode if constructed without proper OpenGL context active.
  * @author Jani Salo
  */
-public class VertexBuffer {
-    private final int bufferName;
+public class VertexBuffer implements GLDependent {
+    private int bufferName = 0;
     private int elementCount = 0;
     
     /**
@@ -76,7 +75,7 @@ public class VertexBuffer {
      * @param elementSizeInFloats element size in floats
      */
     public void write(FloatBuffer buffer, final int elementSizeInFloats) {
-        assert(buffer.remaining() % elementSizeInFloats == 0);
+        assert (buffer.remaining() % elementSizeInFloats == 0);
         elementCount = buffer.remaining() / elementSizeInFloats;
         
         bind();
@@ -90,4 +89,21 @@ public class VertexBuffer {
     public int getElementCount() {
         return elementCount;
     }    
+    
+    /**
+     * @return true if and only if the object represents an actual OpenGL buffer object
+     */
+    @Override
+    public boolean isGood() {
+        return bufferName != 0;
+    }
+
+    /**
+     * Forces the destruction of the buffer object.
+     */
+    @Override
+    public void release() {
+        GL15.glDeleteBuffers(bufferName);
+        bufferName = 0;
+    }
 }

@@ -29,7 +29,8 @@
  */
 package com.github.caniblossom.polybounce;
 
-import com.github.caniblossom.polybounce.game.Game;
+import com.github.caniblossom.polybounce.game.GameWindow;
+import javax.swing.JOptionPane;
 
 // TODO Add Checkstyle to the project.
 
@@ -43,17 +44,13 @@ public class Program {
      * @param args arguments for execution
      */
     public static void main(String [] args) {
-        System.out.println("Moi taas, en tiedä lukeeko kukaan näitä, mutta jätetään tähän kuitenkin viesti kaiken varalta.");
-        System.out.println("Keskityin tällä viikolla siihen, että saisin renderöintipipelinen päällisin puolin toimimaan, koska se on hyvä saada pois alta.");
-        System.out.println("Tämän takia en ole kirjoittanut uusia testejä ja koodi on muutenkin epäsiistiä paikoitellen.");
-        System.out.println("Keskityn ensi viikolla testien ja dokumentaation kirjoitteluun, sekä nykyisen koodin viimeistelyyn.");
-        System.out.println("Jos ette jostain syystä saa projektia LWJGL:n tai rautatuen puutteen takia toimimaan, niin pistäkään palautetta.");
-        System.out.println("Tällä hetkellä ohjelma ei siis tee mitään muuta kuin renderöi monikulmaisen pitkulan ruudulla heilumassa.");
-        System.out.println("Tästä on myös pieni video media -kansiossa, ihan vain kaiken varalta.");
-        System.out.println("OpenGL koodi on tällä hetkellä hieman höttöä ja ei mm. tarkista että riittävä tuki löytyy / saattaa kutsua API:a ilman kontekstia.");
-        System.out.println("Tästä saattaa seurata segfaulttailua quitatessa tai (toivottavasti ei) jotain muuta jännää. Korjaan nämä kyllä.");
+        final GameWindow gameWindow;
         
-        final Game game = new Game();
-        game.run();
+        try {
+            gameWindow = new GameWindow();
+            gameWindow.run();
+        } catch (RuntimeException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
     }   
 }

@@ -29,6 +29,8 @@
  */
 package com.github.caniblossom.polybounce.math;
 
+// TODO Implement full tests.
+
 /**
  * A class representing an immutable floating point 2-vector.
  * @author Jani Salo
@@ -114,6 +116,9 @@ public class Vector2 {
         return x * rhs.x + y * rhs.y;
     }
     
+    /**
+     * @return a normal for this vector
+     */
     public Vector2 normal() {
         final float length = length();
         
@@ -126,7 +131,7 @@ public class Vector2 {
     
     /**
      * @param o vector to compare to
-     * @return true if the components are equal
+     * @return true if and only if the components are equal
      */
     @Override
     public boolean equals(Object o) {

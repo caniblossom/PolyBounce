@@ -33,23 +33,32 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-// TODO Again, do tests if reasonable, seems unlikely here though.
-// TODO Add method for deleting the shader / invalidating the class instance.
+// TODO Implement tests if possible.
 
 /**
  * A wrapper for OpenGL Shader Program.
  * @author Jani Salo
  */
-public class ShaderProgram {
-    private int programName;
+public class ShaderProgram implements GLDependent {
+    private int programName = 0;
 
     /**
-     * @return name of the program object
+     * Throws an exception on a faulty shader.
+     * @param shaderName name of the shader program object
+     * @throws RuntimeException 
      */
-    protected int getProgramName() {
-        return programName;
+    private void checkShader(final int shaderName) throws RuntimeException {
+        String infoLog = GL20.glGetShaderInfoLog(shaderName, GL20.glGetShaderi(shaderName, GL20.GL_INFO_LOG_LENGTH));
+        
+        if (infoLog == null) {
+            infoLog = "No info log.";
+        }
+        
+        if (GL20.glGetShaderi(shaderName, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
+            throw new RuntimeException("Error while compiling shader: " + infoLog);
+        }        
     }
-
+    
     /**
      * Creates a new shader directly from source.
      * @param source source for the shader
@@ -64,23 +73,59 @@ public class ShaderProgram {
             throw new RuntimeException("Error creating shader.");
         }
         
-        // I pray to god this works, I've had enough trouble doing properly with C/C++
         GL20.glShaderSource(shaderName, source);
         GL20.glCompileShader(shaderName);
 
-        // Prefetch the log in case we need it - there seems to be some issues fetching it while throwing an exception.
-        String infoLog = GL20.glGetShaderInfoLog(shaderName, GL20.glGetShaderi(shaderName, GL20.GL_INFO_LOG_LENGTH));
+        if (GL11.glGetError() != GL11.GL_NO_ERROR) {
+            GL20.glDeleteProgram(programName);
+            throw new RuntimeException("OpenGL error while creating shader.");
+        } 
         
-        if (GL20.glGetShaderi(shaderName, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-            GL20.glDeleteShader(shaderName);
-            throw new RuntimeException("Error compiling shader: " + infoLog);
+        try {
+            checkShader(shaderName);
+        } catch (RuntimeException e) {
+            GL20.glDeleteShader(shaderName);            
+            throw e;
         }
         
         return shaderName;
     }
+    
+    /**
+     * A helper function for binding input and output names for the shader program
+     * @param programName name of the shader program object
+     * @param inputNameList list of input names in the order they are to be bound.
+     * @param outputNameList list of output names in the order they are to be bound.
+     */
+    private void bindProgramLocations(final int programName, final String[] inputNameList, final String[] outputNameList) {
+        for (int i = 0; i < inputNameList.length; i++) {
+            GL20.glBindAttribLocation(programName, i, inputNameList[i]);
+        }
+            
+        for (int i = 0; i < outputNameList.length; i++) {
+            GL30.glBindFragDataLocation(programName, i, outputNameList[i]);
+        }
+    }
 
     /**
-     * Creates a new (shader) program from vertex and fragment shader.
+     * Throws an exception on a faulty shader program.
+     * @param programName name of the shader program object
+     * @throws RuntimeException 
+     */
+    private void checkProgram(final int programName) throws RuntimeException {
+        String infoLog = GL20.glGetProgramInfoLog(programName, GL20.glGetProgrami(programName, GL20.GL_INFO_LOG_LENGTH));
+        
+        if (infoLog == null) {
+            infoLog = "No info log.";
+        }
+        
+        if (GL20.glGetProgrami(programName, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
+            throw new RuntimeException("Error while compiling shader program: " + infoLog);
+        }        
+    }
+    
+    /**
+     * Creates a new shader program from vertex and fragment shaders.
      * @param vertexShaderName name of the vertex shader object
      * @param fragmentShaderName name of the fragment shader object
      * @param inputNameList list of N shader input names in the order they are to be bound from 0 to N - 1
@@ -96,30 +141,33 @@ public class ShaderProgram {
         
         GL20.glAttachShader(programName, vertexShaderName);
         GL20.glAttachShader(programName, fragmentShaderName);
-    
-        // Bind inputs in the order they appear on the list.
-        for (int i = 0; i < inputNameList.length; i++) {
-            GL20.glBindAttribLocation(programName, i, inputNameList[i]);
-        }
-            
-        // Bind outputin the order they appear on the list.
-        for (int i = 0; i < outputNameList.length; i++) {
-            GL30.glBindFragDataLocation(programName, i, outputNameList[i]);
-        }
+        
+        bindProgramLocations(programName, inputNameList, outputNameList);
 
         GL20.glLinkProgram(programName);
     
-        // See the comments above for shader info log.
-        String infoLog = GL20.glGetProgramInfoLog(programName, GL20.glGetProgrami(programName, GL20.GL_INFO_LOG_LENGTH));
+        if (GL11.glGetError() != GL11.GL_NO_ERROR) {
+            GL20.glDeleteShader(programName);
+            throw new RuntimeException("OpenGL error while creating shader program.");
+        } 
         
-        if (GL20.glGetProgrami(programName, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-            GL20.glDeleteProgram(programName);
-            throw new RuntimeException("Error linking program: " + infoLog);
+        try {
+            checkProgram(programName);
+        } catch (RuntimeException e) {
+            GL20.glDeleteShader(programName);
+            throw e;
         }
         
         return programName;
     }
     
+    /**
+     * @return name of the program object
+     */
+    protected int getProgramName() {
+        return programName;
+    }
+
     /**
      * Constructs a new shader program from source.
      * @param vertexShaderSource source for the vertex shader
@@ -138,15 +186,36 @@ public class ShaderProgram {
             
             programName = createProgram(vertexShaderName, fragmentShaderName, inputNameList, outputNameList);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            GL20.glDeleteProgram(programName);
+            programName = 0;
             
             GL20.glDeleteShader(fragmentShaderName);
             GL20.glDeleteShader(vertexShaderName);
         
             throw e;
         }  
+ 
+        GL20.glDeleteShader(fragmentShaderName);
+        GL20.glDeleteShader(vertexShaderName);
     }
      
+    /**
+     * @return true if and only if the object represents an actual shader program object
+     */
+    @Override
+    public boolean isGood() {
+        return programName != 0;
+    }
+
+    /**
+     * Forces the destruction of the shader program object.
+     */
+    @Override
+    public void release() {
+        GL20.glDeleteProgram(programName);
+        programName = 0;
+    }
+    
     /**
      * Sets this as current shader program.
      */

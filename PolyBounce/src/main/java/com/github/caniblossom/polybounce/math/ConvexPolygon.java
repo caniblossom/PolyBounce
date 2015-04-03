@@ -35,7 +35,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-// TODO Add tests.
+// TODO Implement full tests.
 
 /**
  * A class for representing an immutable convex polygon. The winding rule is counter-clockwise.

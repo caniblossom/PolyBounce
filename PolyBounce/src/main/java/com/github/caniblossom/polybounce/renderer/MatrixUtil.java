@@ -32,7 +32,7 @@ package com.github.caniblossom.polybounce.renderer;
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 
-// TODO Do some testing on these, although it's somewhat difficult to get all the cases.
+// TODO Implement tests if possible.
 
 /**
  * A static utility class for generating the matrices used in the renderer.
@@ -69,9 +69,15 @@ public class MatrixUtil {
         }
         
         final float f = (float) (1.0f / Math.tan(fov / 360.0f * 2.0f * (float) Math.PI / 2.0f));
- 
-        // I know it's ugly.
-        final float[] matrix = new float[]{f / aspect, 0.0f, 0.0f, 0.0f, 0.0f, f, 0.0f, 0.0f, 0.0f, 0.0f, (far + near) / (near - far), -1.0f, 0.0f, 0.0f, 2.0f * far * near / (near - far), 0.0f };
+        
+        // Note that the way the matrix is visually represented here is transpose
+        // to how you would normally represent the same matrix on paper.
+        final float[] matrix = new float[]{
+            f / aspect, 0.0f, 0.0f,                              0.0f, 
+            0.0f,       f,    0.0f,                              0.0f, 
+            0.0f,       0.0f, (far + near) / (near - far),      -1.0f, 
+            0.0f,       0.0f, 2.0f * far * near / (near - far),  0.0f 
+        };
         
         return createBufferFromArray(matrix);
     }
@@ -88,7 +94,14 @@ public class MatrixUtil {
             distance = Float.MIN_VALUE;
         }
         
-        final float[]matrix = new float[]{1.0f / distance, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f / distance, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 00f, -x / distance, -y / distance, 0.0f, 1.0f};
+        // I hereby declare CheckStyle my mortal nemesis - seriously though, 
+        // appealing to its whims made this harder to read.
+        final float[]matrix = new float[]{
+            1.0f / distance, 0.0f,            0.0f, 0.0f, 
+            0.0f,            1.0f / distance, 0.0f, 0.0f, 
+            0.0f,            0.0f,            1.0f, 0.0f, 
+            -x / distance,   -y / distance,   0.0f, 1.0f
+        };
 
         return createBufferFromArray(matrix);
     }

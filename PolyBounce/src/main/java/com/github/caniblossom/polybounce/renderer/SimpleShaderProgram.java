@@ -33,16 +33,19 @@ import com.github.caniblossom.polybounce.opengl.ShaderProgram;
 import java.nio.FloatBuffer;
 import org.lwjgl.opengl.GL20;
 
-// TODO See if it's possible to test this.
+// TODO Implement tests if possible.
 
 /**
- * A very simple shader.
+ * The basic shader used in the game.
  * @author Jani Salo
  */
 public class SimpleShaderProgram extends ShaderProgram {
     private final int uProjectionName;
     private final int uViewName;
-    
+
+    private final int uLightPositionName;
+    private final int uLightColorName;
+        
     /**
      * @return source for the vertex shader
      */
@@ -77,8 +80,8 @@ public class SimpleShaderProgram extends ShaderProgram {
         return 
             "#version 150                                                            \n" + 
             "                                                                        \n" +
-            "// TODO Remove, used for testing.                                       \n" +
-            "uniform mat4 view;                                                      \n" +
+            "uniform vec3 lightPosition;                                             \n" +
+            "uniform vec3 lightColor;                                                \n" +
             "                                                                        \n" +
             "in vec3 position;                                                       \n" +
             "in vec3 color;                                                          \n" +
@@ -87,12 +90,9 @@ public class SimpleShaderProgram extends ShaderProgram {
             "out vec4 colorOut;                                                      \n" + 
             "                                                                        \n" +
             "void main() {                                                           \n" +
-            "    // TODO Remove, used for testing.                                   \n" +                
-            "    vec3 lightPos = vec3(2.0f * -view[3][0], 2.0f * -view[3][1], 2.0);  \n" +
-            "    vec3 lightDir = normalize(lightPos - position);                     \n" +
-            "    vec3 lightColor = vec3(1.0, 1.0, 1.0);                              \n" +
-            "                                                                        \n" +
+            "    vec3 lightDir = normalize(lightPosition - position);                \n" +
             "    float alpha = clamp(dot(lightDir, normal), 0.0, 1.0);               \n" +
+            "                                                                        \n" +
             "    colorOut = vec4(alpha * lightColor * color, 1.0);                   \n" +
             "}                                                                       \n";
     }
@@ -110,31 +110,35 @@ public class SimpleShaderProgram extends ShaderProgram {
     private static String[] getOutputNameList() {
         return new String[]{"colorOut"};
     }
-    
+
     /**
      * Constructs a new simple shader program.
      * @throws RuntimeException 
      */
     public SimpleShaderProgram() throws RuntimeException {
         super(getVertexShaderSource(), getFragmentShaderSource(), getInputNameList(), getOutputNameList());
-        
-        uProjectionName = GL20.glGetUniformLocation(getProgramName(), "projection");
-        uViewName = GL20.glGetUniformLocation(getProgramName(), "view");
-        
-        if (uProjectionName == -1 || uViewName == -1) {
-            // TODO Delete the shader program.
+
+        uProjectionName    = GL20.glGetUniformLocation(getProgramName(), "projection");
+        uViewName          = GL20.glGetUniformLocation(getProgramName(), "view");
+        uLightPositionName = GL20.glGetUniformLocation(getProgramName(), "lightPosition");
+        uLightColorName    = GL20.glGetUniformLocation(getProgramName(), "lightColor");
+                
+        if (uProjectionName == -1 || uViewName == -1 || uLightPositionName == -1 || uLightColorName == -1) {
+            // Destroy the shader program object that might be lingering around.
+            release();
+
             throw new RuntimeException("Error getting uniform names.");
         }
     }
     
     /**
+     * Sets the projection matrix used in the shader.
      * @param projection a buffer containing at least 16 floats representing a 4x4 projection matrix
      */
     public void setProjection(final FloatBuffer projection) {        
         projection.rewind();
         
         if (projection.remaining() < 16) {
-            // Fail silently on invalid buffer.
             return;
         }
 
@@ -142,16 +146,36 @@ public class SimpleShaderProgram extends ShaderProgram {
     }
 
     /**
+     * Sets the view transformation used in the shader.
      * @param view a buffer containing at least 16 floats representing a 4x4 view matrix
      */
     public void setView(final FloatBuffer view) {        
         view.rewind();
 
         if (view.remaining() < 16) {
-            // Fail silently on invalid buffer.
             return;
         }
         
         GL20.glUniformMatrix4(uViewName, false, view);
+    }
+ 
+    /**
+     * Sets the position of the light used in the shader.
+     * @param x x component of the position
+     * @param y y component of the position
+     * @param z z component of the position
+     */
+    public void setLightPosition(final float x, final float y, final float z) {        
+        GL20.glUniform3f(uLightPositionName, x, y, z);
+    }
+
+    /**
+     * Sets the color of the light used in the shader.
+     * @param r red component of the light
+     * @param g green component of the light
+     * @param b blue component of the light
+     */
+    public void setLightColor(final float r, final float g, final float b) {        
+        GL20.glUniform3f(uLightColorName, r, g, b);
     }
 }

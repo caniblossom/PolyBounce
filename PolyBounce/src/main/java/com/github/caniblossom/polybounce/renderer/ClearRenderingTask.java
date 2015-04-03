@@ -27,58 +27,51 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.math;
+package com.github.caniblossom.polybounce.renderer;
 
-// TODO Implement full tests.
+import org.lwjgl.opengl.GL11;
+
+// TODO Implement tests if possible.
 
 /**
- * A class for representing an intersection.
+ * A very simple render task for clearing the canvas.
  * @author Jani Salo
  */
-public class Intersection {
-    private final boolean status;
+public class ClearRenderingTask implements RenderingTask {
+    final float r, g, b, a;
+    final float z;
+    
+    /**
+     * Constructs a new task with given clear values.
+     * @param r red component of the clear color
+     * @param g green component of the clear color
+     * @param b blue component of the clear color
+     * @param a alpha component of the clear color
+     * @param z value to clear the depth buffer to
+     */
+    public ClearRenderingTask(final float r, final float g, final float b, final float a, final float z) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
+        this.z = z;
+    }
 
-    private final float distance;
-    private final Vector2 position;
+    /**
+     * Constructs a new task with black color, full alpha and z-buffer to farthest maximum.
+     */
+    public ClearRenderingTask() {
+        this(0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+    }
 
+    @Override
     /**
-     * Constructs a new intersection with distance and position
-     * @param distance distance to the intersection
-     * @param position position of the intersection
+     * Clears the canvas and the depth buffer.
      */
-    public Intersection(final float distance, final Vector2 position) {
-        this.status = true;
-        this.distance = distance;
-        this.position = position;
-    }
-    
-    /**
-     * Constructs a new object representing no intersection
-     */
-    public Intersection() {
-        this.status = false;
-        this.distance = 0.0f;
-        this.position = new Vector2();
-    }
-    
-    /**
-     * @return true if an intersection did take place
-     */
-    public boolean didIntersect() {
-        return status;
-    }
-    
-    /**
-     * @return distance to the intersection, if an intersection did take place, otherwise zero
-     */
-    public float getDistance() {
-        return distance;
-    }
-    
-    /**
-     * @return position to the intersection, if an intersection took place, otherwise a default constructed vector
-     */
-    public Vector2 getPosition() {
-        return position;
+    public void run() {
+        GL11.glClearColor(r, g, b, a);
+        GL11.glClearDepth(z);
+
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
     }
 }
