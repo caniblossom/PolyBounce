@@ -40,8 +40,6 @@ import org.lwjgl.opengl.GL30;
  * @author Jani Salo
  */
 public class ShaderUtil {
-    private static final int INFO_LOG_DEFAULT_LENGTH = 1024;
-
     // Make the constructor private to signify a static class.
     private ShaderUtil() {}
 
@@ -57,33 +55,29 @@ public class ShaderUtil {
     }
 
     // Throws an exception on a faulty shader.
-    private static void checkShader(final int shaderName) throws RuntimeException {
-        int infoLogLength = GL20.glGetShaderi(shaderName, GL20.GL_INFO_LOG_LENGTH);
-        infoLogLength = infoLogLength > 0 ? infoLogLength : INFO_LOG_DEFAULT_LENGTH;
-
-        String infoLog = GL20.glGetShaderInfoLog(shaderName, infoLogLength);
-        
-        if (infoLog == null) {
-            infoLog = "No info log.";
-        }
-        
+    private static void checkShader(final int shaderName) throws RuntimeException {        
         if (GL20.glGetShaderi(shaderName, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
+            int infoLogLength = GL20.glGetShaderi(shaderName, GL20.GL_INFO_LOG_LENGTH);
+            String infoLog = infoLogLength > 0 ? GL20.glGetShaderInfoLog(shaderName, infoLogLength) : "";
+
+            if (infoLog == null) {
+                infoLog = "No info log.";
+            }
+
             throw new RuntimeException("Error while compiling shader: " + infoLog);
         }        
     }
         
     // Throws an exception on a faulty shader program.
     private static void checkProgram(final int programName) throws RuntimeException {
-        int infoLogLength = GL20.glGetProgrami(programName, GL20.GL_INFO_LOG_LENGTH);
-        infoLogLength = infoLogLength > 0 ? infoLogLength : INFO_LOG_DEFAULT_LENGTH;
-        
-        String infoLog = GL20.glGetProgramInfoLog(programName, infoLogLength);
-        
-        if (infoLog == null) {
-            infoLog = "No info log.";
-        }
-        
         if (GL20.glGetProgrami(programName, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
+            int infoLogLength = GL20.glGetProgrami(programName, GL20.GL_INFO_LOG_LENGTH);
+            String infoLog = infoLogLength > 0 ? GL20.glGetProgramInfoLog(programName, infoLogLength) : "";
+
+            if (infoLog == null) {
+                infoLog = "No info log.";
+            }
+        
             throw new RuntimeException("Error while compiling shader program: " + infoLog);
         }        
     }
