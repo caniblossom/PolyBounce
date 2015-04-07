@@ -29,8 +29,6 @@
  */
 package com.github.caniblossom.polybounce.math;
 
-// TODO Implement full tests.
-
 /**
  * A class representing a directional, immutable segment made of two 2-vectors.
  * @author Jani Salo
@@ -124,29 +122,30 @@ public class Segment2 {
      * @param s segment to be intersected against this segment
      * @return intersection result
      */
-    public Intersection intersect(final Segment2 s) {
+    public Segment2Intersection intersect(final Segment2 s) {
         final float pa = projectPointOnRightNormal(s.getA());
         final float pb = projectPointOnRightNormal(s.getB());
         
         // Return if no intersection is possible or if the segments lie on the same line.
         if (pa * pb > 0.0f || pa == 0.0f && pb == 0.0f) {
-            return new Intersection();
+            return new Segment2Intersection();
         } 
 
         final float shortestDistance = Math.abs(rightNormal.dot(s.getA().difference(getA())));
         final float cosAngle = Math.abs(rightNormal.dot(s.getNormal())); 
-
-        final float distance = (cosAngle > 0.0f) ? (shortestDistance / cosAngle) : 0.0f;
+        
+        // I'm fairly sure that division by zero is impossible here due to the initial test.
+        final float distance = shortestDistance / cosAngle;
         final Vector2 position = s.getA().sum(s.getNormal().scale(distance));
         
         // At this point we have the intersection on the line defined by this segment. 
         // The last thing to do is to check whether the intersection lies on the segment itself.
         final float projection = projectPointOnNormal(position);
         if (projection < 0.0f || projection > ab.length()) {
-            return new Intersection();
+            return new Segment2Intersection();
         }
         
-        return new Intersection(distance, position);
+        return new Segment2Intersection(distance, position);
     }
     
     /**

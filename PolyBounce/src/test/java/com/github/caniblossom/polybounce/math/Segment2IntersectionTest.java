@@ -29,56 +29,37 @@
  */
 package com.github.caniblossom.polybounce.math;
 
-// TODO Implement full tests.
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
- * A class for representing an intersection.
  * @author Jani Salo
  */
-public class Intersection {
-    private final boolean status;
+public class Segment2IntersectionTest {
+    @Test
+    public void testDidIntersect() {
+        Segment2Intersection a = new Segment2Intersection();
+        Segment2Intersection b = new Segment2Intersection(1.0f, new Vector2(1.0f, 1.0f));
+        
+        assertFalse(a.didIntersect());
+        assertTrue(b.didIntersect());
+    }
 
-    private final float distance;
-    private final Vector2 position;
+    @Test
+    public void testGetDistance() {
+        Segment2Intersection a = new Segment2Intersection();
+        Segment2Intersection b = new Segment2Intersection(1.0f, new Vector2(1.0f, 1.0f));
+        
+        assertEquals(a.getDistance(), 0.0f, 0.0f);
+        assertEquals(b.getDistance(), 1.0f, 0.0f);
+    }
 
-    /**
-     * Constructs a new intersection with distance and position
-     * @param distance distance to the intersection
-     * @param position position of the intersection
-     */
-    public Intersection(final float distance, final Vector2 position) {
-        this.status = true;
-        this.distance = distance;
-        this.position = position;
-    }
-    
-    /**
-     * Constructs a new object representing no intersection
-     */
-    public Intersection() {
-        this.status = false;
-        this.distance = 0.0f;
-        this.position = new Vector2();
-    }
-    
-    /**
-     * @return true if an intersection did take place
-     */
-    public boolean didIntersect() {
-        return status;
-    }
-    
-    /**
-     * @return distance to the intersection, if an intersection did take place, otherwise zero
-     */
-    public float getDistance() {
-        return distance;
-    }
-    
-    /**
-     * @return position to the intersection, if an intersection took place, otherwise a default constructed vector
-     */
-    public Vector2 getPosition() {
-        return position;
+    @Test
+    public void testGetPosition() {
+        Segment2Intersection a = new Segment2Intersection();
+        Segment2Intersection b = new Segment2Intersection(1.0f, new Vector2(1.0f, 1.0f));
+        
+        assertTrue(a.getPosition().equals(new Vector2(0.0f, 0.0f)));
+        assertTrue(b.getPosition().equals(new Vector2(1.0f, 1.0f)));
     }
 }

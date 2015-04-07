@@ -31,14 +31,11 @@ package com.github.caniblossom.polybounce.math;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-// TODO Implement full tests.
 
 /**
- * A class for representing an immutable convex polygon. The winding rule is counter-clockwise.
+ * A class for representing an immutable convex polygon. The winding rule is 
+ * counter-clockwise and no consecutive segments can lie on the same line.
  * @author Jani Salo
  */
 public class ConvexPolygon {
@@ -47,33 +44,15 @@ public class ConvexPolygon {
     
     private final Vector2 vertexAverage;
     
-    // Checks that the polygon has at least three vertices and that there are no duplicates.
-    private boolean isWellDefined() {
-        if (vertexList.size() < 2) {
-            return false;
-        }
-
-        final Set<Vector2> uniqueVertices = new HashSet();
-
-        // See that each vertex is unique.
-        for (Vector2 v : vertexList) {
-            if (!uniqueVertices.add(v)) {
-                return false;
-            }
-        }
-        
-        return true;
-    }
-    
     // Checks that the polygon is wound counter-clockwise. 
     private boolean isWoundCounterClockwise() {
         for (int i = 0; i < segmentList.size(); i++) {
-            Segment2 a = segmentList.get((i + 0) % segmentList.size());
+            Segment2 a = segmentList.get(i);
             Segment2 b = segmentList.get((i + 1) % segmentList.size());
             
             final float sinAngle = a.getRightNormal().dot(b.getNormal());
-
-            if (sinAngle > 0.0f) {
+            
+            if (sinAngle >= 0.0f) {
                 return false;
             }
         }
@@ -83,19 +62,17 @@ public class ConvexPolygon {
 
     // Checks that the polygon doesn't self intersect in a bad manner.
     private boolean doesNotSelfIntersect() {
-        for (int a = 0; a < segmentList.size(); a++) {
-            for (int b = a + 1; b < segmentList.size(); b++) {
-                Segment2 segA = segmentList.get(a);
-                Segment2 segB = segmentList.get(b);
-
-                // Don't count segments that obviously should intersect each other at their ends.
-                if (segA.sharesVertexWith(segB)) {
+        for (int a = 1; a < segmentList.size(); a++) {
+            for (int b = 0; b < a; b++) {
+                if (a - b == 1 || b - a + segmentList.size() == 1) {
                     continue;
                 }
                 
-                final Intersection i = segA.intersect(segB);
+                Segment2 segA = segmentList.get(a);
+                Segment2 segB = segmentList.get(b);
                 
-                if (i.didIntersect()) {
+                final Segment2Intersection i = segA.intersect(segB);
+                if (i.didIntersect() || segA.sharesVertexWith(segB)) {
                     return false;
                 }
             }
@@ -129,16 +106,14 @@ public class ConvexPolygon {
         this.segmentList = new ArrayList();
 
         for (int i = 0; i < vertexList.size(); i++) {
-            Vector2 a = vertexList.get((i + 0) % vertexList.size());
+            Vector2 a = vertexList.get(i);
             Vector2 b = vertexList.get((i + 1) % vertexList.size());
         
             segmentList.add(new Segment2(a, b));
         }
 
-        if (!isWellDefined()) {
-            throw new IllegalArgumentException("The polygon isn't well defined.");
-        } else if (!isWoundCounterClockwise()) {
-            throw new IllegalArgumentException("The polygon isn't wound counter clockwise.");
+        if (!isWoundCounterClockwise()) {
+            throw new IllegalArgumentException("The polygon isn't wound counter-clockwise.");
         } else if (!doesNotSelfIntersect()) {
             throw new IllegalArgumentException("The polygon self intersects.");
         }

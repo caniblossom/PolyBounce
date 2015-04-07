@@ -33,7 +33,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Jani Salo
  */
 public class Segment2Test {
@@ -163,16 +162,17 @@ public class Segment2Test {
     public void testIntersect() {
         // TODO Improve the test if you have the time.
         
-        final Vector2 a = new Vector2(2.0f, 2.0f);
-        final Vector2 b = new Vector2(4.0f, 2.0f);
-        final Vector2 c = new Vector2(4.0f, 4.0f);
-        final Vector2 d = new Vector2(2.0f, 4.0f);
-        final Vector2 e = new Vector2(3.0f, 4.0f);
-        final Vector2 f = new Vector2(3.0f, 6.0f);
-        final Vector2 g = new Vector2(0.0f, 3.0f);
-        final Vector2 h = new Vector2(3.0f, 3.0f);
-        final Vector2 i = new Vector2(3.0f, 3.0f);
-        
+        final Vector2 a = new Vector2(2.00f, 2.00f);
+        final Vector2 b = new Vector2(4.00f, 2.00f);
+        final Vector2 c = new Vector2(4.00f, 4.00f);
+        final Vector2 d = new Vector2(2.00f, 4.00f);
+        final Vector2 e = new Vector2(3.00f, 4.00f);
+        final Vector2 f = new Vector2(3.00f, 6.00f);
+        final Vector2 g = new Vector2(0.00f, 3.00f);
+        final Vector2 h = new Vector2(3.00f, 3.00f);
+        final Vector2 i = new Vector2(3.50f, 3.00f);
+        final Vector2 j = new Vector2(3.50f, 3.01f);
+
         final Segment2 ac = new Segment2(a, c);
         final Segment2 ad = new Segment2(a, d);
         final Segment2 af = new Segment2(a, f);
@@ -180,31 +180,54 @@ public class Segment2Test {
         final Segment2 bd = new Segment2(b, d);
         final Segment2 be = new Segment2(b, e);
         final Segment2 gb = new Segment2(g, b);
+        final Segment2 hh = new Segment2(h, h); 
         final Segment2 hi = new Segment2(h, i); 
+        final Segment2 jh = new Segment2(j, h); 
         
-        final Intersection achi = ac.intersect(hi);
-        final Intersection adac = ad.intersect(ac);
-        final Intersection adbc = ad.intersect(bc);
-        final Intersection adbd = ad.intersect(bd);
-        final Intersection afbe = af.intersect(be);
-        final Intersection afgb = af.intersect(gb);
-        final Intersection beaf = be.intersect(af);
-        final Intersection hiac = hi.intersect(ac);
+        final Segment2Intersection achh = ac.intersect(hh);
+        final Segment2Intersection adac = ad.intersect(ac);
+        final Segment2Intersection adbc = ad.intersect(bc);
+        final Segment2Intersection adbd = ad.intersect(bd);
+        final Segment2Intersection afbe = af.intersect(be);
+        final Segment2Intersection afgb = af.intersect(gb);
+        final Segment2Intersection beaf = be.intersect(af);
+        final Segment2Intersection hhac = hh.intersect(ac);
+        final Segment2Intersection hijh = hi.intersect(jh);
         
-        assertFalse(achi.didIntersect());
+        assertFalse(achh.didIntersect());
         assertTrue(adac.didIntersect());
         assertFalse(adbc.didIntersect());
         assertTrue(adbd.didIntersect());       
         assertFalse(afbe.didIntersect());
         assertTrue(afgb.didIntersect());
         assertFalse(beaf.didIntersect());
-        assertFalse(hiac.didIntersect());
+        assertFalse(hhac.didIntersect());
 
         assertEquals(adac.getDistance(), 0.0f, 0.0f);
         assertEquals(adbd.getDistance(), 2.828427f, 0.000001f);
+        assertNotEquals(hijh.getDistance(), 0.0f, 0.0f);
 
         assertTrue(adac.getPosition().equals(a));        
     }  
+    
+    @Test
+    public void testSharesVertexWith() {
+        final Vector2 a = new Vector2(5.0f, 5.0f);
+        final Vector2 b = new Vector2(6.0f, 5.0f);
+        final Vector2 c = new Vector2(5.5f, 5.5f);
+        final Vector2 d = new Vector2(5.0f, 4.0f);
+        final Vector2 e = new Vector2(6.0f, 4.0f);
+        
+        final Segment2 ab = new Segment2(a, b);
+        final Segment2 ac = new Segment2(a, c);
+        final Segment2 cb = new Segment2(c, b);
+        final Segment2 de = new Segment2(d, e);
+        
+        assertTrue(ab.sharesVertexWith(ab));
+        assertTrue(ab.sharesVertexWith(ac));
+        assertTrue(ab.sharesVertexWith(cb));
+        assertFalse(ab.sharesVertexWith(de));      
+    }
     
     @Test
     public void testEquals() {
@@ -235,5 +258,12 @@ public class Segment2Test {
         assertEquals(a.hashCode(), b.hashCode());
     }
     
-    // TODO Add test for toString.
+    @Test
+    public void testToString() {
+        final Vector2 a = new Vector2(123.0f, 456.0f);
+        final Vector2 b = new Vector2(321.0f, 654.0f);
+        final Segment2 ab = new Segment2(a, b);
+
+        assertEquals(ab.toString(), "(123.0, 456.0) -> (321.0, 654.0)");
+    }
 }

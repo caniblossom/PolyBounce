@@ -29,8 +29,6 @@
  */
 package com.github.caniblossom.polybounce.math;
 
-// TODO Implement full tests.
-
 /**
  * A class representing an immutable floating point 2-vector.
  * @author Jani Salo

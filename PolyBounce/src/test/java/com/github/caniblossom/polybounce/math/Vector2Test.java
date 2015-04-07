@@ -174,5 +174,9 @@ public class Vector2Test {
         assertEquals(ab.hashCode(), cd.hashCode());
     }
     
-    // TODO Add test for toString.
+    @Test
+    public void testToString() {
+        final Vector2 a = new Vector2(123.0f, 456.0f);
+        assertEquals(a.toString(), "(123.0, 456.0)");
+    }
 }
