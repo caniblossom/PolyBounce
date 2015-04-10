@@ -1,8 +1,9 @@
 ### Week 4
-Total accumulated hours: 41
+Total accumulated hours: 50
 - 2015.04.03 /  ~5h: Clean up and improve the code for the rendering pipeline + update documentation
-- 2015.04.03 /  ~8h: Do Koodikatselmointi and fiddle around the rendering code to make it even better
+- 2015.04.03 /  ~8h: Do Koodikatselmointi and fiddle around with the rendering code again as it's still stupid
 - 2015.04.07 /  ~3h: Finish all tests for the mathematics package
+- 2015.04.10 /  ~4h: Add missing features and tests for them, start working on the physics
 
 ### Week 3
 Total accumulated hours: 30

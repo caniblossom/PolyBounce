@@ -38,22 +38,22 @@ import static org.junit.Assert.*;
  * @author Jani Salo
  */
 public class ConvexPolygonTest {
-    private ArrayList<Vector2> getUnitSquareVertexList() {
+    private ArrayList<Vector2> getSquareVertexList(final float scale, final Vector2 displacement) {
         final ArrayList<Vector2> list = new ArrayList();
         
-        list.add(new Vector2(0.0f, 0.0f));
-        list.add(new Vector2(1.0f, 0.0f));
-        list.add(new Vector2(1.0f, 1.0f));
-        list.add(new Vector2(0.0f, 1.0f));
+        list.add(displacement.sum(new Vector2( 0.0f,  0.0f)));
+        list.add(displacement.sum(new Vector2(scale,  0.0f)));
+        list.add(displacement.sum(new Vector2(scale, scale)));
+        list.add(displacement.sum(new Vector2( 0.0f, scale)));
 
         return list;
     }
 
-    private ConvexPolygon getUnitSquarePolygon() {
+    private ConvexPolygon getSquarePolygon(final float scale, final Vector2 displacement) {
         ConvexPolygon poly = null;
         
         try {
-            poly = new ConvexPolygon(getUnitSquareVertexList()); 
+            poly = ConvexPolygon.constructNew(getSquareVertexList(scale, displacement)); 
         } catch (Exception e) {
             fail();
         }
@@ -97,7 +97,7 @@ public class ConvexPolygonTest {
         listF.add(new Vector2(0.0f,  1.0f));
 
         try {
-            final ConvexPolygon poly = new ConvexPolygon(listA);
+            final ConvexPolygon poly = ConvexPolygon.constructNew(listA);
             fail();
         } catch (IllegalArgumentException e) {
         } catch (Exception e) {
@@ -105,7 +105,7 @@ public class ConvexPolygonTest {
         } 
         
         try {
-            final ConvexPolygon poly = new ConvexPolygon(listB);
+            final ConvexPolygon poly = ConvexPolygon.constructNew(listB);
             fail();
         } catch (IllegalArgumentException e) {
         } catch (Exception e) {
@@ -113,7 +113,7 @@ public class ConvexPolygonTest {
         } 
 
         try {
-            final ConvexPolygon poly = new ConvexPolygon(listC);
+            final ConvexPolygon poly = ConvexPolygon.constructNew(listC);
             fail();
         } catch (IllegalArgumentException e) {
         } catch (Exception e) {
@@ -121,7 +121,7 @@ public class ConvexPolygonTest {
         } 
 
         try {
-            final ConvexPolygon poly = new ConvexPolygon(listD);
+            final ConvexPolygon poly = ConvexPolygon.constructNew(listD);
             fail();
         } catch (IllegalArgumentException e) {
         } catch (Exception e) {
@@ -129,7 +129,7 @@ public class ConvexPolygonTest {
         } 
 
         try {
-            final ConvexPolygon poly = new ConvexPolygon(listE);
+            final ConvexPolygon poly = ConvexPolygon.constructNew(listE);
             fail();
         } catch (IllegalArgumentException e) {
         } catch (Exception e) {
@@ -137,7 +137,7 @@ public class ConvexPolygonTest {
         } 
         
         try {
-            final ConvexPolygon poly = new ConvexPolygon(listF); 
+            final ConvexPolygon poly = ConvexPolygon.constructNew(listF); 
         } catch (Exception e) {
             fail();
         }
@@ -145,8 +145,8 @@ public class ConvexPolygonTest {
     
     @Test
     public void testGetUnmodifiableViewToVertexList() {
-        final List<Vector2> list = getUnitSquareVertexList();
-        final ConvexPolygon poly = getUnitSquarePolygon();
+        final List<Vector2> list = getSquareVertexList(1.0f, new Vector2(0.0f, 0.0f));
+        final ConvexPolygon poly = getSquarePolygon(1.0f, new Vector2(0.0f, 0.0f));
         
         List<Vector2> unmodifiable = poly.getUnmodifiableViewToVertexList();
         assertTrue(unmodifiable.equals(list));
@@ -159,7 +159,7 @@ public class ConvexPolygonTest {
 
     @Test
     public void testGetUnmodifiableViewToSegmentList() {
-        final List<Vector2> list = getUnitSquareVertexList();
+        final List<Vector2> list = getSquareVertexList(1.0f, new Vector2(0.0f, 0.0f));
         final List<Segment2> segmentList = new ArrayList();
         
         for (int i = 0; i < list.size(); i++) {
@@ -169,7 +169,7 @@ public class ConvexPolygonTest {
             segmentList.add(new Segment2(a, b));
         }
 
-        final ConvexPolygon poly = getUnitSquarePolygon();
+        final ConvexPolygon poly = getSquarePolygon(1.0f, new Vector2(0.0f, 0.0f));
         
         List<Segment2> unmodifiable = poly.getUnmodifiableViewToSegmentList();
         assertTrue(unmodifiable.equals(segmentList));
@@ -182,6 +182,74 @@ public class ConvexPolygonTest {
 
     @Test
     public void testGetVertexAverage() {
-        assertTrue(getUnitSquarePolygon().getVertexAverage().equals(new Vector2(0.5f, 0.5f)));
+        final ConvexPolygon poly = getSquarePolygon(1.0f, new Vector2(0.0f, 0.0f));
+        assertTrue(poly.getVertexAverage().equals(new Vector2(0.5f, 0.5f)));
+    }
+    
+    @Test
+    public void testDoesIntersectA() {
+        final ConvexPolygon poly = getSquarePolygon(1.0f, new Vector2(0.0f, 0.0f));
+
+        final Vector2 a = new Vector2(-0.001f,  0.500f);
+        final Vector2 b = new Vector2( 0.500f, -0.001f);
+        final Vector2 c = new Vector2( 1.000f,  0.500f);
+        final Vector2 d = new Vector2( 0.500f,  1.000f);
+        
+        assertFalse(poly.doesIntersect(a));
+        assertFalse(poly.doesIntersect(b));
+        assertTrue(poly.doesIntersect(c));
+        assertTrue(poly.doesIntersect(d));
+    }
+
+    @Test
+    public void testDoesIntersectB() {
+        final ConvexPolygon poly = getSquarePolygon(1.0f, new Vector2(0.0f, 0.0f));
+
+        final ConvexPolygon polyA0 = getSquarePolygon(0.5f, new Vector2(-0.50f,  0.25f));
+        final ConvexPolygon polyB0 = getSquarePolygon(0.5f, new Vector2( 0.25f, -0.50f));
+        final ConvexPolygon polyC0 = getSquarePolygon(0.5f, new Vector2( 1.00f,  0.25f));
+        final ConvexPolygon polyD0 = getSquarePolygon(0.5f, new Vector2( 0.25f,  1.00f));
+        
+        final ConvexPolygon polyA1 = getSquarePolygon(0.5f, new Vector2(-0.51f,  0.25f));
+        final ConvexPolygon polyB1 = getSquarePolygon(0.5f, new Vector2( 0.25f, -0.51f));
+        final ConvexPolygon polyC1 = getSquarePolygon(0.5f, new Vector2( 1.01f,  0.25f));
+        final ConvexPolygon polyD1 = getSquarePolygon(0.5f, new Vector2( 0.25f,  1.01f));
+
+        assertTrue(poly.doesIntersect(polyA0));
+        assertTrue(poly.doesIntersect(polyB0));
+        assertTrue(poly.doesIntersect(polyC0));
+        assertTrue(poly.doesIntersect(polyD0));
+
+        assertTrue(polyA0.doesIntersect(poly));
+        assertTrue(polyB0.doesIntersect(poly));
+        assertTrue(polyC0.doesIntersect(poly));
+        assertTrue(polyD0.doesIntersect(poly));
+
+        assertFalse(poly.doesIntersect(polyA1));
+        assertFalse(poly.doesIntersect(polyB1));
+        assertFalse(poly.doesIntersect(polyC1));
+        assertFalse(poly.doesIntersect(polyD1));
+
+        assertFalse(polyA1.doesIntersect(poly));
+        assertFalse(polyB1.doesIntersect(poly));
+        assertFalse(polyC1.doesIntersect(poly));
+        assertFalse(polyD1.doesIntersect(poly));
+    }
+    
+    @Test
+    public void testRotateAndTranslate() {
+        final ConvexPolygon poly = getSquarePolygon(1.0f, new Vector2(0.0f, 0.0f));
+        
+        final ConvexPolygon rotated = poly.rotateAndTranslate(new Vector2(0.5f, 0.5f), (float) Math.PI, new Vector2(1.0f, 1.0f));
+        final List<Vector2> listRotated = rotated.getUnmodifiableViewToVertexList();
+        
+        assertEquals(listRotated.get(0).getX(), 2.0f, 0.001f);
+        assertEquals(listRotated.get(0).getY(), 2.0f, 0.001f);
+        assertEquals(listRotated.get(1).getX(), 1.0f, 0.001f);
+        assertEquals(listRotated.get(1).getY(), 2.0f, 0.001f);
+        assertEquals(listRotated.get(2).getX(), 1.0f, 0.001f);
+        assertEquals(listRotated.get(2).getY(), 1.0f, 0.001f);
+        assertEquals(listRotated.get(3).getX(), 2.0f, 0.001f);
+        assertEquals(listRotated.get(3).getY(), 1.0f, 0.001f);
     }
 }

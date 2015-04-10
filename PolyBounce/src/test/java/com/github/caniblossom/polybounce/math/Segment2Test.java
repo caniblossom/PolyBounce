@@ -159,9 +159,26 @@ public class Segment2Test {
     }  
 
     @Test
-    public void testIntersect() {
-        // TODO Improve the test if you have the time.
+    public void testSharesVertexWith() {
+        final Vector2 a = new Vector2(5.0f, 5.0f);
+        final Vector2 b = new Vector2(6.0f, 5.0f);
+        final Vector2 c = new Vector2(5.5f, 5.5f);
+        final Vector2 d = new Vector2(5.0f, 4.0f);
+        final Vector2 e = new Vector2(6.0f, 4.0f);
         
+        final Segment2 ab = new Segment2(a, b);
+        final Segment2 ac = new Segment2(a, c);
+        final Segment2 cb = new Segment2(c, b);
+        final Segment2 de = new Segment2(d, e);
+        
+        assertTrue(ab.sharesVertexWith(ab));
+        assertTrue(ab.sharesVertexWith(ac));
+        assertTrue(ab.sharesVertexWith(cb));
+        assertFalse(ab.sharesVertexWith(de));      
+    }
+    
+    @Test
+    public void testIntersect() {
         final Vector2 a = new Vector2(2.00f, 2.00f);
         final Vector2 b = new Vector2(4.00f, 2.00f);
         final Vector2 c = new Vector2(4.00f, 4.00f);
@@ -209,25 +226,6 @@ public class Segment2Test {
 
         assertTrue(adac.getPosition().equals(a));        
     }  
-    
-    @Test
-    public void testSharesVertexWith() {
-        final Vector2 a = new Vector2(5.0f, 5.0f);
-        final Vector2 b = new Vector2(6.0f, 5.0f);
-        final Vector2 c = new Vector2(5.5f, 5.5f);
-        final Vector2 d = new Vector2(5.0f, 4.0f);
-        final Vector2 e = new Vector2(6.0f, 4.0f);
-        
-        final Segment2 ab = new Segment2(a, b);
-        final Segment2 ac = new Segment2(a, c);
-        final Segment2 cb = new Segment2(c, b);
-        final Segment2 de = new Segment2(d, e);
-        
-        assertTrue(ab.sharesVertexWith(ab));
-        assertTrue(ab.sharesVertexWith(ac));
-        assertTrue(ab.sharesVertexWith(cb));
-        assertFalse(ab.sharesVertexWith(de));      
-    }
     
     @Test
     public void testEquals() {

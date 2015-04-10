@@ -115,7 +115,16 @@ public class Segment2 {
     public float projectPointOnRightNormal(final Vector2 v) {
         return rightNormal.dot(v.difference(a));
     }
-
+    
+    /**
+     * Checks if this segment share a vertex with target segment.
+     * @param s segment to test against
+     * @return true if the segments share a vertex
+     */
+    public boolean sharesVertexWith(Segment2 s) {
+        return a.equals(s.a) || a.equals(s.b) || b.equals(s.a) || b.equals(s.b);
+    }
+    
     /**
      * Intersects another segment against this segment. Considers cases where 
      * the segments lie on the same line always as non-intersecting.
@@ -147,16 +156,7 @@ public class Segment2 {
         
         return new Segment2Intersection(distance, position);
     }
-    
-    /**
-     * Checks if this segment share a vertex with target segment.
-     * @param s segment to test against
-     * @return true if the segments share a vertex
-     */
-    public boolean sharesVertexWith(Segment2 s) {
-        return a.equals(s.a) || a.equals(s.b) || b.equals(s.a) || b.equals(s.b);
-    }
-    
+        
     /**
      * @param o segment to compare to
      * @return true if the vectors are equal

@@ -112,7 +112,7 @@ public class PolygonRenderingTask extends SimpleShaderRenderingTask {
  
     @Override
     public void run() {
-        assert(isGood());
+        assert isGood();
         uploadTriangleData();
         
         // Short explanation: To render contents of an Array Buffer Object we

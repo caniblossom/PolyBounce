@@ -55,7 +55,7 @@ public class Vector2 {
     }
 
     /**
-     * Constructs a new 3-vector with all components initialized to zero
+     * Constructs a new 2-vector with all components initialized to zero
      */
     public Vector2() {
         this(0.0f, 0.0f);
@@ -125,6 +125,22 @@ public class Vector2 {
         } else {
             return new Vector2(x / length, y / length);        
         }
+    }
+    
+    /**
+     * Returns a copy of this vector rotated around arbitary point.
+     * @param origo point to rotate around
+     * @param angle angle in radians (counter-clockwise)
+     * @return new rotated vector
+     */
+    public Vector2 rotation(final Vector2 origo, final float angle) {
+        final float u = x - origo.x;
+        final float v = y - origo.y;
+
+        final float c = (float) Math.cos(angle);
+        final float s = (float) Math.sin(angle);
+        
+        return new Vector2(origo.x + c * u - s * v, origo.y + s * u + c * v);
     }
     
     /**

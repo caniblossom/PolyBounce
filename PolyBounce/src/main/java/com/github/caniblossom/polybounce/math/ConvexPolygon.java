@@ -44,6 +44,22 @@ public class ConvexPolygon {
     
     private final Vector2 vertexAverage;
     
+    // Constructs a new convex polygon without any checks.
+    private ConvexPolygon(List<Vector2> vertexList) {
+        this.vertexList = new ArrayList();
+        this.vertexList.addAll(vertexList);
+        this.segmentList = new ArrayList();
+
+        for (int i = 0; i < vertexList.size(); i++) {
+            Vector2 a = vertexList.get(i);
+            Vector2 b = vertexList.get((i + 1) % vertexList.size());
+            
+            segmentList.add(new Segment2(a, b));
+        }
+        
+        this.vertexAverage = computeVertexAverage();
+    }    
+    
     // Checks that the polygon is wound counter-clockwise. 
     private boolean isWoundCounterClockwise() {
         for (int i = 0; i < segmentList.size(); i++) {
@@ -96,30 +112,21 @@ public class ConvexPolygon {
     
     /**
      * Constructs a new convex polygon from a list of vertices. 
-     * @param vertexList a list of vectors defining the vertices of a counter-clockwise wound convex polygon.
+     * @param vertexList a list of vectors defining the vertices of a counter-clockwise wound convex polygon
+     * @return newly constructed convex polygon
      * @throws IllegalArgumentException
      */
-    public ConvexPolygon(ArrayList<Vector2> vertexList) throws IllegalArgumentException {
-        this.vertexList = new ArrayList();
-        this.vertexList.addAll(vertexList);
-
-        this.segmentList = new ArrayList();
-
-        for (int i = 0; i < vertexList.size(); i++) {
-            Vector2 a = vertexList.get(i);
-            Vector2 b = vertexList.get((i + 1) % vertexList.size());
-        
-            segmentList.add(new Segment2(a, b));
-        }
-
-        if (!isWoundCounterClockwise()) {
+    public static ConvexPolygon constructNew(List<Vector2> vertexList) throws IllegalArgumentException {
+        final ConvexPolygon poly = new ConvexPolygon(vertexList);
+            
+        if (!poly.isWoundCounterClockwise()) {
             throw new IllegalArgumentException("The polygon isn't wound counter-clockwise.");
-        } else if (!doesNotSelfIntersect()) {
+        } else if (!poly.doesNotSelfIntersect()) {
             throw new IllegalArgumentException("The polygon self intersects.");
         }
-        
-        this.vertexAverage = computeVertexAverage();
-    }    
+
+        return poly;
+    }
     
     /**
      * @return an unmodifiable view to the vertex list
@@ -140,5 +147,59 @@ public class ConvexPolygon {
      */
     public Vector2 getVertexAverage() {
         return vertexAverage;
+    }
+    
+    /**
+     * Checks whether a point lies inside (or at the edge of) this polygon.
+     * @param p point to be tested
+     * @return true if and only if the point is inside the polygon
+     */
+    public boolean doesIntersect(final Vector2 p) {
+        for (Segment2 s : segmentList) {
+            if (s.projectPointOnRightNormal(p) > 0.0f) {
+                return false;
+            }
+        }        
+        
+        return true;
+    }
+    
+    /**
+     * Checks whether this polygon intersects another
+     * @param polygon polygon to be tested
+     * @return true if and only if the polygons intersect each other.
+     */
+    public boolean doesIntersect(final ConvexPolygon polygon) {
+        for (Vector2 v : polygon.vertexList) {
+            if (doesIntersect(v)) {
+                return true;
+            }
+        }
+
+        for (Vector2 v : vertexList) {
+            if (polygon.doesIntersect(v)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
+    /**
+     * Returns a copy of this polygon first rotated and then translated. 
+     * The relative order of vertices and segments is guaranteed to not change.
+     * @param origo point to rotate around
+     * @param angle angle of rotation in radians
+     * @param translation translation (ie. displacement) after rotation
+     * @return new convex polygon
+     */
+    public ConvexPolygon rotateAndTranslate(final Vector2 origo, final float angle, final Vector2 translation) {
+        final ArrayList<Vector2> newVertexList = new ArrayList();
+
+        for (Vector2 v : vertexList) {
+            newVertexList.add(v.rotation(origo, angle).sum(translation));
+        }
+
+        return new ConvexPolygon(newVertexList);
     }
 }

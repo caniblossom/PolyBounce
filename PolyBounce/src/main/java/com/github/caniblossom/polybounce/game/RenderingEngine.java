@@ -61,7 +61,7 @@ public class RenderingEngine {
             vertexList.add(new Vector2((float) Math.cos(r), (float) Math.sin(r)));
         }
         
-        polygonList.add(new ConvexPolygon(vertexList));
+        polygonList.add(ConvexPolygon.constructNew(vertexList));
         polygonTask.setPolygonData(polygonList);
     }
 

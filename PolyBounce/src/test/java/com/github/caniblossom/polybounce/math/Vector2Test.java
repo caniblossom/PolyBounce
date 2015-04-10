@@ -146,6 +146,22 @@ public class Vector2Test {
     }
     
     @Test
+    public void testRotation() {
+        final Vector2 v = new Vector2(1.0f, 1.0f);
+
+        final Vector2 a = v.rotation(new Vector2(-1.0f, -1.0f), -0.5f * (float) Math.PI);
+        final Vector2 b = v.rotation(new Vector2(-1.0f, -1.0f),  0.0f * (float) Math.PI);
+        final Vector2 c = v.rotation(new Vector2(-1.0f, -1.0f),  0.5f * (float) Math.PI);
+        
+        assertEquals(a.getX(),  1.0f, 0.001f);
+        assertEquals(a.getY(), -3.0f, 0.001f);
+        assertEquals(b.getX(),  1.0f, 0.001f);
+        assertEquals(b.getY(),  1.0f, 0.001f);
+        assertEquals(c.getX(), -3.0f, 0.001f);
+        assertEquals(c.getY(),  1.0f, 0.001f);
+    }
+    
+    @Test
     public void testEquals() {
         final Vector2 a = new Vector2(1.0f, 2.0f);
         final Vector2 b = new Vector2(0.0f, 2.0f);

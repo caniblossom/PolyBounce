@@ -44,6 +44,8 @@ public class Program {
      * @param args arguments for execution
      */
     public static void main(String [] args) {
+        System.out.println("Ensi viikon tavoite on kitkattomat fysiikat ja törmäileviä polygoneja ruudulla, ehkä jopa kontrollit.");
+        
         final GameWindow gameWindow;
         
         try {
