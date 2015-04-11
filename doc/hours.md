@@ -1,3 +1,7 @@
+### Week 5
+Total accumulated hours: 52
+- 2015.04.11 /  ~2h: Work on rigid body physics and collision handler
+
 ### Week 4
 Total accumulated hours: 50
 - 2015.04.03 /  ~5h: Clean up and improve the code for the rendering pipeline + update documentation
