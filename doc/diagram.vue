@@ -1,14 +1,14 @@
 <!-- Tufts VUE 3.2.2 concept-map (diagram.vue) 2015-04-11 -->
 <!-- Tufts VUE: http://vue.tufts.edu/ -->
 <!-- Do Not Remove: VUE mapping @version(1.1) jar:file:/C:/Program%20Files%20(x86)/VUE/VUE.jar!/tufts/vue/resources/lw_mapping_1_1.xml -->
-<!-- Do Not Remove: Saved date Sat Apr 11 15:19:22 EEST 2015 by Jani Salo on platform Windows 7 6.1 in JVM 1.7.0_21-b11 -->
+<!-- Do Not Remove: Saved date Sat Apr 11 21:26:50 EEST 2015 by Jani Salo on platform Windows 7 6.1 in JVM 1.7.0_21-b11 -->
 <!-- Do Not Remove: Saving version @(#)VUE: built May 23 2013 at 2146 by tomadm on Linux 2.6.18-348.2.1.el5 i386 JVM 1.7.0_21-b11(bits=32) -->
 <?xml version="1.0" encoding="US-ASCII"?>
 <LW-MAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="none" ID="0" label="diagram.vue"
     created="1426706341617" x="0.0" y="0.0" width="1.4E-45"
     height="1.4E-45" strokeWidth="0.0" autoSized="false">
-    <resource referenceCreated="1428754762826" size="27961"
+    <resource referenceCreated="1428776810104" size="30951"
         spec="C:\Workspace\projects\PolyBounce\doc\diagram.vue" type="1" xsi:type="URLResource">
         <title>diagram.vue</title>
         <property key="File" value="C:\Workspace\projects\PolyBounce\doc\diagram.vue"/>
@@ -475,7 +475,7 @@
         <ID1 xsi:type="node">79</ID1>
         <ID2 xsi:type="node">45</ID2>
     </child>
-    <child ID="81" label="CollisionHandler" layerID="1"
+    <child ID="81" label="PhysicsStepper" layerID="1"
         created="1428754627681" x="683.3501" y="1299.3752" width="221.0"
         height="39.0" strokeWidth="1.0" autoSized="false" xsi:type="node">
         <fillColor>#FCDBD9</fillColor>
@@ -496,7 +496,7 @@
         <shape arcwidth="20.0" archeight="20.0" xsi:type="roundRect"/>
     </child>
     <child ID="83" label="modifies" layerID="1" created="1428754679751"
-        x="767.77795" y="1253.3359" width="53.0" height="46.539062"
+        x="768.27795" y="1253.3359" width="52.0" height="46.539062"
         strokeWidth="1.0" autoSized="false" controlCount="0"
         arrowState="2" xsi:type="link">
         <strokeColor>#404040</strokeColor>

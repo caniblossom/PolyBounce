@@ -1,6 +1,7 @@
 ### Week 5
-Total accumulated hours: 52
+Total accumulated hours: 54
 - 2015.04.11 /  ~2h: Work on rigid body physics and collision handler
+- 2015.04.11 /  ~2h: Rename collision handle physics stepper, add more physics code
 
 ### Week 4
 Total accumulated hours: 50
