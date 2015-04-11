@@ -133,6 +133,17 @@ public class Vector2Test {
     }
 
     @Test
+    public void testCross() {
+        final Vector2 a = new Vector2( 1.0f,  0.0f);
+        final Vector2 b = new Vector2( 0.0f,  1.0f);
+
+        assertEquals(a.cross(a),  0.0f, 0.0f);
+        assertEquals(a.cross(b),  1.0f, 0.0f);
+        assertEquals(b.cross(a), -1.0f, 0.0f);
+        assertEquals(b.cross(b),  0.0f, 0.0f);
+    }
+
+    @Test
     public void testNormal() {
         final Vector2 a = new Vector2(-7.0f, 9.0f);
         final Vector2 b = new Vector2( 0.0f, 0.0f);

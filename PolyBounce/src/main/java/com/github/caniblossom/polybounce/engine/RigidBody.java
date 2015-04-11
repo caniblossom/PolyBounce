@@ -33,10 +33,10 @@ import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.Vector2;
 
 // TODO Implement tests.
-// TODO Add whatever is necessary for collision handler to handle collisions.
 
 /**
  * A very simple representation of a rigid body.
+ * See: http://en.wikipedia.org/wiki/Collision_response
  * @author Jani Salo
  */
 public class RigidBody {
@@ -183,4 +183,18 @@ public class RigidBody {
         position = position.sum(velocity.scale(dt));
         rotation += dt * angularVelocity;
     } 
+
+    /**
+     * Applies an impulse to the body at given position in world space.
+     * Note that no checks are made that the position actually lies inside the body.
+     * @param position position to apply the impulse at in world space
+     * @param impulse vector representing the magnitude and direction of the impulse
+     */
+    public void applyImpulse(final Vector2 position, final Vector2 impulse) {
+        velocity = velocity.sum(impulse.scale(1.0f / mass));
+
+        // TODO Verify that this is correct.
+        final Vector2 r = position.difference(getCurrentCenterOfMass());
+        angularVelocity += r.cross(impulse.normal()) * impulse.length() / momentOfInertiaAroundCenterOfMass;
+    }
 }

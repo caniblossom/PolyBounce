@@ -115,6 +115,14 @@ public class Vector2 {
     }
     
     /**
+     * @param rhs right hand side of the cross product
+     * @return equivalent of right handed cross product in two dimensions
+     */
+    public float cross(final Vector2 rhs) {
+        return x * rhs.y - y * rhs.x;
+    }
+    
+    /**
      * @return a normal for this vector
      */
     public Vector2 normal() {
