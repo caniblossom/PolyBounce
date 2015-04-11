@@ -139,6 +139,27 @@ public class RigidBody {
     }
 
     /**
+     * Returns the instantaneous velocity of the body at given position relative to world space.
+     * Note that no checks are made whether the position actually lies inside the body.
+     * @param position point in world space
+     * @return instantaneous velocity of the body at that point
+     */
+    public Vector2 getVelocityAtPosition(final Vector2 position) {
+         final Vector2 r = position.difference(getCurrentCenterOfMass());
+         final Vector2 tangent = new Vector2(-r.getY(), r.getX());
+         return tangent.scale(angularVelocity).sum(velocity);
+    }
+
+    /**
+     * Returns a convex polygon representing the hull in world space relative to time
+     * @param dt change in time
+     * @return new convex polygon representing the hull of the body in world space at current time + dt 
+     */
+    public ConvexPolygon getHullRelativeToTime(final float dt) {
+        return hull.rotateAndTranslate(hull.getVertexAverage(), rotation + dt * angularVelocity, position.sum(velocity.scale(dt)));
+    }
+
+    /**
      * @param position new position
      */
     public void setPosition(final Vector2 position) {
@@ -165,16 +186,7 @@ public class RigidBody {
     public void setAngularVelocity(final float velocity) {
         angularVelocity = velocity;
     }    
-
-    /**
-     * Returns a convex polygon representing the hull relative to time
-     * @param dt change in time
-     * @return a new convex polygon representing the hull of the body at current time + dt
-     */
-    public ConvexPolygon getHullRelativeToTime(final float dt) {
-        return hull.rotateAndTranslate(hull.getVertexAverage(), rotation + dt * angularVelocity, position.sum(velocity.scale(dt)));
-    }
-    
+        
     /**
      * Updates the position and rotation of the body
      * @param dt change in time

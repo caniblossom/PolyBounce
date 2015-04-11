@@ -29,8 +29,10 @@
  */
 package com.github.caniblossom.polybounce.engine;
 
+// TODO Implement tests.
+
 /**
- * TODO Write a description.
+ * A physics engine.
  * @author Jani Salo
  */
 public class PhysicsEngine {
