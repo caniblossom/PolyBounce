@@ -29,13 +29,14 @@
  */
 package com.github.caniblossom.polybounce.engine;
 
+import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.Vector2;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 // TODO Implement tests if possible.
-// TODO Fix physics, they are hilarious at the moment.
+// TODO Improve the algorithm for seeking objects to intersect against.
 
 /**
  * A physics engine.
@@ -73,22 +74,25 @@ public class PhysicsEngine {
     
     // Applies any external forces to the bodies.
     private void applyExternalForces(final float dt) {
-        for (PhysicsBody body : rigidBodyList) {
-            body.applyImpulse(body.getCurrentCenterOfMass(), gravity.scale(dt));
+        for (RigidBody body : rigidBodyList) {
+            final float inverseMassPerVertex = 1.0f / body.getMassPerVertex();
+
+            ConvexPolygon hull = body.getHullRelativeToTime(dt);
+            for (Vector2 v : hull.getUnmodifiableViewToVertexList()) {
+                body.applyImpulse(v, gravity.scale(dt * inverseMassPerVertex));
+            }
         }
     }
     
     // Steps and collides the bodies.
     private void stepAndCollide(final float dt) {
-        for (int activeIndex = 0; activeIndex < rigidBodyList.size(); activeIndex++) {
-            final PhysicsBody activeBody = rigidBodyList.get(activeIndex);
-
+        for (PhysicsBody activeBody : rigidBodyList) {
             passiveBodyList.clear();
             passiveBodyList.addAll(staticBodyList);
 
-            for (int passiveIndex = 0; passiveIndex < activeIndex; passiveIndex++) {
-                if (activeIndex != passiveIndex) {
-                    passiveBodyList.add(rigidBodyList.get(passiveIndex));
+            for (PhysicsBody passiveBody : rigidBodyList) {
+                if (activeBody != passiveBody) {
+                    passiveBodyList.add(passiveBody);
                 }
             }
 

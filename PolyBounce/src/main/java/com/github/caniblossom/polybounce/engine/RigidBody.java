@@ -62,7 +62,7 @@ public class RigidBody extends PhysicsBody {
         
         float sum = 0.0f;
         for (Vector2 p : hull.getUnmodifiableViewToVertexList()) {
-            final float r = p.difference(hull.getVertexAverage()).length();
+            final float r = 1.0f * p.difference(hull.getVertexAverage()).length();
             sum += massPerVertex * r * r;
         }
         
@@ -77,6 +77,13 @@ public class RigidBody extends PhysicsBody {
      */
     public RigidBody(final ConvexPolygon hull, final float mass) {
         this(hull, mass, new Vector2(0.0f, 0.0f), 0.0f, new Vector2(0.0f, 0.0f), 0.0f);
+    }
+    
+    /**
+     * @return mass per vertex.
+     */
+    public float getMassPerVertex() {
+        return massPerVertex;
     }
     
     /**
@@ -125,7 +132,7 @@ public class RigidBody extends PhysicsBody {
      * @param impulse vector representing the magnitude and direction of the impulse
      */
     @Override
-    public void applyImpulse(final Vector2 position, final Vector2 impulse) {
+    public void applyImpulse(final Vector2 position, final Vector2 impulse) {        
         setVelocity(getVelocity().sum(impulse.scale(1.0f / getMass())));
 
         // TODO Verify that this is correct.

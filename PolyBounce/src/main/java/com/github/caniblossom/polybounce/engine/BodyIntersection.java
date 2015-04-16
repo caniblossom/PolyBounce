@@ -100,11 +100,6 @@ public class BodyIntersection {
 
         for (Segment2 currentWall : wallList) {
             for (Segment2 currentRay : rayList) {
-                // See that the ray comes from the business-side of the polygon.
-                if (currentWall.projectPointOnRightNormal(currentRay.getA()) < 0.0f) {
-                    continue;
-                }
-                
                 Segment2Intersection intersection = currentWall.intersect(currentRay);
                 
                 if (intersection.getDistance() < intersectionCandidate.getDistance()) {

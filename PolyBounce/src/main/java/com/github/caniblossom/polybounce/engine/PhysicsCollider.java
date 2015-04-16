@@ -34,13 +34,31 @@ import java.util.List;
 
 // TODO Implement tests if possible.
 // TODO Handle restitution and friction.
+// TODO Disable collisions for objects that intersect already.
+// TODO Properly handle problems with small impulses.
 
 /**
  * An utility class for handling collisions between rigid bodies.
  * See: http://en.wikipedia.org/wiki/Collision_response
  * @author Jani Salo
  */
-public class PhysicsCollider {
+public class PhysicsCollider {    
+    // Temporary fix adding some extra power to impulses that are too weak.
+    private static Vector2 sanitizeImpulse(final Vector2 impulse) {
+        final float sqrLength = impulse.dot(impulse);
+        
+        final float a = 0.1000f;
+        final float b = 0.0001f;
+
+        if (sqrLength < b * b) {
+            return new Vector2(0.0f, 0.0f);
+        } else if (sqrLength < a * a) {
+            return impulse.normal().scale(a);
+        } else {
+            return impulse;
+        }
+    }
+    
     // Returns the impulse as experienced by the passive body. 
     private static Vector2 computeImpulse(final PhysicsBody active, final PhysicsBody passive, final BodyIntersection intersection) {
         final Vector2 v = passive.getVelocityAtPosition(intersection.getPassivePosition()).difference(active.getVelocityAtPosition(intersection.getActivePosition()));
@@ -49,13 +67,11 @@ public class PhysicsCollider {
         final Vector2 r1 = intersection.getActivePosition().difference(active.getCurrentCenterOfMass());
         final Vector2 r2 = intersection.getPassivePosition().difference(passive.getCurrentCenterOfMass());
         
-        // TODO Check whether any of this makes any sense at all.
         final float a = 1.0f / active.getMass() + (float) Math.abs(r1.cross(n)) / active.getMomentOfInertiaAroundCenterOfMass();
         final float b = 1.0f / passive.getMass() + (float) Math.abs(r2.cross(n)) / passive.getMomentOfInertiaAroundCenterOfMass();
         
         // TODO Implement actual restitution.
-        final float restitution = 1.0f;
-        
+        final float restitution = 0.99f;        
         return intersection.getNormal().scale((1.0f + restitution) * v.dot(n) / -(a + b));
     }
     
@@ -91,8 +107,7 @@ public class PhysicsCollider {
         }
         
         if (intersection.didIntersect() && passive != null) {
-            final Vector2 impulse = computeImpulse(active, passive, intersection);
-            
+            Vector2 impulse = sanitizeImpulse(computeImpulse(active, passive, intersection));
             active.applyImpulse(intersection.getActivePosition(), impulse.scale(-1.0f));
             passive.applyImpulse(intersection.getActivePosition(), impulse);        
         }

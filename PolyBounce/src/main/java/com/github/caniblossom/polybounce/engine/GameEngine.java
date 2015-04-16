@@ -42,7 +42,7 @@ import java.util.ArrayList;
  */
 public class GameEngine {
     private static final float TIME_STEP = 0.01f;
-    private static final Vector2 GRAVITY = new Vector2(0.0f, -0.0025f);
+    private static final Vector2 GRAVITY = new Vector2(0.0f, -0.01f);
     
     private final PhysicsEngine physicsEngine;
     private final RenderingEngine renderingEngine;
@@ -53,28 +53,35 @@ public class GameEngine {
     private void initialize() {
         final PolygonBuilder builder = new PolygonBuilder();
 
+        // Level bounds.
         final float h0 = 4.0f;
         final float h1 = 5.0f;
         final float v0 = 2.0f;
         final float v1 = 3.0f;
         
+        // Create some semi-random polygons.
         for (float u = 0.0f; u < 5.0f; u += 1.0f) {
             for (float v = 0.0f; v < 3.0f; v += 1.0f) {
                 final float radius = 0.5f;
                 
                 final float x = u - 2.0f;
                 final float y = v - 1.0f;
+                final float s = 0.5f * ((float) Math.random() - 0.5f);
+                final float t = 0.5f * ((float) Math.random() - 0.5f);
                 final float a = (float) Math.random();
+
+                final int n = 2 + (int) Math.ceil(4.0 * Math.random() + 0.001);
                 
-                final RigidBody shape = new RigidBody(builder.createRegularPolygon(new Vector2(0.0f, 0.0f), radius, 4), 4.0f, new Vector2(x, y), 0.0f, new Vector2(0.0f, 0.0f), a);
+                final RigidBody shape = new RigidBody(builder.createRegularPolygon(new Vector2(0.0f, 0.0f), radius, n), 4.0f, new Vector2(x, y), 0.0f, new Vector2(s, t), a);
                 physicsEngine.add(shape);
             }
         }
         
-        final StaticBody wall0 = new StaticBody(builder.createBox(new Vector2(-h1, -v1), new Vector2( h1, -v0)), 10000.0f, new Vector2(0.0f, 0.0f), 0.0f);
-        final StaticBody wall1 = new StaticBody(builder.createBox(new Vector2(-h1, -v1), new Vector2(-h0,  v1)), 10000.0f, new Vector2(0.0f, 0.0f), 0.0f);
-        final StaticBody wall2 = new StaticBody(builder.createBox(new Vector2( h0, -v1), new Vector2( h1,  v1)), 10000.0f, new Vector2(0.0f, 0.0f), 0.0f);
-        final StaticBody wall3 = new StaticBody(builder.createBox(new Vector2(-h1,  v0), new Vector2( h1,  v1)), 10000.0f, new Vector2(0.0f, 0.0f), 0.0f);
+        // I honestly think checkstyle enforces making this harder to read.
+        final StaticBody wall0 = new StaticBody(builder.createBox(new Vector2(-h1, -v1), new Vector2(h1, -v0)), 10000.0f, new Vector2(0.0f, 0.0f), 0.0f);
+        final StaticBody wall1 = new StaticBody(builder.createBox(new Vector2(-h1, -v1), new Vector2(-h0, v1)), 10000.0f, new Vector2(0.0f, 0.0f), 0.0f);
+        final StaticBody wall2 = new StaticBody(builder.createBox(new Vector2(h0, -v1), new Vector2(h1, v1)), 10000.0f, new Vector2(0.0f, 0.0f), 0.0f);
+        final StaticBody wall3 = new StaticBody(builder.createBox(new Vector2(-h1,  v0), new Vector2(h1, v1)), 10000.0f, new Vector2(0.0f, 0.0f), 0.0f);
 
         physicsEngine.add(wall0);
         physicsEngine.add(wall1);
@@ -100,11 +107,12 @@ public class GameEngine {
      * @param dt change in time
      */   
     public void update(final float dt) {
-        physicsEngine.update(10.0f * dt);
+        // TODO Implement some sort of parameter for time scaling.
+        physicsEngine.update(5.0f * dt);
         
         polygonList.clear();
         for (PhysicsBody body : physicsEngine.getUnmodifiableViewToBodyList()) {
-             polygonList.add(body.getHullRelativeToTime(0.0f));
+            polygonList.add(body.getHullRelativeToTime(0.0f));
         }
         
         renderingEngine.setRenderingData(polygonList);

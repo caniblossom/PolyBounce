@@ -48,7 +48,7 @@ public class PolygonRenderingTask extends SimpleShaderRenderingTask {
     private static final int VERTEX_SIZE_IN_FLOATS = 3 * 3;
 
     private static final float FRONT_DEPTH = -1.0f;
-    private static final float BACK_DEPTH = -1.05f;
+    private static final float BACK_DEPTH = -1.025f;
     
     private int vertexArrayName = 0;
     private VertexBuffer vertexBuffer = null;
