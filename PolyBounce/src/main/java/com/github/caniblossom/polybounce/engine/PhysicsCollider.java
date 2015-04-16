@@ -32,7 +32,7 @@ package com.github.caniblossom.polybounce.engine;
 import com.github.caniblossom.polybounce.math.Vector2;
 import java.util.List;
 
-// TODO Implement tests.
+// TODO Implement tests if possible.
 // TODO Handle restitution and friction.
 
 /**
@@ -41,9 +41,6 @@ import java.util.List;
  * @author Jani Salo
  */
 public class PhysicsCollider {
-    // Hide constructor to denote static class
-    private PhysicsCollider() {}
-
     // Returns the impulse as experienced by the passive body. 
     private static Vector2 computeImpulse(final PhysicsBody active, final PhysicsBody passive, final BodyIntersection intersection) {
         final Vector2 v = passive.getVelocityAtPosition(intersection.getPassivePosition()).difference(active.getVelocityAtPosition(intersection.getActivePosition()));
@@ -56,11 +53,20 @@ public class PhysicsCollider {
         final float a = 1.0f / active.getMass() + (float) Math.abs(r1.cross(n)) / active.getMomentOfInertiaAroundCenterOfMass();
         final float b = 1.0f / passive.getMass() + (float) Math.abs(r2.cross(n)) / passive.getMomentOfInertiaAroundCenterOfMass();
         
-        return intersection.getNormal().scale(v.dot(n) / (a + b));
+        // TODO Implement actual restitution.
+        final float restitution = 1.0f;
+        
+        return intersection.getNormal().scale((1.0f + restitution) * v.dot(n) / -(a + b));
     }
     
     /**
-     * Steps the active body with given change in time and checks if it intersects
+     * Constructs a new large hadron collider.
+     */
+    public PhysicsCollider() {}
+
+    /**
+     * 
+     * the active body with given change in time and checks if it intersects
      * any of the passive bodies. If an intersection does occur, the collision
      * response is calculated and impulses are applied to both bodies. 
      * Note that all sorts of insane things can and will happen if the time step 
@@ -70,7 +76,7 @@ public class PhysicsCollider {
      * @param dt change in time
      * @return true if and only if a collision occurred
      */
-    public static boolean stepAndCollide(final PhysicsBody active, final List<PhysicsBody> passiveList, final float dt) {
+    public boolean collide(final PhysicsBody active, final List<PhysicsBody> passiveList, final float dt) {
         assert dt != 0.0f;
         
         BodyIntersection intersection = new BodyIntersection();

@@ -148,6 +148,7 @@ public class Vector2 {
         final float c = (float) Math.cos(angle);
         final float s = (float) Math.sin(angle);
         
+        // It rotates, but will it blend?
         return new Vector2(origo.x + c * u - s * v, origo.y + s * u + c * v);
     }
     

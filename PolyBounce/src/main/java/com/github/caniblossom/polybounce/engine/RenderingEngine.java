@@ -27,10 +27,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.game;
+package com.github.caniblossom.polybounce.engine;
 
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
-import com.github.caniblossom.polybounce.math.Vector2;
 import com.github.caniblossom.polybounce.renderer.ClearRenderingTask;
 import com.github.caniblossom.polybounce.renderer.PolygonRenderingTask;
 import com.github.caniblossom.polybounce.renderer.RenderingManager;
@@ -49,33 +48,12 @@ public class RenderingEngine {
     private final ClearRenderingTask clearTask;
     private final PolygonRenderingTask polygonTask;
     
-    private float rotationCounter = 0.0f;
-
-    // Prepares the rendering engine for, well, rendering.
-    private void initialize() {
-        ArrayList<Vector2> vertexList = new ArrayList();
-        ArrayList<ConvexPolygon> polygonList = new ArrayList();
-
-        for (int i = 0; i < 7; i++) {
-            final float r = (float) i / 7.0f * 2.0f * (float) Math.PI;
-            vertexList.add(new Vector2((float) Math.cos(r), (float) Math.sin(r)));
-        }
-        
-        polygonList.add(ConvexPolygon.constructNew(vertexList));
-        polygonTask.setPolygonData(polygonList);
-    }
-
     // Updates the internal state in preparation for drawing the next frame.
     private void update() {        
-        rotationCounter += 0.02f;
-        
-        final float positionX = 1.5f * (float) Math.cos(rotationCounter);
-        final float positionY = 1.5f * (float) Math.sin(rotationCounter);
-        
         polygonTask.setProjectionTransformation(120.0f, aspectRatio, 0.0625f, 16.0f);
-        polygonTask.setViewTransformation(positionX, positionY, 1.5f);
+        polygonTask.setViewTransformation(0.0f, 0.0f, 1.5f);
         
-        polygonTask.setLightPosition(2.0f * positionX, 2.0f * positionY, 0.5f);
+        polygonTask.setLightPosition(0.0f, 0.0f, 0.5f);
         polygonTask.setLightColor(1.0f, 1.0f, 1.0f);
     }
     
@@ -93,8 +71,6 @@ public class RenderingEngine {
         manager = new RenderingManager();
         manager.addTask(clearTask);
         manager.addTask(polygonTask);        
-
-        initialize();
     }
 
     /**
@@ -107,6 +83,14 @@ public class RenderingEngine {
         manager.runTasks();
     }
 
+    /**
+     * Sets current rendering data.
+     * @param polygonList list of polygons to render
+     */
+    public void setRenderingData(ArrayList<ConvexPolygon> polygonList) {
+        polygonTask.setPolygonData(polygonList);
+    }
+            
     /**
      * @return true if and only if all OpenGL resources are good to use.
      */

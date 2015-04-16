@@ -32,7 +32,7 @@ package com.github.caniblossom.polybounce.engine;
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.Vector2;
 
-// TODO Implement tests.
+// TODO Implement tests if possible.
 // TODO Add parameters for restitution and friction.
 
 /**

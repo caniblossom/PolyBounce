@@ -48,7 +48,7 @@ public class PolygonRenderingTask extends SimpleShaderRenderingTask {
     private static final int VERTEX_SIZE_IN_FLOATS = 3 * 3;
 
     private static final float FRONT_DEPTH = -1.0f;
-    private static final float BACK_DEPTH = -1.25f;
+    private static final float BACK_DEPTH = -1.05f;
     
     private int vertexArrayName = 0;
     private VertexBuffer vertexBuffer = null;
@@ -128,6 +128,9 @@ public class PolygonRenderingTask extends SimpleShaderRenderingTask {
         GL30.glBindVertexArray(vertexArrayName);
         vertexBuffer.bind();
 
+        // TODO Enable for debugging.
+        // GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+        
         useAndSetupShaderProgram();
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, vertexBuffer.getElementCount());
         

@@ -104,7 +104,7 @@ public class ConvexPolygon {
         
         for (Vector2 v : vertexList) {
             x += v.getX();
-            y += v.getX();
+            y += v.getY();
         }
         
         return new Vector2(x / (float) vertexList.size(), y / (float) vertexList.size());

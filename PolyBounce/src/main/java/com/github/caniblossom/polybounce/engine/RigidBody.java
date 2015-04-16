@@ -32,7 +32,7 @@ package com.github.caniblossom.polybounce.engine;
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.Vector2;
 
-// TODO Implement tests.
+// TODO Implement tests if possible.
 
 /**
  * A very simple representation of a rigid body.
@@ -58,15 +58,15 @@ public class RigidBody extends PhysicsBody {
         super(mass, position, rotation, velocity, angularVelocity);
         
         this.hull = hull;
-        this.massPerVertex = mass / (float) hull.getUnmodifiableViewToVertexList().size();
+        this.massPerVertex = getMass() / (float) hull.getUnmodifiableViewToVertexList().size();
         
         float sum = 0.0f;
-        
         for (Vector2 p : hull.getUnmodifiableViewToVertexList()) {
             final float r = p.difference(hull.getVertexAverage()).length();
             sum += massPerVertex * r * r;
         }
         
+        // TODO See if this needs a control parameter, like scale.
         this.momentOfInertiaAroundCenterOfMass = sum;
     }
 
@@ -92,7 +92,7 @@ public class RigidBody extends PhysicsBody {
      */
     @Override
     public Vector2 getCurrentCenterOfMass() {
-        return getPosition().sum(hull.getVertexAverage());
+        return getHullRelativeToTime(0.0f).getVertexAverage();
     }
     
     /**
@@ -103,13 +103,13 @@ public class RigidBody extends PhysicsBody {
      */
     @Override
     public Vector2 getVelocityAtPosition(final Vector2 position) {
-         final Vector2 r = position.difference(getCurrentCenterOfMass());
-         final Vector2 tangent = new Vector2(-r.getY(), r.getX());
-         return tangent.scale(getAngularVelocity()).sum(getVelocity());
+        final Vector2 r = position.difference(getCurrentCenterOfMass());
+        final Vector2 tangent = new Vector2(-r.getY(), r.getX());
+        return tangent.scale(getAngularVelocity()).sum(getVelocity());
     }
 
     /**
-     * Returns a convex polygon representing the hull in world space relative to time
+     * Returns a convex polygon representing the hull in world space relative to time.
      * @param dt change in time
      * @return new convex polygon representing the hull of the body in world space at current time + dt 
      */

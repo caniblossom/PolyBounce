@@ -29,6 +29,7 @@
  */
 package com.github.caniblossom.polybounce.game;
 
+import com.github.caniblossom.polybounce.engine.GameEngine;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
@@ -45,7 +46,7 @@ public class GameWindow {
     private static final int DEFAULT_WINDOW_WIDTH = 1280;
     private static final int DEFAULT_WINDOW_HEIGHT = 720;
     
-    private RenderingEngine renderingEngine;
+    private GameEngine gameEngine;
            
     /**
      * @return Pixel format used by the game
@@ -76,8 +77,8 @@ public class GameWindow {
             throw new RuntimeException("Unable to create OpenGL context: " + e.getMessage());
         }
         
-        // It's important to create the rendering engine only after the OpenGL context has been created.
-        renderingEngine = new RenderingEngine(width, height);
+        // It's important to create the engine only after the OpenGL context has been created.
+        gameEngine = new GameEngine(width, height);
     }
     
     /**
@@ -92,13 +93,13 @@ public class GameWindow {
      */
     public void run() {
         while (!Display.isCloseRequested()) {
-            renderingEngine.drawCurrentFrame();
+            gameEngine.update(1.0f / 60.0f);
             
             Display.update();
             Display.sync(60);
         }
         
-        renderingEngine.deleteGLResources();
+        gameEngine.deleteGLResources();
         Display.destroy();
     }
 }

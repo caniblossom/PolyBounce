@@ -36,7 +36,7 @@ import com.github.caniblossom.polybounce.math.Vector2;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO Implement tests.
+// TODO Implement tests if possible.
 
 /**
  * A class for representing an intersection between two physics bodies.
@@ -57,8 +57,8 @@ public class BodyIntersection {
         }
     }
     
-    private final static ArrayList<Segment2> activeCollisionRayList = new ArrayList();
-    private final static ArrayList<Segment2> passiveCollisionRayList = new ArrayList();
+    private final static ArrayList<Segment2> ACTIVE_RAY_LIST = new ArrayList();
+    private final static ArrayList<Segment2> PASSIVE_RAY_LIST = new ArrayList();
 
     private final boolean didIntersect; 
 
@@ -80,8 +80,7 @@ public class BodyIntersection {
     
     // Generates collision rays from polygon and its translation + rotation (in that order).
     private static void computeCollisionRays(final ArrayList<Segment2> list, final ConvexPolygon polyT0, final Vector2 origo, final Vector2 translation, final float rotation) {
-        final ConvexPolygon translated = polyT0.rotateAndTranslate(origo, 0.0f, translation);
-        final ConvexPolygon polyT1 = translated.rotateAndTranslate(origo, rotation, new Vector2(0.0f, 0.0f));
+        final ConvexPolygon polyT1 = polyT0.rotateAndTranslate(origo.difference(translation), rotation, translation);
 
         final List<Vector2> listT0 = polyT0.getUnmodifiableViewToVertexList();        
         final List<Vector2> listT1 = polyT1.getUnmodifiableViewToVertexList();
@@ -150,14 +149,14 @@ public class BodyIntersection {
         } else {
             didIntersect = true;
             
-            activeCollisionRayList.clear();
-            passiveCollisionRayList.clear();
+            ACTIVE_RAY_LIST.clear();
+            PASSIVE_RAY_LIST.clear();
 
-            computeCollisionRays(activeCollisionRayList, activeT0, activeT1);
-            computeCollisionRays(passiveCollisionRayList, passiveT0, active.getPosition(), active.getVelocity().scale(-1.0f), -active.getRotation());
+            computeCollisionRays(ACTIVE_RAY_LIST, activeT0, activeT1);
+            computeCollisionRays(PASSIVE_RAY_LIST, passiveT0, active.getPosition(), active.getVelocity().scale(-1.0f), -active.getRotation());
 
-            final IntersectionResult activeToPassive = findShortestIntersection(activeCollisionRayList, passiveT0.getUnmodifiableViewToSegmentList());
-            final IntersectionResult passiveToActive = findShortestIntersection(passiveCollisionRayList, activeT0.getUnmodifiableViewToSegmentList());
+            final IntersectionResult activeToPassive = findShortestIntersection(ACTIVE_RAY_LIST, passiveT0.getUnmodifiableViewToSegmentList());
+            final IntersectionResult passiveToActive = findShortestIntersection(PASSIVE_RAY_LIST, activeT0.getUnmodifiableViewToSegmentList());
 
             // Resolve the intersection parameters, making sure the normal is towards the active body.
             if (!activeToPassive.intersection.didIntersect() && !passiveToActive.intersection.didIntersect()) {
@@ -166,18 +165,16 @@ public class BodyIntersection {
                 activePosition  = active.getPosition();
                 passivePosition = passive.getPosition();
                 normal          = active.getPosition().difference(passive.getPosition()).normal();
-            }
-            else if (activeToPassive.intersection.getDistance() <= passiveToActive.intersection.getDistance()) {
+            } else if (activeToPassive.intersection.getDistance() <= passiveToActive.intersection.getDistance()) {
                 distance        = activeToPassive.intersection.getDistance();
                 activePosition  = activeToPassive.ray.getA();
                 passivePosition = activeToPassive.intersection.getPosition();
                 normal          = activeToPassive.wall.getRightNormal();
-            }
-            else {
+            } else {
                 distance        = passiveToActive.intersection.getDistance();
                 activePosition  = passiveToActive.intersection.getPosition();
                 passivePosition = passiveToActive.ray.getA();
-                normal          = passiveToActive.wall.getRightNormal();
+                normal          = passiveToActive.wall.getRightNormal().scale(-1.0f);
             }
         }
     } 
