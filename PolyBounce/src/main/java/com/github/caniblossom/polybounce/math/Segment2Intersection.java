@@ -55,7 +55,7 @@ public class Segment2Intersection {
      */
     public Segment2Intersection() {
         this.status = false;
-        this.distance = 0.0f;
+        this.distance = Float.MAX_VALUE;
         this.position = new Vector2();
     }
     

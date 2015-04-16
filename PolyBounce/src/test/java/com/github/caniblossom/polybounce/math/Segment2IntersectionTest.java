@@ -50,7 +50,7 @@ public class Segment2IntersectionTest {
         Segment2Intersection a = new Segment2Intersection();
         Segment2Intersection b = new Segment2Intersection(1.0f, new Vector2(1.0f, 1.0f));
         
-        assertEquals(a.getDistance(), 0.0f, 0.0f);
+        assertEquals(a.getDistance(), Float.MAX_VALUE, 0.0f);
         assertEquals(b.getDistance(), 1.0f, 0.0f);
     }
 
