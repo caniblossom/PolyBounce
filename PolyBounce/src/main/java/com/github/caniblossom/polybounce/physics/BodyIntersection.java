@@ -43,6 +43,8 @@ import java.util.List;
  * @author Jani Salo
  */
 public class BodyIntersection {
+    private final static float INTERSECTION_EPSILON = 0.001f;
+    
     // Helper class for making the constructor more readable.
     private static class IntersectionResult {
         public final Segment2 ray;
@@ -135,7 +137,7 @@ public class BodyIntersection {
         final ConvexPolygon activeT1 = active.getHullRelativeToTime(dt);
         final ConvexPolygon passiveT0 = passive.getHullRelativeToTime(0.0f);
 
-        if (!activeT1.doesIntersect(passiveT0)) {
+        if (!activeT1.doesIntersect(passiveT0, INTERSECTION_EPSILON)) {
             didIntersect    = false;
             distance        = Float.MAX_VALUE;
             activePosition  = new Vector2();

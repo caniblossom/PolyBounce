@@ -36,7 +36,7 @@ import java.util.Collections;
 import java.util.List;
 
 // TODO Implement tests if possible.
-// TODO Improve the algorithm for seeking objects to intersect against.
+// TODO Sort objects spatially before intersection tests.
 
 /**
  * A physics engine.
@@ -75,11 +75,11 @@ public class PhysicsEngine {
     // Applies any external forces to the bodies.
     private void applyExternalForces(final float dt) {
         for (RigidBody body : rigidBodyList) {
-            final float inverseMassPerVertex = 1.0f / body.getMassPerVertex();
+            final float massPerVertex = body.getMassPerVertex();
 
             ConvexPolygon hull = body.getHullRelativeToTime(dt);
             for (Vector2 v : hull.getUnmodifiableViewToVertexList()) {
-                body.applyImpulse(v, gravity.scale(dt * inverseMassPerVertex));
+                body.applyImpulse(v, gravity.scale(dt * massPerVertex));
             }
         }
     }
@@ -96,10 +96,13 @@ public class PhysicsEngine {
                 }
             }
 
-            final boolean didIntersect = collider.collide(activeBody, passiveBodyList, dt);
-            
-            if (!didIntersect) {
-                activeBody.update(dt);
+            for (int i = 0; i < 2; i++) {
+                final boolean didIntersect = collider.collide(activeBody, passiveBodyList, dt);
+
+                if (!didIntersect) {
+                    activeBody.update(dt);
+                    break;
+                }
             }
         }
     }

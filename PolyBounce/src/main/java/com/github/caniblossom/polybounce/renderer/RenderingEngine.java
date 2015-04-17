@@ -30,6 +30,7 @@
 package com.github.caniblossom.polybounce.renderer;
 
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
+import com.github.caniblossom.polybounce.math.Vector2;
 import com.github.caniblossom.polybounce.renderer.ClearRenderingTask;
 import com.github.caniblossom.polybounce.renderer.PolygonRenderingTask;
 import com.github.caniblossom.polybounce.renderer.RenderingManager;
@@ -50,10 +51,7 @@ public class RenderingEngine {
     
     // Updates the internal state in preparation for drawing the next frame.
     private void update() {        
-        polygonTask.setProjectionTransformation(120.0f, aspectRatio, 0.0625f, 16.0f);
-        polygonTask.setViewTransformation(0.0f, 0.0f, 1.5f);
-        
-        polygonTask.setLightPosition(0.0f, 0.0f, 0.5f);
+        polygonTask.setProjectionTransformation(120.0f, aspectRatio, 0.0625f, 16.0f);        
         polygonTask.setLightColor(1.0f, 1.0f, 1.0f);
     }
     
@@ -83,6 +81,16 @@ public class RenderingEngine {
         manager.runTasks();
     }
 
+    /**
+     * Sets camera.
+     * @param focus point to focus on
+     * @param distance distance from that point
+     */
+    public void setCamera(final Vector2 focus, final float distance) {
+        polygonTask.setViewTransformation(focus.getX(), focus.getY(), distance);        
+        polygonTask.setLightPosition(focus.getX(), focus.getY(), 2.0f);
+    }
+    
     /**
      * Sets current rendering data.
      * @param polygonList list of polygons to render

@@ -152,11 +152,12 @@ public class ConvexPolygon {
     /**
      * Checks whether a point lies inside (or at the edge of) this polygon.
      * @param p point to be tested
+     * @param epsilon error tolerance (positive for false positives)
      * @return true if and only if the point is inside the polygon
      */
-    public boolean doesIntersect(final Vector2 p) {
+    public boolean doesIntersect(final Vector2 p, final float epsilon) {
         for (Segment2 s : segmentList) {
-            if (s.projectPointOnRightNormal(p) > 0.0f) {
+            if (s.projectPointOnRightNormal(p) > epsilon) {
                 return false;
             }
         }        
@@ -167,17 +168,18 @@ public class ConvexPolygon {
     /**
      * Checks whether this polygon intersects another
      * @param polygon polygon to be tested
+     * @param epsilon error tolerance (positive for false positives)
      * @return true if and only if the polygons intersect each other.
      */
-    public boolean doesIntersect(final ConvexPolygon polygon) {
+    public boolean doesIntersect(final ConvexPolygon polygon, final float epsilon) {
         for (Vector2 v : polygon.vertexList) {
-            if (doesIntersect(v)) {
+            if (doesIntersect(v, epsilon)) {
                 return true;
             }
         }
 
         for (Vector2 v : vertexList) {
-            if (polygon.doesIntersect(v)) {
+            if (polygon.doesIntersect(v, epsilon)) {
                 return true;
             }
         }

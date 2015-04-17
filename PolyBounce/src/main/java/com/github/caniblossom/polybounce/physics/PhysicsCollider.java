@@ -35,30 +35,14 @@ import java.util.List;
 // TODO Implement tests if possible.
 // TODO Handle restitution and friction.
 // TODO Disable collisions for objects that intersect already.
-// TODO Properly handle problems with small impulses.
+// TODO Fix problems with objects getting stuck to each other.
 
 /**
  * An utility class for handling collisions between rigid bodies.
  * See: http://en.wikipedia.org/wiki/Collision_response
  * @author Jani Salo
  */
-public class PhysicsCollider {    
-    // Temporary fix adding some extra power to impulses that are too weak.
-    private static Vector2 sanitizeImpulse(final Vector2 impulse) {
-        final float sqrLength = impulse.dot(impulse);
-        
-        final float a = 0.100f;
-        final float b = 0.001f;
-
-        if (sqrLength < b * b) {
-            return new Vector2(0.0f, 0.0f);
-        } else if (sqrLength < a * a) {
-            return impulse.normal().scale(a);
-        } else {
-            return impulse;
-        }
-    }
-    
+public class PhysicsCollider {        
     // Returns the impulse as experienced by the passive body. 
     private static Vector2 computeImpulse(final PhysicsBody active, final PhysicsBody passive, final BodyIntersection intersection) {
         final Vector2 v = passive.getVelocityAtPosition(intersection.getPassivePosition()).difference(active.getVelocityAtPosition(intersection.getActivePosition()));
@@ -107,7 +91,7 @@ public class PhysicsCollider {
         }
         
         if (currentIntersection.didIntersect() && passive != null) {
-            Vector2 impulse = sanitizeImpulse(computeImpulse(active, passive, currentIntersection));
+            Vector2 impulse = computeImpulse(active, passive, currentIntersection);
             active.applyImpulse(currentIntersection.getActivePosition(), impulse.scale(-1.0f));
             passive.applyImpulse(currentIntersection.getActivePosition(), impulse);        
         }
