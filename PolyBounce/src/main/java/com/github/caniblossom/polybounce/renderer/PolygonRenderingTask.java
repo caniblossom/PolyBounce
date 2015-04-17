@@ -124,6 +124,7 @@ public class PolygonRenderingTask extends SimpleShaderRenderingTask {
         // requires you to have a VAO around to do any drawing at all.
 
         GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glDepthFunc(GL11.GL_LEQUAL);
 
         GL30.glBindVertexArray(vertexArrayName);
         vertexBuffer.bind();

@@ -1,9 +1,10 @@
 ### Week 5
-Total accumulated hours: 70
+Total accumulated hours: 72
 - 2015.04.11 /  ~2h: Work on rigid body physics and collision handler
 - 2015.04.11 /  ~2h: Rename collision handle physics stepper, add more physics code
 - 2015.04.16 /  ~8h: Work a lot on the physics, create small broken demo
 - 2015.04.17 /  ~6h: Learn UML sequence diagrams, add some (not very good) diagrams
+- 2015.04.17 /  ~2h: Implement player class and some simple controls
 
 ### Week 4
 Total accumulated hours: 50

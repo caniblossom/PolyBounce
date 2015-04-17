@@ -31,12 +31,10 @@ package com.github.caniblossom.polybounce.renderer;
 
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.Vector2;
-import com.github.caniblossom.polybounce.renderer.ClearRenderingTask;
-import com.github.caniblossom.polybounce.renderer.PolygonRenderingTask;
-import com.github.caniblossom.polybounce.renderer.RenderingManager;
 import java.util.ArrayList;
 
 // TODO Implement tests if possible.
+// TODO Fix rare occurences of z-fighting.
 
 /**
  * A class representing the rendering engine of the game.
