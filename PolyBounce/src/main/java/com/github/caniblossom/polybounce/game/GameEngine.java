@@ -27,11 +27,16 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.engine;
+package com.github.caniblossom.polybounce.game;
 
+import com.github.caniblossom.polybounce.renderer.RenderingEngine;
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.PolygonBuilder;
 import com.github.caniblossom.polybounce.math.Vector2;
+import com.github.caniblossom.polybounce.physics.PhysicsBody;
+import com.github.caniblossom.polybounce.physics.PhysicsEngine;
+import com.github.caniblossom.polybounce.physics.RigidBody;
+import com.github.caniblossom.polybounce.physics.StaticBody;
 import java.util.ArrayList;
 
 // TODO Implement tests if possible.
@@ -42,7 +47,7 @@ import java.util.ArrayList;
  */
 public class GameEngine {
     private static final float TIME_STEP = 0.01f;
-    private static final Vector2 GRAVITY = new Vector2(0.0f, -0.01f);
+    private static final Vector2 GRAVITY = new Vector2(0.0f, -0.05f);
     
     private final PhysicsEngine physicsEngine;
     private final RenderingEngine renderingEngine;
@@ -66,9 +71,9 @@ public class GameEngine {
                 
                 final float x = u - 2.0f;
                 final float y = v - 1.0f;
-                final float s = 0.5f * ((float) Math.random() - 0.5f);
-                final float t = 0.5f * ((float) Math.random() - 0.5f);
-                final float a = (float) Math.random();
+                final float s = 2.5f * ((float) Math.random() - 0.5f);
+                final float t = 2.5f * ((float) Math.random() - 0.5f);
+                final float a = 0.1f * (float) Math.random();
 
                 final int n = 2 + (int) Math.ceil(4.0 * Math.random() + 0.001);
                 

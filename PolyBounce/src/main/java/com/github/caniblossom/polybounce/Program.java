@@ -32,8 +32,6 @@ package com.github.caniblossom.polybounce;
 import com.github.caniblossom.polybounce.game.GameWindow;
 import javax.swing.JOptionPane;
 
-// TODO Find a plugin for generating properly self-executing jar-file.
-
 /**
  * Main class.
  * @author Jani Salo
@@ -44,8 +42,6 @@ public class Program {
      * @param args arguments for execution
      */
     public static void main(String [] args) {
-        System.out.println("Ensi viikon tavoite on kitkattomat fysiikat ja törmäileviä polygoneja ruudulla, ehkä jopa kontrollit.");
-        
         final GameWindow gameWindow;
         
         try {

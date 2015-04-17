@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.engine;
+package com.github.caniblossom.polybounce.physics;
 
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.Vector2;
@@ -134,8 +134,7 @@ public class RigidBody extends PhysicsBody {
     @Override
     public void applyImpulse(final Vector2 position, final Vector2 impulse) {        
         setVelocity(getVelocity().sum(impulse.scale(1.0f / getMass())));
-
-        // TODO Verify that this is correct.
+        
         final Vector2 r = position.difference(getCurrentCenterOfMass());
         setAngularVelocity(getAngularVelocity() + r.cross(impulse.normal()) * impulse.length() / momentOfInertiaAroundCenterOfMass);
     }

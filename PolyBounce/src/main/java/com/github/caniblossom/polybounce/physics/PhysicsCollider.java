@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.engine;
+package com.github.caniblossom.polybounce.physics;
 
 import com.github.caniblossom.polybounce.math.Vector2;
 import java.util.List;
@@ -47,8 +47,8 @@ public class PhysicsCollider {
     private static Vector2 sanitizeImpulse(final Vector2 impulse) {
         final float sqrLength = impulse.dot(impulse);
         
-        final float a = 0.1000f;
-        final float b = 0.0001f;
+        final float a = 0.100f;
+        final float b = 0.001f;
 
         if (sqrLength < b * b) {
             return new Vector2(0.0f, 0.0f);
@@ -95,23 +95,23 @@ public class PhysicsCollider {
     public boolean collide(final PhysicsBody active, final List<PhysicsBody> passiveList, final float dt) {
         assert dt != 0.0f;
         
-        BodyIntersection intersection = new BodyIntersection();
+        BodyIntersection currentIntersection = new BodyIntersection();
         PhysicsBody passive = null;
         
         for (PhysicsBody body : passiveList) {
             BodyIntersection newIntersection = new BodyIntersection(active, body, dt);
-            if (newIntersection.getDistance() < intersection.getDistance()) {
-                intersection = newIntersection;
+            if (newIntersection.getDistance() < currentIntersection.getDistance()) {
+                currentIntersection = newIntersection;
                 passive = body;
             }
         }
         
-        if (intersection.didIntersect() && passive != null) {
-            Vector2 impulse = sanitizeImpulse(computeImpulse(active, passive, intersection));
-            active.applyImpulse(intersection.getActivePosition(), impulse.scale(-1.0f));
-            passive.applyImpulse(intersection.getActivePosition(), impulse);        
+        if (currentIntersection.didIntersect() && passive != null) {
+            Vector2 impulse = sanitizeImpulse(computeImpulse(active, passive, currentIntersection));
+            active.applyImpulse(currentIntersection.getActivePosition(), impulse.scale(-1.0f));
+            passive.applyImpulse(currentIntersection.getActivePosition(), impulse);        
         }
         
-        return intersection.didIntersect();
+        return currentIntersection.didIntersect();
     }
 }
