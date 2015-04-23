@@ -42,7 +42,8 @@ public class ConvexPolygon {
     private final ArrayList<Vector2> vertexList;
     private final ArrayList<Segment2> segmentList;
     
-    private final Vector2 vertexAverage;
+    private final Vector2 vertexAverage;   
+    private final BoundingBox boundingBox;
     
     // Constructs a new convex polygon without any checks.
     private ConvexPolygon(List<Vector2> vertexList) {
@@ -57,7 +58,8 @@ public class ConvexPolygon {
             segmentList.add(new Segment2(a, b));
         }
         
-        this.vertexAverage = computeVertexAverage();
+        this.vertexAverage = computeVertexAverage(this.vertexList);
+        this.boundingBox = computeBoundingBox(this.vertexList);
     }    
     
     // Checks that the polygon is wound counter-clockwise. 
@@ -98,7 +100,7 @@ public class ConvexPolygon {
     }
     
     // Simply sums the vertices together and returns average.
-    private Vector2 computeVertexAverage() {
+    private Vector2 computeVertexAverage(ArrayList<Vector2> vertexList) {
         float x = 0.0f;
         float y = 0.0f;
         
@@ -108,6 +110,50 @@ public class ConvexPolygon {
         }
         
         return new Vector2(x / (float) vertexList.size(), y / (float) vertexList.size());
+    }
+    
+    // Finds the bounding box for the polygon.
+    private BoundingBox computeBoundingBox(ArrayList<Vector2> vertexList) {
+        float xMin =  Float.MAX_VALUE;
+        float xMax = -Float.MAX_VALUE;
+        float yMin =  Float.MAX_VALUE;
+        float yMax = -Float.MAX_VALUE;
+    
+        for (Vector2 v : vertexList) {
+            xMin = Math.min(xMin, v.getX());
+            xMax = Math.max(xMax, v.getX());
+            yMin = Math.min(yMin, v.getY());
+            yMax = Math.max(yMax, v.getY());
+        }
+        
+        return new BoundingBox(new Vector2(xMin, yMin), xMax - xMin, yMax - yMin);
+    }
+    
+    // Projects the polygon to an axis defined by a normal.
+    private Vector2 projectOnNormal(final Vector2 n) {
+        float min = Float.MAX_VALUE;
+        float max = -Float.MAX_VALUE;
+
+        for (Vector2 v : vertexList) {
+            final float p = n.dot(v);
+            min = p < min ? p : min;
+            max = p > max ? p : max;
+        }            
+        
+        return new Vector2(min, max);
+    }
+    // Intersects this against another polygon on a list axes defined by right segment normals. 
+    private boolean doesIntersectOnAllAxes(final ConvexPolygon polygon, final ArrayList<Segment2> list) {
+        for (Segment2 s : list) {
+            final Vector2 a = projectOnNormal(s.getRightNormal());
+            final Vector2 b = polygon.projectOnNormal(s.getRightNormal());
+            
+            if (b.getX() > a.getY() || b.getY() < a.getX()) {
+                return false;
+            }           
+        }
+        
+        return true;
     }
     
     /**
@@ -150,41 +196,25 @@ public class ConvexPolygon {
     }
     
     /**
-     * Checks whether a point lies inside (or at the edge of) this polygon.
-     * @param p point to be tested
-     * @param epsilon error tolerance (positive for false positives)
-     * @return true if and only if the point is inside the polygon
+     * @return bounding box for the object
      */
-    public boolean doesIntersect(final Vector2 p, final float epsilon) {
-        for (Segment2 s : segmentList) {
-            if (s.projectPointOnRightNormal(p) > epsilon) {
-                return false;
-            }
-        }        
-        
-        return true;
+    public BoundingBox getBoundingBox() {
+        return boundingBox;
     }
     
     /**
      * Checks whether this polygon intersects another
      * @param polygon polygon to be tested
-     * @param epsilon error tolerance (positive for false positives)
      * @return true if and only if the polygons intersect each other.
      */
-    public boolean doesIntersect(final ConvexPolygon polygon, final float epsilon) {
-        for (Vector2 v : polygon.vertexList) {
-            if (doesIntersect(v, epsilon)) {
-                return true;
-            }
+    public boolean doesIntersect(final ConvexPolygon polygon) {     
+        if (!doesIntersectOnAllAxes(polygon, segmentList)) {
+            return false;
+        } else if (!doesIntersectOnAllAxes(polygon, polygon.segmentList)) {
+            return false;
         }
 
-        for (Vector2 v : vertexList) {
-            if (polygon.doesIntersect(v, epsilon)) {
-                return true;
-            }
-        }
-
-        return false;
+        return true;
     }
     
     /**

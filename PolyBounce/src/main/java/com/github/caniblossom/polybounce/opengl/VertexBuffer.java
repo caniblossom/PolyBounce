@@ -32,8 +32,6 @@ package com.github.caniblossom.polybounce.opengl;
 import java.nio.FloatBuffer;
 import org.lwjgl.opengl.GL15;
 
-// TODO Implement tests if possible.
-
 /**
  * An wrapper for an OpenGL array buffer with some added functionality. 
  * Will probably explode if constructed without proper OpenGL context active.

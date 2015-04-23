@@ -31,8 +31,6 @@ package com.github.caniblossom.polybounce.opengl;
 
 import org.lwjgl.opengl.GL20;
 
-// TODO Implement tests if possible.
-
 /**
  * A wrapper for OpenGL Shader Program.
  * @author Jani Salo

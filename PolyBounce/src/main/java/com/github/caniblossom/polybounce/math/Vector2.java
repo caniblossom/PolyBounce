@@ -64,14 +64,14 @@ public class Vector2 {
     /**
      * @return x component
      */
-    public float getX() {
+    public final float getX() {
         return x;
     } 
     
     /**
      * @return y component
      */
-    public float getY() {
+    public final float getY() {
         return y;
     } 
     

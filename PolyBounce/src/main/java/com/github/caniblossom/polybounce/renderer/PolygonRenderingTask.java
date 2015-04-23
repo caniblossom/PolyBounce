@@ -33,12 +33,11 @@ import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.opengl.VertexBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.List;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-
-// TODO Implement tests if possible.
 
 /**
  * A task for rendering convex polygons with the simple shader.
@@ -48,7 +47,7 @@ public class PolygonRenderingTask extends SimpleShaderRenderingTask {
     private static final int VERTEX_SIZE_IN_FLOATS = 3 * 3;
 
     private static final float FRONT_DEPTH = -1.0f;
-    private static final float BACK_DEPTH = -1.025f;
+    private static final float BACK_DEPTH = -1.1f;
     
     private int vertexArrayName = 0;
     private VertexBuffer vertexBuffer = null;
@@ -141,14 +140,17 @@ public class PolygonRenderingTask extends SimpleShaderRenderingTask {
     
     /**
      * Sets the polygon data to be rendered.
-     * @param list a list of convex polygons
+     * @param polygonList list of convex polygons
+     * @param colorList list of colors, one for each polygon
      */
-    public void setPolygonData(final ArrayList<ConvexPolygon> list) {
+    public void setPolygonData(final List<ConvexPolygon> polygonList, final List<Color> colorList) {
         assert isGood();
         
+        final int dataSize = Math.min(polygonList.size(), colorList.size());        
+
         triangleList.clear();
-        for (ConvexPolygon polygon : list) {
-            tessellator.generateTriangles(polygon, FRONT_DEPTH, BACK_DEPTH);
+        for (int i = 0; i < dataSize; i++) {
+            tessellator.generateTriangles(polygonList.get(i), colorList.get(i), FRONT_DEPTH, BACK_DEPTH);
         }
         
         if (triangleBuffer == null || triangleBuffer.capacity() < triangleList.size()) {

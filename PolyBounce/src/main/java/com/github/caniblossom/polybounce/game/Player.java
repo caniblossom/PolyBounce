@@ -29,23 +29,25 @@
  */
 package com.github.caniblossom.polybounce.game;
 
+import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.PolygonBuilder;
 import com.github.caniblossom.polybounce.math.Vector2;
 import com.github.caniblossom.polybounce.physics.RigidBody;
-
-// TODO Implement tests if possible.
 
 /**
  * Class for player.
  * @author Jani Salo
  */
 public class Player {
-    private final static float PLAYER_RADIUS           =  0.5f;
-    private final static float PLAYER_MASS             = 10.0f;    
-    private final static float PLAYER_MAX_ACCELERATION =  2.0f; 
-    private final static float PLAYER_MAX_THRUST       =  5.0f;
+    private final static float RADIUS           = 1.0f;
+    private final static float MASS             = 2.0f;    
+    private final static float BOUNCINESS       = 0.9f;    
+    private final static float STATIC_FRICTION  = 0.2f;    
+    private final static float DYNAMIC_FRICTION = 0.5f;    
+    private final static float MAX_ACCELERATION = 2.0f; 
+    private final static float MAX_THRUST       = 5.0f;
     
-    private final static int PLAYER_VERTEX_COUNT = 5;
+    private final static int HULL_VERTEX_COUNT = 6;
     
     private final RigidBody body;
     
@@ -55,7 +57,8 @@ public class Player {
      */
     public Player(final Vector2 position) {
         final PolygonBuilder builder = new PolygonBuilder();
-        body = new RigidBody(builder.createRegularPolygon(new Vector2(0.0f, 0.0f), PLAYER_RADIUS, PLAYER_VERTEX_COUNT), PLAYER_MASS, position, 0.0f, new Vector2(0.0f, 0.0f), 0.0f);
+        final ConvexPolygon hull = builder.createRegularPolygon(new Vector2(0.0f, 0.0f), RADIUS, HULL_VERTEX_COUNT);
+        body = new RigidBody(hull, MASS, BOUNCINESS, STATIC_FRICTION, DYNAMIC_FRICTION, position, 0.5f * (float) Math.PI, new Vector2(0.0f, 0.0f), 0.0f);
     }
     
     /**
@@ -71,24 +74,25 @@ public class Player {
      * @param dt change in time
      */
     public void accelerate(final float delta, final float dt) {
-        // TODO Handle this properly.
-        if (Math.abs(body.getAngularVelocity()) > PLAYER_MAX_ACCELERATION) {
+        if (Math.abs(body.getAngularVelocity()) > MAX_ACCELERATION) {
             return;
         }
-        
+
+        // TODO Clamp delta if necessary.         
         body.setAngularVelocity(body.getAngularVelocity() + delta * dt);
     }
 
     /**
      * Thrusts the player to a direction.
      * @param delta change in velocity
+     * @param dt change in time
      */
     public void thrust(final Vector2 delta, final float dt) {
-        // TODO Handle this properly.
-        if (body.getVelocity().length() > PLAYER_MAX_THRUST) {
+        if (body.getVelocity().length() > MAX_THRUST) {
             return;
         }
-        
+
+        // TODO Clamp delta if necessary.         
         body.setVelocity(body.getVelocity().sum(delta.scale(dt)));
     }
 }

@@ -31,8 +31,6 @@ package com.github.caniblossom.polybounce.renderer;
 
 import java.util.ArrayList;
 
-// TODO Implement tests if possible.
-
 /**
  * A simple manager for handling rendering tasks.
  * @author Jani Salo

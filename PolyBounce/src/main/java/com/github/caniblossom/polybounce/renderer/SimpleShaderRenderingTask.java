@@ -31,8 +31,6 @@ package com.github.caniblossom.polybounce.renderer;
 
 import java.nio.FloatBuffer;
 
-// TODO Implement tests if possible.
-
 /**
  * An abstract base class for rendering tasks using the simple shader.
  * @author Jani Salo

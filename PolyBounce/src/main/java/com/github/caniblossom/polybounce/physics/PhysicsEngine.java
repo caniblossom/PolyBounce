@@ -29,88 +29,78 @@
  */
 package com.github.caniblossom.polybounce.physics;
 
-import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.Vector2;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-// TODO Implement tests if possible.
 // TODO Sort objects spatially before intersection tests.
+// TODO Implement better stepping logic.
+// TODO Clean up code.
 
 /**
  * A physics engine.
  * @author Jani Salo
  */
 public class PhysicsEngine {    
+    private final static int ITERATION_COUNT = 1; 
+
     private final float timeStep;
+    private final float inertia;
     private final Vector2 gravity;
 
-    private final ArrayList<PhysicsBody> bodyList;
+    private final ArrayList<Body> bodyList;
     private final ArrayList<RigidBody> rigidBodyList;
     private final ArrayList<StaticBody> staticBodyList;        
 
-    private final PhysicsCollider collider;
-    private final ArrayList<PhysicsBody> passiveBodyList;
+    private final Collider collider;
     
     /**
      * Constructs a new physics engine.
      * @param timeStep stepping constant used for physics
+     * @param inertia multiplier applied to all velocities per update
      * @param gravity vector representing external forces
      */
-    public PhysicsEngine(final float timeStep, final Vector2 gravity) {
+    public PhysicsEngine(final float timeStep, final float inertia, Vector2 gravity) {
         assert timeStep > 0.0f;
 
         this.timeStep = timeStep;
+        this.inertia = inertia;
         this.gravity = gravity;
         
         this.bodyList = new ArrayList();
         this.rigidBodyList = new ArrayList();
         this.staticBodyList = new ArrayList();
         
-        this.collider = new PhysicsCollider();
-        this.passiveBodyList = new ArrayList();
+        this.collider = new Collider();        
     }
     
-    // Applies any external forces to the bodies.
+    // Applies inertial multiplier to the bodies.
     private void applyExternalForces(final float dt) {
+        // I'm too lazy to integrate.
         for (RigidBody body : rigidBodyList) {
-            final float massPerVertex = body.getMassPerVertex();
+            body.applyImpulse(body.getCenterOfMass(), gravity.scale(dt * body.getMass()));
 
-            ConvexPolygon hull = body.getHullRelativeToTime(dt);
-            for (Vector2 v : hull.getUnmodifiableViewToVertexList()) {
-                body.applyImpulse(v, gravity.scale(dt * massPerVertex));
-            }
+            body.setVelocity(body.getVelocity().scale(inertia));
+            body.setAngularVelocity(inertia * body.getAngularVelocity());
         }
     }
     
     // Steps and collides the bodies.
     private void stepAndCollide(final float dt) {
-        for (PhysicsBody activeBody : rigidBodyList) {
-            passiveBodyList.clear();
-            passiveBodyList.addAll(staticBodyList);
-
-            for (PhysicsBody passiveBody : rigidBodyList) {
-                if (activeBody != passiveBody) {
-                    passiveBodyList.add(passiveBody);
-                }
-            }
-
-            for (int i = 0; i < 2; i++) {
-                final boolean didIntersect = collider.collide(activeBody, passiveBodyList, dt);
-
-                if (!didIntersect) {
-                    activeBody.update(dt);
-                    break;
-                }
+        for (Body body : rigidBodyList) {
+            collider.collide(body, bodyList, dt);
+                
+            if (collider.isSafeToUpdate(body, bodyList, dt)) {
+                body.update(dt);
             }
         }
     }
-    
+
     /**
      * @param body rigid body to add
      */
-    public void add(RigidBody body) {
+    public void add(final RigidBody body) {
         bodyList.add(body);
         rigidBodyList.add(body);
     }
@@ -118,15 +108,42 @@ public class PhysicsEngine {
     /**
      * @param body static body to add
      */
-    public void add(StaticBody body) {
+    public void add(final StaticBody body) {
         bodyList.add(body);
         staticBodyList.add(body);
     }
 
     /**
+     * @param bodyList list of rigid bodies to add to the engine
+     */
+    public void addRigidBodies(final List<RigidBody> bodyList) {
+        for (RigidBody body : bodyList) {
+            add(body);
+        }
+    }
+    
+    /**
+     * @param bodyList list of static bodies to add to the engine
+     */
+    public void addStaticBodies(final List<StaticBody> bodyList) {
+        for (StaticBody body : bodyList) {
+            add(body);
+        }
+    }
+
+    /**
+     * Simply removes all objects from the engine.
+     */
+    public void reset() {
+        bodyList.clear();
+        rigidBodyList.clear();
+        staticBodyList.clear();       
+    }
+    
+    /**
      * @return unmodifiable view to a list of all bodies.
      */
-    public List<PhysicsBody> getUnmodifiableViewToBodyList() {
+    public List<Body> getUnmodifiableViewToBodyList() {
         return Collections.unmodifiableList(bodyList);
     } 
     
@@ -137,9 +154,11 @@ public class PhysicsEngine {
     public void update(final float dt) {
         final int stepCount = dt < timeStep ? 1 : (int) Math.ceil(dt / timeStep);
         final float stepLength = dt / (float) stepCount;
-
+        
+        // Doing this just once per update seems to make things less glitchy.
+        applyExternalForces(dt);            
+        
         for (int step = 0; step < stepCount; step++) {
-            applyExternalForces(stepLength);            
             stepAndCollide(stepLength);
         }
     }

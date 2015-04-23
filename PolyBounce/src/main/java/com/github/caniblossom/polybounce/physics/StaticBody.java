@@ -32,24 +32,25 @@ package com.github.caniblossom.polybounce.physics;
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.Vector2;
 
-// TODO Implement tests if possible.
-
 /**
  * Represents a physics body that can't move.
  * @author Jani Salo
  */
-public class StaticBody extends PhysicsBody {
+public class StaticBody extends Body {
     private final ConvexPolygon hull;
         
     /**
      * Constructs a new static body.
      * @param hull a convex polygon representing the shape of the body
      * @param mass value returned for any mass related methods
+     * @param bounciness bounciness of the body, value range [0, 1]
+     * @param staticFriction static friction as a cosine of an angle, value range [0, 1]
+     * @param dynamicFriction friction after overcoming static friction as relative resistance, value range [0, 1]
      * @param position position of the body
      * @param rotation rotation of the body
      */
-    public StaticBody(final ConvexPolygon hull, final float mass, final Vector2 position, final float rotation) {
-        super(mass, position, rotation, new Vector2(0.0f, 0.0f), 0.0f);
+    public StaticBody(final ConvexPolygon hull, final float mass, final float bounciness, final float staticFriction, final float dynamicFriction, final Vector2 position, final float rotation) {
+        super(mass, bounciness, staticFriction, dynamicFriction, position, rotation, new Vector2(0.0f, 0.0f), 0.0f);
         this.hull = hull.rotateAndTranslate(getPosition().sum(hull.getVertexAverage()), getRotation(), getPosition());
     }
 
@@ -65,32 +66,38 @@ public class StaticBody extends PhysicsBody {
      * @return hull center in world space
      */
     @Override
-    public Vector2 getCurrentCenterOfMass() {
+    public Vector2 getCenterOfMass() {
         return getPosition().sum(hull.getVertexAverage());
     }
 
     /**
-     * @param position position in world space (ignored)
+     * @param position ignored
      * @return always zero vector
      */
     @Override
     public Vector2 getVelocityAtPosition(Vector2 position) {
         return new Vector2(0.0f, 0.0f);
     }
-
+    
     /**
-     * @param dt time delta (ignored)
      * @return the hull in world space
      */
     @Override
-    public ConvexPolygon getHullRelativeToTime(float dt) {
+    public ConvexPolygon getHull() {
         return hull;
     }
 
     /**
      * Does nothing as the body is static.
-     * @param position position in world space (ignored)
-     * @param impulse impulse vector(ignored)
+     * @param dt ignored
+     */
+    @Override
+    public void update(float dt) {}
+    
+    /**
+     * Does nothing as the body is static.
+     * @param position ignored
+     * @param impulse ignored
      */
     @Override
     public void applyImpulse(Vector2 position, Vector2 impulse) {}

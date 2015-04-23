@@ -31,9 +31,10 @@ package com.github.caniblossom.polybounce.renderer;
 
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.Vector2;
+import com.github.caniblossom.polybounce.physics.Body;
 import java.util.ArrayList;
+import java.util.List;
 
-// TODO Implement tests if possible.
 // TODO Fix rare occurences of z-fighting.
 
 /**
@@ -47,10 +48,14 @@ public class RenderingEngine {
     private final ClearRenderingTask clearTask;
     private final PolygonRenderingTask polygonTask;
     
+    private final ArrayList<ConvexPolygon> polygonList;
+    private final ArrayList<Color> colorList;
+
+    
     // Updates the internal state in preparation for drawing the next frame.
     private void update() {        
         polygonTask.setProjectionTransformation(120.0f, aspectRatio, 0.0625f, 16.0f);        
-        polygonTask.setLightColor(1.0f, 1.0f, 1.0f);
+        polygonTask.setLightColor(1.1f, 1.0f, 0.9f);
     }
     
     /**
@@ -63,6 +68,9 @@ public class RenderingEngine {
 
         clearTask = new ClearRenderingTask(0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
         polygonTask = new PolygonRenderingTask();
+
+        polygonList = new ArrayList();
+        colorList = new ArrayList();
 
         manager = new RenderingManager();
         manager.addTask(clearTask);
@@ -86,15 +94,29 @@ public class RenderingEngine {
      */
     public void setCamera(final Vector2 focus, final float distance) {
         polygonTask.setViewTransformation(focus.getX(), focus.getY(), distance);        
-        polygonTask.setLightPosition(focus.getX(), focus.getY(), 2.0f);
+        polygonTask.setLightPosition(focus.getX() - 1.0f, focus.getY() + 1.0f, 1.0f);
     }
     
     /**
-     * Sets current rendering data.
-     * @param polygonList list of polygons to render
+     * Sets current rendering data from a list of physics bodies.
+     * @param bodyList list of physics bodies to render
      */
-    public void setRenderingData(ArrayList<ConvexPolygon> polygonList) {
-        polygonTask.setPolygonData(polygonList);
+    public void setRenderingData(List<Body> bodyList) {
+        polygonList.clear();
+        colorList.clear();
+        
+        for (Body body : bodyList) {
+            polygonList.add(body.getHull());
+            colorList.add(
+                new Color(
+                    1.0f - body.getBounciness(),
+                    1.0f,
+                    1.0f + body.getBounciness()
+                )
+            );
+        }
+        
+        polygonTask.setPolygonData(polygonList, colorList);
     }
             
     /**

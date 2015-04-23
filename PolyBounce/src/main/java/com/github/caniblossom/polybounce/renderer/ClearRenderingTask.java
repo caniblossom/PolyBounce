@@ -31,8 +31,6 @@ package com.github.caniblossom.polybounce.renderer;
 
 import org.lwjgl.opengl.GL11;
 
-// TODO Implement tests if possible.
-
 /**
  * A very simple render task for clearing the canvas.
  * @author Jani Salo

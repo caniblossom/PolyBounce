@@ -1,3 +1,8 @@
+### Week 6
+- 2015.04.20 /  ~8h: Desperately try to get the physics to work.
+- 2015.04.21 /  ~8h: Desperately try to get the physics to work again.
+- 2015.04.22 /  ~8h: Add some game like content, clean up things.
+
 ### Week 5
 Total accumulated hours: 72
 - 2015.04.11 /  ~2h: Work on rigid body physics and collision handler

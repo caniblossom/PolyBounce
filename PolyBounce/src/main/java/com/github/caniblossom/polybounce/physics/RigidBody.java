@@ -32,14 +32,12 @@ package com.github.caniblossom.polybounce.physics;
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.Vector2;
 
-// TODO Implement tests if possible.
-
 /**
  * A very simple representation of a rigid body.
  * See: http://en.wikipedia.org/wiki/Collision_response
  * @author Jani Salo
  */
-public class RigidBody extends PhysicsBody {
+public class RigidBody extends Body {
     private final ConvexPolygon hull;
     
     private final float massPerVertex;
@@ -49,13 +47,16 @@ public class RigidBody extends PhysicsBody {
      * Construct a new rigid body.
      * @param hull a convex polygon representing the shape of the body
      * @param mass total mass of the body
+     * @param bounciness bounciness of the body, value range [0, 1]
+     * @param staticFriction static friction as a cosine of an angle, value range [0, 1]
+     * @param dynamicFriction friction after overcoming static friction as relative resistance, value range [0, 1]
      * @param position position of the body
      * @param rotation rotation of the body
      * @param velocity velocity of the body
      * @param angularVelocity angular velocity of the body around center of mass
      */
-    public RigidBody(final ConvexPolygon hull, final float mass, final Vector2 position, final float rotation, final Vector2 velocity, final float angularVelocity) {
-        super(mass, position, rotation, velocity, angularVelocity);
+    public RigidBody(final ConvexPolygon hull, final float mass, final float bounciness, final float staticFriction, final float dynamicFriction, final Vector2 position, final float rotation, final Vector2 velocity, final float angularVelocity) {
+        super(mass, bounciness, staticFriction, dynamicFriction, position, rotation, velocity, angularVelocity);
         
         this.hull = hull;
         this.massPerVertex = getMass() / (float) hull.getUnmodifiableViewToVertexList().size();
@@ -66,17 +67,7 @@ public class RigidBody extends PhysicsBody {
             sum += massPerVertex * r * r;
         }
         
-        // TODO See if this needs a control parameter, like scale.
         this.momentOfInertiaAroundCenterOfMass = sum;
-    }
-
-    /**
-     * Constructs a new rigid body with rest of the parameters set to zero
-     * @param hull a convex polygon representing the shape for the body
-     * @param mass total mass of the body
-     */
-    public RigidBody(final ConvexPolygon hull, final float mass) {
-        this(hull, mass, new Vector2(0.0f, 0.0f), 0.0f, new Vector2(0.0f, 0.0f), 0.0f);
     }
     
     /**
@@ -98,8 +89,8 @@ public class RigidBody extends PhysicsBody {
      * @return center of mass for the body in world space
      */
     @Override
-    public Vector2 getCurrentCenterOfMass() {
-        return getHullRelativeToTime(0.0f).getVertexAverage();
+    public Vector2 getCenterOfMass() {
+        return getHull().getVertexAverage();
     }
     
     /**
@@ -110,19 +101,27 @@ public class RigidBody extends PhysicsBody {
      */
     @Override
     public Vector2 getVelocityAtPosition(final Vector2 position) {
-        final Vector2 r = position.difference(getCurrentCenterOfMass());
+        final Vector2 r = position.difference(getCenterOfMass());
         final Vector2 tangent = new Vector2(-r.getY(), r.getX());
         return tangent.scale(getAngularVelocity()).sum(getVelocity());
     }
-
+    
     /**
-     * Returns a convex polygon representing the hull in world space relative to time.
-     * @param dt change in time
-     * @return new convex polygon representing the hull of the body in world space at current time + dt 
+     * @return new convex polygon representing the hull of the body in world space currently. 
      */
     @Override
-    public ConvexPolygon getHullRelativeToTime(final float dt) {
-        return hull.rotateAndTranslate(hull.getVertexAverage(), getRotation() + dt * getAngularVelocity(), getPosition().sum(getVelocity().scale(dt)));
+    public ConvexPolygon getHull() {
+        return hull.rotateAndTranslate(hull.getVertexAverage(), getRotation(), getPosition());
+    }
+    
+    /**
+     * Updates the position and rotation of the body
+     * @param dt change in time
+     */
+    @Override
+    public void update(float dt) {
+        setPosition(getPosition().sum(getVelocity().scale(dt)));
+        setRotation(getRotation() + dt * getAngularVelocity());
     }
 
     /**
@@ -135,7 +134,7 @@ public class RigidBody extends PhysicsBody {
     public void applyImpulse(final Vector2 position, final Vector2 impulse) {        
         setVelocity(getVelocity().sum(impulse.scale(1.0f / getMass())));
         
-        final Vector2 r = position.difference(getCurrentCenterOfMass());
+        final Vector2 r = position.difference(getCenterOfMass());
         setAngularVelocity(getAngularVelocity() + r.cross(impulse.normal()) * impulse.length() / momentOfInertiaAroundCenterOfMass);
     }
 }

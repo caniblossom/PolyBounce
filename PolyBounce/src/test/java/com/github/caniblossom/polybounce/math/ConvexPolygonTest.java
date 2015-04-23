@@ -185,24 +185,9 @@ public class ConvexPolygonTest {
         final ConvexPolygon poly = getSquarePolygon(1.0f, new Vector2(0.0f, 0.0f));
         assertTrue(poly.getVertexAverage().equals(new Vector2(0.5f, 0.5f)));
     }
-    
-    @Test
-    public void testDoesIntersectA() {
-        final ConvexPolygon poly = getSquarePolygon(1.0f, new Vector2(0.0f, 0.0f));
-
-        final Vector2 a = new Vector2(-0.001f,  0.500f);
-        final Vector2 b = new Vector2( 0.500f, -0.001f);
-        final Vector2 c = new Vector2( 1.000f,  0.500f);
-        final Vector2 d = new Vector2( 0.500f,  1.000f);
-        
-        assertFalse(poly.doesIntersect(a, 0.0f));
-        assertFalse(poly.doesIntersect(b, 0.0f));
-        assertTrue(poly.doesIntersect(c, 0.0f));
-        assertTrue(poly.doesIntersect(d, 0.0f));
-    }
 
     @Test
-    public void testDoesIntersectB() {
+    public void testDoesIntersect() {
         final ConvexPolygon poly = getSquarePolygon(1.0f, new Vector2(0.0f, 0.0f));
 
         final ConvexPolygon polyA0 = getSquarePolygon(0.5f, new Vector2(-0.50f,  0.25f));
@@ -215,25 +200,25 @@ public class ConvexPolygonTest {
         final ConvexPolygon polyC1 = getSquarePolygon(0.5f, new Vector2( 1.01f,  0.25f));
         final ConvexPolygon polyD1 = getSquarePolygon(0.5f, new Vector2( 0.25f,  1.01f));
 
-        assertTrue(poly.doesIntersect(polyA0, 0.0f));
-        assertTrue(poly.doesIntersect(polyB0, 0.0f));
-        assertTrue(poly.doesIntersect(polyC0, 0.0f));
-        assertTrue(poly.doesIntersect(polyD0, 0.0f));
+        assertTrue(poly.doesIntersect(polyA0));
+        assertTrue(poly.doesIntersect(polyB0));
+        assertTrue(poly.doesIntersect(polyC0));
+        assertTrue(poly.doesIntersect(polyD0));
 
-        assertTrue(polyA0.doesIntersect(poly, 0.0f));
-        assertTrue(polyB0.doesIntersect(poly, 0.0f));
-        assertTrue(polyC0.doesIntersect(poly, 0.0f));
-        assertTrue(polyD0.doesIntersect(poly, 0.0f));
+        assertTrue(polyA0.doesIntersect(poly));
+        assertTrue(polyB0.doesIntersect(poly));
+        assertTrue(polyC0.doesIntersect(poly));
+        assertTrue(polyD0.doesIntersect(poly));
 
-        assertFalse(poly.doesIntersect(polyA1, 0.0f));
-        assertFalse(poly.doesIntersect(polyB1, 0.0f));
-        assertFalse(poly.doesIntersect(polyC1, 0.0f));
-        assertFalse(poly.doesIntersect(polyD1, 0.0f));
+        assertFalse(poly.doesIntersect(polyA1));
+        assertFalse(poly.doesIntersect(polyB1));
+        assertFalse(poly.doesIntersect(polyC1));
+        assertFalse(poly.doesIntersect(polyD1));
 
-        assertFalse(polyA1.doesIntersect(poly, 0.0f));
-        assertFalse(polyB1.doesIntersect(poly, 0.0f));
-        assertFalse(polyC1.doesIntersect(poly, 0.0f));
-        assertFalse(polyD1.doesIntersect(poly, 0.0f));
+        assertFalse(polyA1.doesIntersect(poly));
+        assertFalse(polyB1.doesIntersect(poly));
+        assertFalse(polyC1.doesIntersect(poly));
+        assertFalse(polyD1.doesIntersect(poly));
     }
     
     @Test

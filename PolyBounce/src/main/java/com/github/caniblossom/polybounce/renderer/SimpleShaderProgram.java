@@ -33,7 +33,7 @@ import com.github.caniblossom.polybounce.opengl.ShaderProgram;
 import java.nio.FloatBuffer;
 import org.lwjgl.opengl.GL20;
 
-// TODO Implement tests if possible.
+// TODO Load the shaders from resources or something like that.
 
 /**
  * The basic shader used in the game.

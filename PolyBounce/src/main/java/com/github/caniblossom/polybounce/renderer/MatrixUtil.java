@@ -32,8 +32,6 @@ package com.github.caniblossom.polybounce.renderer;
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 
-// TODO Implement tests if possible.
-
 /**
  * A static utility class for generating the matrices used in the renderer.
  * @author Jani Salo

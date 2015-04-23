@@ -33,8 +33,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-// TODO Implement tests if possible.
-
 /**
  * Utilities for compiling and linking OpenGL shaders.
  * @author Jani Salo

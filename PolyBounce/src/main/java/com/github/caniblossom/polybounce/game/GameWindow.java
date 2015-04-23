@@ -35,8 +35,6 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.PixelFormat;
 
-// TODO Implement tests if possible.
-
 /**
  * A class representing the game window (and the game itself).
  * @author Jani Salo

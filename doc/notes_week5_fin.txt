@@ -1,9 +1,0 @@
-Jos n‰it‰ sattuisi vahingossa lukemaan joku, niin projektin pit‰isi nyt
-k‰‰nty‰ ja olla interaktiivinen (nuolin‰pp‰imet). Fysiikoissa on viel‰ 
-aikalailla h‰ikk‰‰, ja sis‰llˆss‰ ei ole mit‰‰n j‰rke‰.
-
-Projektissa on tosi huonosti mit‰‰n selkeit‰ k‰ytt‰j‰tapauksia, enint‰‰n
-menut joita ei ole viel‰ olemassakaan, joten yritin tehd‰ pari
-UML-sekvenssikaaviota moottorin k‰yttˆtapauksista ... lopputulos ei 
-v‰ltt‰m‰tt‰ h‰ik‰ise, mutta opinpahan ainakin v‰h‰n UML:‰‰.
-

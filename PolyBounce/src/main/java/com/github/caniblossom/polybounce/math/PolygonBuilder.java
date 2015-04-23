@@ -31,8 +31,6 @@ package com.github.caniblossom.polybounce.math;
 
 import java.util.ArrayList;
 
-// TODO Implement tests if possible.
-
 /**
  * An utility class for building convex polygons.
  * @author Jani Salo
