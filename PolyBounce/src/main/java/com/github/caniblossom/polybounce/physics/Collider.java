@@ -157,7 +157,7 @@ public class Collider {
                 handleCollision(active, passive, collision);
                 handleFriction(active, passive, collision);
                 
-                fixBrokenPhysics(active, passive, collision, 0.5f);
+                fixBrokenPhysics(active, passive, collision, 1.0f);
             }
         }
     }

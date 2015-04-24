@@ -47,7 +47,7 @@ public class LevelGenerator {
     public Level generate(int length) {
         final Level level = new Level();
 
-        Structure last = new Arc(new Vector2(0.0f, 0.0f), 3);
+        Structure last = new Arc(new Vector2(0.0f, 0.0f), 2);
 
         level.addStructure(last);
         level.setPlayerSpawnPosition(last.getTopSpawnPosition());
@@ -56,7 +56,7 @@ public class LevelGenerator {
             final Vector2 lastMin = last.getBoundingBox().getPosition();
             final Vector2 lastMax = last.getBoundingBox().getMaximum();
             
-            last = new Arc(new Vector2(lastMax.getX() + 1.0f, lastMin.getY() - 1.0f), (int) Math.ceil(0.001f + Math.random() * 1.25f));
+            last = new Arc(new Vector2(lastMax.getX() + 1.0f, lastMin.getY() + (float) Math.random() * 0.5f), 1);
             level.addStructure(last);
         }
         

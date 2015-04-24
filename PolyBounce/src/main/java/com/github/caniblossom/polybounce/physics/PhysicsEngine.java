@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 
 // TODO Sort objects spatially before intersection tests.
+// TODO Dear god optimize this thing, it's so slow it hurts.
 
 /**
  * A physics engine.

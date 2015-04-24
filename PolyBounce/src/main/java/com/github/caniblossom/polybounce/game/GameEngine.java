@@ -61,7 +61,7 @@ public class GameEngine {
     private void reset() {
         LevelGenerator generator = new LevelGenerator();
 
-        level = generator.generate(2);
+        level = generator.generate(6);
         player = new Player(level.getPlayerSpawnPosition());
 
         physicsEngine.reset();
