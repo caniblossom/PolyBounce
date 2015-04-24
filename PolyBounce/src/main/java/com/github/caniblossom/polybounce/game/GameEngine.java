@@ -61,7 +61,7 @@ public class GameEngine {
     private void reset() {
         LevelGenerator generator = new LevelGenerator();
 
-        level = generator.generate(4);
+        level = generator.generate(2);
         player = new Player(level.getPlayerSpawnPosition());
 
         physicsEngine.reset();
@@ -114,7 +114,9 @@ public class GameEngine {
         handleInput(TIME_SCALE * dt);
         physicsEngine.update(TIME_SCALE * dt);
 
-        renderingEngine.setRenderingData(physicsEngine.getUnmodifiableViewToBodyList());        
+        renderingEngine.resetRenderingData();
+        renderingEngine.addBodiesToDraw(physicsEngine.getUnmodifiableViewToBodyList());        
+        
         renderingEngine.setCamera(player.getBody().getPosition(), 4.0f);        
         renderingEngine.drawCurrentFrame();
     }

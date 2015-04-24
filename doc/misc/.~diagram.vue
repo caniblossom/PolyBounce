@@ -1,14 +1,14 @@
 <!-- Tufts VUE 3.2.2 concept-map (diagram.vue) 2015-04-24 -->
 <!-- Tufts VUE: http://vue.tufts.edu/ -->
 <!-- Do Not Remove: VUE mapping @version(1.1) jar:file:/C:/Program%20Files%20(x86)/VUE/VUE.jar!/tufts/vue/resources/lw_mapping_1_1.xml -->
-<!-- Do Not Remove: Saved date Fri Apr 24 15:06:27 EEST 2015 by Jani Salo on platform Windows 7 6.1 in JVM 1.7.0_21-b11 -->
+<!-- Do Not Remove: Saved date Fri Apr 24 15:06:20 EEST 2015 by Jani Salo on platform Windows 7 6.1 in JVM 1.7.0_21-b11 -->
 <!-- Do Not Remove: Saving version @(#)VUE: built May 23 2013 at 2146 by tomadm on Linux 2.6.18-348.2.1.el5 i386 JVM 1.7.0_21-b11(bits=32) -->
 <?xml version="1.0" encoding="US-ASCII"?>
 <LW-MAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="none" ID="0" label="diagram.vue"
     created="1426706341617" x="0.0" y="0.0" width="1.4E-45"
     height="1.4E-45" strokeWidth="0.0" autoSized="false">
-    <resource referenceCreated="1429877187094" size="43967"
+    <resource referenceCreated="1429877180283" size="45849"
         spec="C:\Workspace\projects\PolyBounce\doc\misc\diagram.vue"
         type="1" xsi:type="URLResource">
         <title>diagram.vue</title>

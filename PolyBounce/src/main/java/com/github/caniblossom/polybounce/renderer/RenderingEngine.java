@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // TODO Fix rare occurences of z-fighting.
+// TODO Fix the mystery bug with random objects floating around.
 
 /**
  * A class representing the rendering engine of the game.
@@ -50,6 +51,8 @@ public class RenderingEngine {
     
     private final ArrayList<ConvexPolygon> polygonList;
     private final ArrayList<Color> colorList;
+    
+    private boolean renderingDataChanged;
 
     
     // Updates the internal state in preparation for drawing the next frame.
@@ -72,6 +75,8 @@ public class RenderingEngine {
         polygonList = new ArrayList();
         colorList = new ArrayList();
 
+        renderingDataChanged = false;
+        
         manager = new RenderingManager();
         manager.addTask(clearTask);
         manager.addTask(polygonTask);        
@@ -83,8 +88,13 @@ public class RenderingEngine {
     public void drawCurrentFrame() {
         assert isGood();        
 
+        if (renderingDataChanged) {
+            polygonTask.setPolygonData(polygonList, colorList);
+            renderingDataChanged = false;
+        }
+        
         update();
-        manager.runTasks();
+        manager.runTasks();        
     }
 
     /**
@@ -98,12 +108,20 @@ public class RenderingEngine {
     }
     
     /**
-     * Sets current rendering data from a list of physics bodies.
-     * @param bodyList list of physics bodies to render
+     * Resets current rendering data.
      */
-    public void setRenderingData(List<Body> bodyList) {
+    public void resetRenderingData() {
+        renderingDataChanged = true;
         polygonList.clear();
         colorList.clear();
+    }
+    
+    /**
+     * Adds a list of bodies to be drawn
+     * @param bodyList list of physics bodies to draw
+     */
+    public void addBodiesToDraw(final List<Body> bodyList) {
+        renderingDataChanged = true;
         
         for (Body body : bodyList) {
             polygonList.add(body.getHull());
@@ -114,9 +132,7 @@ public class RenderingEngine {
                     1.0f + body.getBounciness()
                 )
             );
-        }
-        
-        polygonTask.setPolygonData(polygonList, colorList);
+        }        
     }
             
     /**

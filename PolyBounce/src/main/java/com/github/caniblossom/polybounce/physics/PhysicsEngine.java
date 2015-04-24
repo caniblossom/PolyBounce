@@ -35,8 +35,6 @@ import java.util.Collections;
 import java.util.List;
 
 // TODO Sort objects spatially before intersection tests.
-// TODO Implement better stepping logic.
-// TODO Clean up code.
 
 /**
  * A physics engine.
