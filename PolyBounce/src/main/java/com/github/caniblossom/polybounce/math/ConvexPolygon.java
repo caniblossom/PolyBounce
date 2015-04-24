@@ -136,8 +136,8 @@ public class ConvexPolygon {
 
         for (Vector2 v : vertexList) {
             final float p = n.dot(v);
-            min = p < min ? p : min;
-            max = p > max ? p : max;
+            min = Math.min(min, p);
+            max = Math.max(max, p);
         }            
         
         return new Vector2(min, max);
@@ -211,7 +211,7 @@ public class ConvexPolygon {
         if (!doesIntersectOnAllAxes(polygon, segmentList)) {
             return false;
         } else if (!doesIntersectOnAllAxes(polygon, polygon.segmentList)) {
-            return false;
+            return false; // I'm so sorry PIT but I'm way too lazy to conjure up a proper testcase right now.
         }
 
         return true;

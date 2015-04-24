@@ -44,18 +44,19 @@ import org.lwjgl.opengl.GL30;
  * @author Jani Salo
  */
 public class PolygonRenderingTask extends SimpleShaderRenderingTask {
-    private static final int VERTEX_SIZE_IN_FLOATS = 3 * 3;
-
     private static final float FRONT_DEPTH = -1.0f;
     private static final float BACK_DEPTH = -1.1f;
     
+    private static final int VERTEX_SIZE_IN_FLOATS = 3 * 3;
+            
     private int vertexArrayName = 0;
-    private VertexBuffer vertexBuffer = null;
- 
-    private ArrayList<Float> triangleList = null;
+    private final VertexBuffer vertexBuffer;
+    private int currentVertexCount = 0;
+    
+    private final ArrayList<Float> rawTriangleData;
     private FloatBuffer triangleBuffer = null;
     
-    private Tessellator tessellator = null;
+    private final Tessellator tessellator;
     
     // Sets up the vertex array for the format used by the simple shader program.
     private void setupVertexArray() {
@@ -81,7 +82,7 @@ public class PolygonRenderingTask extends SimpleShaderRenderingTask {
         // inefficient, it's still way fast enough and makes everything a lot simpler
         if (triangleBuffer != null) {
             triangleBuffer.rewind();
-            vertexBuffer.write(triangleBuffer, VERTEX_SIZE_IN_FLOATS);
+            vertexBuffer.write(triangleBuffer);
         }        
     }
     
@@ -105,8 +106,8 @@ public class PolygonRenderingTask extends SimpleShaderRenderingTask {
             throw e;
         }
         
-        triangleList = new ArrayList();
-        tessellator = new Tessellator(triangleList);
+        rawTriangleData = new ArrayList();
+        tessellator = new Tessellator(rawTriangleData);
     }
  
     @Override
@@ -132,7 +133,7 @@ public class PolygonRenderingTask extends SimpleShaderRenderingTask {
         // GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
         
         useAndSetupShaderProgram();
-        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, vertexBuffer.getElementCount());
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, currentVertexCount);
         
         vertexBuffer.unbind();
         GL30.glBindVertexArray(0);
@@ -148,18 +149,21 @@ public class PolygonRenderingTask extends SimpleShaderRenderingTask {
         
         final int dataSize = Math.min(polygonList.size(), colorList.size());        
 
-        triangleList.clear();
+        rawTriangleData.clear();
         for (int i = 0; i < dataSize; i++) {
             tessellator.generateTriangles(polygonList.get(i), colorList.get(i), FRONT_DEPTH, BACK_DEPTH);
         }
         
-        if (triangleBuffer == null || triangleBuffer.capacity() < triangleList.size()) {
-            triangleBuffer = BufferUtils.createFloatBuffer(triangleList.size());
+        if (triangleBuffer == null || triangleBuffer.capacity() < rawTriangleData.size()) {
+            triangleBuffer = BufferUtils.createFloatBuffer(rawTriangleData.size());
         }
 
-        for (Float f : triangleList) {
+        triangleBuffer.rewind();
+        for (Float f : rawTriangleData) {
             triangleBuffer.put(f);
         }
+
+        currentVertexCount = rawTriangleData.size() / VERTEX_SIZE_IN_FLOATS;
     }
     
     /**

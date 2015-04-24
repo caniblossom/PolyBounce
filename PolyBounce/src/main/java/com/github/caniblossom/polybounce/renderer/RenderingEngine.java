@@ -35,9 +35,6 @@ import com.github.caniblossom.polybounce.physics.Body;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO Fix rare occurences of z-fighting.
-// TODO Fix the mystery bug with random objects floating around.
-
 /**
  * A class representing the rendering engine of the game.
  * @author Jani Salo

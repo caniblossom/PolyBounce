@@ -1,9 +1,10 @@
 ### Week 6
-Total accumulated hours: 96
+Total accumulated hours: 100
 - 2015.04.21 /  ~8h: Desperately try to get the physics to work.
-- 2015.04.22 /  ~8h: Desperately try to get the physics to work again.
-- 2015.04.23 /  ~8h: Add some game like content, clean up things.
-- 2015.04.23 /  ~3h: Update documentation and remove old stuff.
+- 2015.04.22 /  ~8h: Desperately try to get the physics to work again
+- 2015.04.23 /  ~8h: Add some game like content, clean up things
+- 2015.04.23 /  ~3h: Update documentation and remove old stuff
+- 2015.04.23 /  ~1h: Add and update tests
 
 ### Week 5
 Total accumulated hours: 72

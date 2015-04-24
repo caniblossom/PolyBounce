@@ -187,6 +187,25 @@ public class ConvexPolygonTest {
     }
 
     @Test
+    public void testGetBoundingBox() {
+        final ConvexPolygon polyA = getSquarePolygon(1.0f, new Vector2(-4.0f,  9.0f));
+        final ConvexPolygon polyB = getSquarePolygon(2.0f, new Vector2( 7.0f, -12.0f));
+
+        final BoundingBox boxA = polyA.getBoundingBox();
+        final BoundingBox boxB = polyB.getBoundingBox();
+        
+        assertEquals(boxA.getPosition().getX(), -4.0f, 0.0f);
+        assertEquals(boxA.getPosition().getY(),  9.0f, 0.0f);
+        assertEquals(boxA.getWidth(), 1.0f, 0.0f);
+        assertEquals(boxA.getHeight(), 1.0f, 0.0f);
+
+        assertEquals(boxB.getPosition().getX(),   7.0f, 0.0f);
+        assertEquals(boxB.getPosition().getY(), -12.0f, 0.0f);
+        assertEquals(boxB.getWidth(),  2.0f, 0.0f);
+        assertEquals(boxB.getHeight(), 2.0f, 0.0f);
+    }
+
+    @Test
     public void testDoesIntersect() {
         final ConvexPolygon poly = getSquarePolygon(1.0f, new Vector2(0.0f, 0.0f));
 
@@ -200,6 +219,11 @@ public class ConvexPolygonTest {
         final ConvexPolygon polyC1 = getSquarePolygon(0.5f, new Vector2( 1.01f,  0.25f));
         final ConvexPolygon polyD1 = getSquarePolygon(0.5f, new Vector2( 0.25f,  1.01f));
 
+        final ConvexPolygon polyE = getSquarePolygon(1.0f, new Vector2(4.0f, 4.0f));
+        final ConvexPolygon polyF = getSquarePolygon(1.0f, new Vector2(5.0f, 3.0f));
+        final ConvexPolygon polyG = getSquarePolygon(1.0f, new Vector2(6.0f, 4.0f));
+        final ConvexPolygon polyH = getSquarePolygon(1.0f, new Vector2(5.0f, 5.0f));
+        
         assertTrue(poly.doesIntersect(polyA0));
         assertTrue(poly.doesIntersect(polyB0));
         assertTrue(poly.doesIntersect(polyC0));
@@ -219,6 +243,22 @@ public class ConvexPolygonTest {
         assertFalse(polyB1.doesIntersect(poly));
         assertFalse(polyC1.doesIntersect(poly));
         assertFalse(polyD1.doesIntersect(poly));
+        
+        assertTrue(polyE.doesIntersect(polyF));
+        assertFalse(polyE.doesIntersect(polyG));
+        assertTrue(polyE.doesIntersect(polyH));
+
+        assertTrue(polyF.doesIntersect(polyE));
+        assertTrue(polyF.doesIntersect(polyG));
+        assertFalse(polyF.doesIntersect(polyH));
+
+        assertFalse(polyG.doesIntersect(polyE));
+        assertTrue(polyG.doesIntersect(polyF));
+        assertTrue(polyG.doesIntersect(polyH));
+
+        assertTrue(polyH.doesIntersect(polyE));
+        assertFalse(polyH.doesIntersect(polyF));
+        assertTrue(polyH.doesIntersect(polyG));
     }
     
     @Test

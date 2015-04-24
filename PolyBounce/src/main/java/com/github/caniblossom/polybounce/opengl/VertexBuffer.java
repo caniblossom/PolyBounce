@@ -33,13 +33,12 @@ import java.nio.FloatBuffer;
 import org.lwjgl.opengl.GL15;
 
 /**
- * An wrapper for an OpenGL array buffer with some added functionality. 
+ * A (relatively useless) wrapper for an OpenGL array buffer.
  * Will probably explode if constructed without proper OpenGL context active.
  * @author Jani Salo
  */
 public class VertexBuffer {
     private int bufferName = 0;
-    private int elementCount = 0;
     
     /**
      * Constructs a new vertex buffer.
@@ -71,23 +70,14 @@ public class VertexBuffer {
     /**
      * Writes contents of an list to the buffer. Any old data is lost.
      * @param buffer float buffer containing the vertex data
-     * @param elementSizeInFloats element size in floats
      */
-    public void write(FloatBuffer buffer, final int elementSizeInFloats) {
-        assert isGood() || buffer.remaining() % elementSizeInFloats == 0;
-        elementCount = buffer.remaining() / elementSizeInFloats;
+    public void write(FloatBuffer buffer) {
+        assert isGood();
         
         bind();
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_DYNAMIC_DRAW);
         unbind();
     }
-    
-    /**
-     * @return current element count
-     */
-    public int getElementCount() {
-        return elementCount;
-    }    
     
     /**
      * @return true if and only if the OpenGL buffer object is good to use.
