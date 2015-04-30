@@ -27,13 +27,11 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.renderer;
+package com.github.caniblossom.polybounce.renderer.shader;
 
-import com.github.caniblossom.polybounce.opengl.ShaderProgram;
+import com.github.caniblossom.polybounce.renderer.opengl.ShaderProgram;
 import java.nio.FloatBuffer;
 import org.lwjgl.opengl.GL20;
-
-// TODO Load the shaders from resources or something like that.
 
 /**
  * The basic shader used in the game.
@@ -45,54 +43,7 @@ public class SimpleShaderProgram extends ShaderProgram {
 
     private final int uLightPositionName;
     private final int uLightColorName;
-        
-    // Source for the vertex shader.
-    private static String getVertexShaderSource() {
-        return 
-            "#version 150                                                            \n" + 
-            "                                                                        \n" +
-            "uniform mat4 projection;                                                \n" +
-            "uniform mat4 view;                                                      \n" +
-            "                                                                        \n" +
-            "in vec3 positionIn;                                                     \n" +
-            "in vec3 colorIn;                                                        \n" +
-            "in vec3 normalIn;                                                       \n" +
-            "                                                                        \n" +
-            "out vec3 color;                                                         \n" +
-            "out vec3 normal;                                                        \n" +
-            "out vec3 position;                                                      \n" +
-            "                                                                        \n" +
-            "void main() {                                                           \n" +                                                         
-            "    color = colorIn;                                                    \n" +
-            "    normal = normalIn;                                                  \n" +
-            "                                                                        \n" +
-            "    position = positionIn;                                              \n" +
-            "    gl_Position = projection * view * vec4(position, 1.0f);             \n" +
-            "}                                                                       \n";
-    }
-
-    // Source for the fragment shader.
-    private static String getFragmentShaderSource() {
-        return 
-            "#version 150                                                            \n" + 
-            "                                                                        \n" +
-            "uniform vec3 lightPosition;                                             \n" +
-            "uniform vec3 lightColor;                                                \n" +
-            "                                                                        \n" +
-            "in vec3 position;                                                       \n" +
-            "in vec3 color;                                                          \n" +
-            "in vec3 normal;                                                         \n" +
-            "                                                                        \n" +
-            "out vec4 colorOut;                                                      \n" + 
-            "                                                                        \n" +
-            "void main() {                                                           \n" +
-            "    vec3 lightDir = normalize(lightPosition - position);                \n" +
-            "    float alpha = clamp(dot(lightDir, normal), 0.0, 1.0);               \n" +
-            "                                                                        \n" +
-            "    colorOut = vec4(alpha * lightColor * color, 1.0);                   \n" +
-            "}                                                                       \n";
-    }
-    
+     
     // Vertex shader inputs.
     private static String[] getInputNameList() {
         return new String[]{"positionIn", "colorIn", "normalIn"};
@@ -108,7 +59,7 @@ public class SimpleShaderProgram extends ShaderProgram {
      * @throws RuntimeException 
      */
     public SimpleShaderProgram() throws RuntimeException {
-        super(getVertexShaderSource(), getFragmentShaderSource(), getInputNameList(), getOutputNameList());
+        super(getShaderSourceFromResource("simpleshader.vs"), getShaderSourceFromResource("simpleshader.ps"), getInputNameList(), getOutputNameList());
 
         uProjectionName    = GL20.glGetUniformLocation(getProgramName(), "projection");
         uViewName          = GL20.glGetUniformLocation(getProgramName(), "view");

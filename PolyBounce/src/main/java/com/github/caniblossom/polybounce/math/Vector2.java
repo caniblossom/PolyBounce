@@ -62,6 +62,14 @@ public class Vector2 {
     }
     
     /**
+     * Copy constructor.
+     * @param v vector to copy
+     */
+    public Vector2(final Vector2 v) {
+        this(v.x, v.y);
+    }
+    
+    /**
      * @return x component
      */
     public final float getX() {

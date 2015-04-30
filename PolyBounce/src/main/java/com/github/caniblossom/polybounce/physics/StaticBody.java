@@ -55,6 +55,14 @@ public class StaticBody extends Body {
     }
 
     /**
+     * Copy constructor.
+     * @param body body to copy
+     */
+    public StaticBody(final StaticBody body) {
+        super(body.getMass(), body.getBounciness(), body.getStaticFriction(), body.getDynamicFriction(), new Vector2(body.getPosition()), body.getRotation(), new Vector2(body.getVelocity()), body.getAngularVelocity());        
+        this.hull = new ConvexPolygon(body.hull);
+    }
+    /**
      * @return parameter given for mass
      */
     @Override

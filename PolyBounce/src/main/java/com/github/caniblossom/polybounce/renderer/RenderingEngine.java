@@ -29,8 +29,10 @@
  */
 package com.github.caniblossom.polybounce.renderer;
 
+import com.github.caniblossom.polybounce.math.BoundingBox;
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.Vector2;
+import com.github.caniblossom.polybounce.renderer.opengl.Texture2D;
 import com.github.caniblossom.polybounce.physics.Body;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,12 +47,21 @@ public class RenderingEngine {
     
     private final ClearRenderingTask clearTask;
     private final PolygonRenderingTask polygonTask;
+    private final ImageRenderingTask imageTask;
     
     private final ArrayList<ConvexPolygon> polygonList;
     private final ArrayList<Color> colorList;
     
     private boolean renderingDataChanged;
 
+    private Texture2D textureHelp;
+    private Texture2D textureGo;
+
+    // Loads all game textures.
+    private void loadTextures() {
+        textureHelp = Texture2D.createTextureFromResourcePNG("help.png");
+        textureGo = Texture2D.createTextureFromResourcePNG("go.png");
+    }
     
     // Updates the internal state in preparation for drawing the next frame.
     private void update() {        
@@ -68,7 +79,8 @@ public class RenderingEngine {
 
         clearTask = new ClearRenderingTask(0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
         polygonTask = new PolygonRenderingTask();
-
+        imageTask = new ImageRenderingTask();
+                
         polygonList = new ArrayList();
         colorList = new ArrayList();
 
@@ -77,8 +89,20 @@ public class RenderingEngine {
         manager = new RenderingManager();
         manager.addTask(clearTask);
         manager.addTask(polygonTask);        
+        manager.addTask(imageTask);
+        
+        loadTextures();
     }
 
+    /**
+     * Tells the rendering engine that the level was restarted.
+     */
+    public void signalRestartLevel() {
+        imageTask.removeAllImages();
+        imageTask.addImage(new Image(new BoundingBox(new Vector2(-1.0f, -1.0f), 2.0f, 2.0f), 0.9f, textureHelp));
+        imageTask.addImage(new Image(new BoundingBox(new Vector2(-1.0f, -1.0f), 2.0f, 2.0f), 1.0f, 0.0f, 1000, textureGo));
+    }
+    
     /**
      * Draws current frame.
      */

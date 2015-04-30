@@ -27,42 +27,70 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.assets;
+package com.github.caniblossom.polybounce.renderer.opengl;
 
-import com.github.caniblossom.polybounce.game.Level;
-import com.github.caniblossom.polybounce.game.Structure;
-import com.github.caniblossom.polybounce.math.PolygonBuilder;
-import com.github.caniblossom.polybounce.math.Vector2;
+import java.nio.FloatBuffer;
+import org.lwjgl.opengl.GL15;
 
 /**
- * A little class for generating levels.
+ * A (relatively useless) wrapper for an OpenGL array buffer.
+ * Will probably explode if constructed without proper OpenGL context active.
  * @author Jani Salo
  */
-public class LevelGenerator {
+public class VertexBuffer {
+    private int bufferName = 0;
+    
     /**
-     * Generates a new level
-     * @param length length of the level in structures
-     * @return new level
+     * Constructs a new vertex buffer.
+     * @throws RuntimeException 
      */
-    public Level generate(int length) {
-        final Level level = new Level();
+    public VertexBuffer() throws RuntimeException {
+        bufferName = GL15.glGenBuffers();
 
-        Structure last = new Arc(new Vector2(0.0f, 0.0f), 1);
-
-        level.addStructure(last);
-        level.setPlayerSpawnPosition(last.getTopSpawnPosition());
-
-        for (int i = 0; i < length; i++) {
-            final Vector2 lastMin = last.getBoundingBox().getPosition();
-            final Vector2 lastMax = last.getBoundingBox().getMaximum();
-            
-            last = new Arc(new Vector2(lastMax.getX() + 1.0f, lastMin.getY() + (float) Math.random() - 0.5f), 1);
-            level.addStructure(last);
+        if (bufferName == 0) {
+            throw new RuntimeException("Error creating vertex buffer.");
         }
-        
-        final Vector2 offset = last.getTopSpawnPosition();
-        level.setGoal(new PolygonBuilder().createBox(offset.sum(new Vector2(-0.5f, -0.5f)), offset.sum(new Vector2(0.5f, 0.5f))));
+    }
+    
+    /**
+     * Binds the related buffer as current GL_ARRAY_BUFFER.
+     */
+    public void bind() {
+        assert isGood();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, bufferName);
+    }
+    
+    /**
+     * Binds null object as current GL_ARRAY_BUFFER.
+     */
+    public void unbind() {
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+    }
 
-        return level;
+    /**
+     * Writes contents of an list to the buffer. Any old data is lost.
+     * @param buffer float buffer containing the vertex data
+     */
+    public void write(final FloatBuffer buffer) {
+        assert isGood();
+        
+        bind();
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_DYNAMIC_DRAW);
+        unbind();
+    }
+    
+    /**
+     * @return true if and only if the OpenGL buffer object is good to use.
+     */
+    public boolean isGood() {
+        return bufferName != 0;
+    }
+
+    /**
+     * Deletes the OpenGL buffer object.
+     */
+    public void deleteBuffer() {
+        GL15.glDeleteBuffers(bufferName);
+        bufferName = 0;
     }
 }

@@ -45,8 +45,38 @@ public class ConvexPolygon {
     private final Vector2 vertexAverage;   
     private final BoundingBox boundingBox;
     
-    // Constructs a new convex polygon without any checks.
-    private ConvexPolygon(List<Vector2> vertexList) {
+    // Simply sums the vertices together and returns average.
+    private static Vector2 computeVertexAverage(final List<Vector2> vertexList) {
+        float x = 0.0f;
+        float y = 0.0f;
+        
+        for (Vector2 v : vertexList) {
+            x += v.getX();
+            y += v.getY();
+        }
+        
+        return new Vector2(x / (float) vertexList.size(), y / (float) vertexList.size());
+    }
+    
+    // Finds the bounding box for the polygon.
+    private static BoundingBox computeBoundingBox(final List<Vector2> vertexList) {
+        float xMin =  Float.MAX_VALUE;
+        float xMax = -Float.MAX_VALUE;
+        float yMin =  Float.MAX_VALUE;
+        float yMax = -Float.MAX_VALUE;
+    
+        for (Vector2 v : vertexList) {
+            xMin = Math.min(xMin, v.getX());
+            xMax = Math.max(xMax, v.getX());
+            yMin = Math.min(yMin, v.getY());
+            yMax = Math.max(yMax, v.getY());
+        }
+        
+        return new BoundingBox(new Vector2(xMin, yMin), xMax - xMin, yMax - yMin);
+    }
+    
+    // Constructs a new convex polygon without any checks due to speed reasons.
+    private ConvexPolygon(final List<Vector2> vertexList, final Vector2 vertexAverage, final BoundingBox boundingBox) {
         this.vertexList = new ArrayList();
         this.vertexList.addAll(vertexList);
         this.segmentList = new ArrayList();
@@ -58,8 +88,8 @@ public class ConvexPolygon {
             segmentList.add(new Segment2(a, b));
         }
         
-        this.vertexAverage = computeVertexAverage(this.vertexList);
-        this.boundingBox = computeBoundingBox(this.vertexList);
+        this.vertexAverage = vertexAverage;
+        this.boundingBox = boundingBox;
     }    
     
     // Checks that the polygon is wound counter-clockwise. 
@@ -99,36 +129,6 @@ public class ConvexPolygon {
         return true;
     }
     
-    // Simply sums the vertices together and returns average.
-    private Vector2 computeVertexAverage(ArrayList<Vector2> vertexList) {
-        float x = 0.0f;
-        float y = 0.0f;
-        
-        for (Vector2 v : vertexList) {
-            x += v.getX();
-            y += v.getY();
-        }
-        
-        return new Vector2(x / (float) vertexList.size(), y / (float) vertexList.size());
-    }
-    
-    // Finds the bounding box for the polygon.
-    private BoundingBox computeBoundingBox(ArrayList<Vector2> vertexList) {
-        float xMin =  Float.MAX_VALUE;
-        float xMax = -Float.MAX_VALUE;
-        float yMin =  Float.MAX_VALUE;
-        float yMax = -Float.MAX_VALUE;
-    
-        for (Vector2 v : vertexList) {
-            xMin = Math.min(xMin, v.getX());
-            xMax = Math.max(xMax, v.getX());
-            yMin = Math.min(yMin, v.getY());
-            yMax = Math.max(yMax, v.getY());
-        }
-        
-        return new BoundingBox(new Vector2(xMin, yMin), xMax - xMin, yMax - yMin);
-    }
-    
     // Projects the polygon to an axis defined by a normal.
     private Vector2 projectOnNormal(final Vector2 n) {
         float min = Float.MAX_VALUE;
@@ -163,7 +163,10 @@ public class ConvexPolygon {
      * @throws IllegalArgumentException
      */
     public static ConvexPolygon constructNew(List<Vector2> vertexList) throws IllegalArgumentException {
-        final ConvexPolygon poly = new ConvexPolygon(vertexList);
+        final Vector2 average = computeVertexAverage(vertexList);
+        final BoundingBox box = computeBoundingBox(vertexList);
+        
+        final ConvexPolygon poly = new ConvexPolygon(vertexList, average, box);
             
         if (!poly.isWoundCounterClockwise()) {
             throw new IllegalArgumentException("The polygon isn't wound counter-clockwise.");
@@ -173,6 +176,21 @@ public class ConvexPolygon {
 
         return poly;
     }
+    
+    /**
+     * Copy constructor.
+     * @param poly convex polygon to copy.
+     */
+    public ConvexPolygon(final ConvexPolygon poly) {
+        this.vertexList = new ArrayList();
+        this.segmentList = new ArrayList();
+
+        this.vertexList.addAll(poly.vertexList);
+        this.segmentList.addAll(poly.segmentList);
+        
+        this.vertexAverage = new Vector2(poly.vertexAverage);
+        this.boundingBox = new BoundingBox(poly.boundingBox);
+    }   
     
     /**
      * @return an unmodifiable view to the vertex list
@@ -194,7 +212,7 @@ public class ConvexPolygon {
     public Vector2 getVertexAverage() {
         return vertexAverage;
     }
-    
+        
     /**
      * @return bounding box for the object
      */
@@ -207,7 +225,7 @@ public class ConvexPolygon {
      * @param polygon polygon to be tested
      * @return true if and only if the polygons intersect each other.
      */
-    public boolean doesIntersect(final ConvexPolygon polygon) {     
+    public boolean doesIntersect(final ConvexPolygon polygon) { 
         if (!doesIntersectOnAllAxes(polygon, segmentList)) {
             return false;
         } else if (!doesIntersectOnAllAxes(polygon, polygon.segmentList)) {
@@ -232,6 +250,9 @@ public class ConvexPolygon {
             newVertexList.add(v.rotation(origo, angle).sum(translation));
         }
 
-        return new ConvexPolygon(newVertexList);
+        final Vector2 average = vertexAverage.rotation(origo, angle).sum(translation);
+        final BoundingBox box = computeBoundingBox(newVertexList);
+
+        return new ConvexPolygon(newVertexList, average, box);
     }
 }

@@ -54,7 +54,6 @@ public class PolygonBuilder {
      */
     public ConvexPolygon createBox(final Vector2 lowerLeft, final Vector2 upperRight) throws IllegalArgumentException {
         vertexList.clear();
-        
         vertexList.add(lowerLeft);
         vertexList.add(new Vector2(upperRight.getX(), lowerLeft.getY()));
         vertexList.add(upperRight);

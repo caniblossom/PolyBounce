@@ -36,7 +36,6 @@ import com.github.caniblossom.polybounce.physics.Body;
 import com.github.caniblossom.polybounce.physics.RigidBody;
 import com.github.caniblossom.polybounce.physics.StaticBody;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -80,17 +79,30 @@ public abstract class Structure {
     }
     
     /**
-     * @return an unmodifiable view to the rigid body list.
+     * @return a full copy of rigid bodies in the level
      */
-    public List<RigidBody> getUnmodifiableViewToRigidBodyList() {
-        return Collections.unmodifiableList(rigidBodyList);
+    public List<RigidBody> createCopyOfRigidBodies() {
+        final ArrayList<RigidBody> list = new ArrayList();
+        
+        for (RigidBody body : rigidBodyList) {
+            list.add(new RigidBody(body));
+        }
+
+        return list;
     }
 
     /**
-     * @return an unmodifiable view to the static body list.
+     * @return a full copy of static bodies in the level
      */
-    public List<StaticBody> getUnmodifiableViewToStaticBodyList() {
-        return Collections.unmodifiableList(staticBodyList);
+    public List<StaticBody> createCopyOfStaticBodies() {
+        final ArrayList<StaticBody> list = new ArrayList();
+        
+        for (StaticBody body : staticBodyList) {
+            list.add(new StaticBody(body));
+        }
+
+        return list;
+
     }
 
     /**

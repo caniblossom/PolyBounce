@@ -29,21 +29,21 @@
  */
 package com.github.caniblossom.polybounce.physics;
 
+import com.github.caniblossom.polybounce.math.BoundingBox;
 import com.github.caniblossom.polybounce.math.Vector2;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-// TODO Sort objects spatially before intersection tests.
-// TODO Dear god optimize this thing, it's so slow it hurts.
 
 /**
  * A physics engine.
  * @author Jani Salo
  */
 public class PhysicsEngine {    
-    private final static int ITERATION_COUNT = 1; 
-
+    // Values of 1.0f or 2.0f seem to give best measured speed.
+    private final static float SPATIAL_BUCKET_WIDTH = 2.0f; 
+    private final static float SPATIAL_BUCKET_HEIGHT = 2.0f; 
+    
     private final float timeStep;
     private final float inertia;
     private final Vector2 gravity;
@@ -53,25 +53,15 @@ public class PhysicsEngine {
     private final ArrayList<StaticBody> staticBodyList;        
 
     private final Collider collider;
-    
-    /**
-     * Constructs a new physics engine.
-     * @param timeStep stepping constant used for physics
-     * @param inertia multiplier applied to all velocities per update
-     * @param gravity vector representing external forces
-     */
-    public PhysicsEngine(final float timeStep, final float inertia, Vector2 gravity) {
-        assert timeStep > 0.0f;
+    private final ArrayList<Body> collisionList;
 
-        this.timeStep = timeStep;
-        this.inertia = inertia;
-        this.gravity = gravity;
-        
-        this.bodyList = new ArrayList();
-        this.rigidBodyList = new ArrayList();
-        this.staticBodyList = new ArrayList();
-        
-        this.collider = new Collider();        
+    private SpatialTable spatialTable = null;
+    
+    // Computes correct spatial table size.
+    private SpatialTable createSpatialTable(final BoundingBox box) {
+        final int hBuckets = (int) Math.ceil(box.getWidth() / SPATIAL_BUCKET_WIDTH);
+        final int vBuckets = (int) Math.ceil(box.getHeight() / SPATIAL_BUCKET_HEIGHT);
+        return new SpatialTable(box, hBuckets, vBuckets);
     }
     
     // Applies inertial multiplier to the bodies.
@@ -85,16 +75,59 @@ public class PhysicsEngine {
         }
     }
     
-    // Steps and collides the bodies.
-    private void stepAndCollide(final float dt) {
+    // Collides the bodies.
+    private void collide(final float dt) {
+        spatialTable.clear();
+        spatialTable.addRigidBodyList(rigidBodyList);
+        spatialTable.addStaticBodyList(staticBodyList);
+        
         for (Body body : rigidBodyList) {
-            collider.collide(body, bodyList, dt);
-                
-            if (collider.isSafeToUpdate(body, bodyList, dt)) {
+            collisionList.clear();
+            spatialTable.findPossibleIntersections(collisionList, body, dt);
+            
+            collider.collide(body, collisionList, dt);
+        }
+    }
+
+    // Steps the bodies.
+    private void step(final float dt) {
+        spatialTable.clear();
+        spatialTable.addRigidBodyList(rigidBodyList);
+        spatialTable.addStaticBodyList(staticBodyList);
+ 
+        for (Body body : rigidBodyList) {
+            collisionList.clear();
+            spatialTable.findPossibleIntersections(collisionList, body, dt);
+
+            if (collider.isSafeToUpdate(body, collisionList, dt)) {
                 body.update(dt);
             }
         }
     }
+
+    /**
+     * Constructs a new physics engine.
+     * @param timeStep stepping constant used for physics
+     * @param inertia multiplier applied to all velocities per update
+     * @param gravity vector representing external forces
+     * @param worldBox a bounding box encompassing the game world
+     */
+    public PhysicsEngine(final float timeStep, final float inertia, Vector2 gravity, final BoundingBox worldBox) {
+        assert timeStep > 0.0f;
+
+        this.timeStep = timeStep;
+        this.inertia = inertia;
+        this.gravity = gravity;
+        
+        this.bodyList = new ArrayList();
+        this.rigidBodyList = new ArrayList();
+        this.staticBodyList = new ArrayList();
+        
+        this.collider = new Collider(); 
+        this.collisionList = new ArrayList();
+        
+        this.spatialTable = createSpatialTable(worldBox);
+    }    
 
     /**
      * @param body rigid body to add
@@ -131,12 +164,15 @@ public class PhysicsEngine {
     }
 
     /**
-     * Simply removes all objects from the engine.
+     * Removes all objects from the engine and resets the world box
+     * @param worldBox a bounding box encompassing the game world
      */
-    public void reset() {
+    public void reset(final BoundingBox worldBox) {
         bodyList.clear();
         rigidBodyList.clear();
         staticBodyList.clear();       
+
+        this.spatialTable = createSpatialTable(worldBox);
     }
     
     /**
@@ -158,7 +194,8 @@ public class PhysicsEngine {
         applyExternalForces(dt);            
         
         for (int step = 0; step < stepCount; step++) {
-            stepAndCollide(stepLength);
+            collide(stepLength);
+            step(stepLength);
         }
     }
 }

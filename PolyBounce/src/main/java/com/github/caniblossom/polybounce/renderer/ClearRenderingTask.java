@@ -62,10 +62,10 @@ public class ClearRenderingTask implements RenderingTask {
         this(0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
     }
 
-    @Override
     /**
      * Clears the canvas and the depth buffer.
      */
+    @Override
     public void run() {
         GL11.glClearColor(r, g, b, a);
         GL11.glClearDepth(z);

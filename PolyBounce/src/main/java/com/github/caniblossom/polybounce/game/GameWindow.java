@@ -35,6 +35,8 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.PixelFormat;
 
+// TODO Fix window size.
+
 /**
  * A class representing the game window (and the game itself).
  * @author Jani Salo
@@ -89,7 +91,7 @@ public class GameWindow {
      * Executes the loop running the game window (and the game itself).
      */
     public void run() {
-        while (!Display.isCloseRequested()) {
+        while (!Display.isCloseRequested() && !gameEngine.isQuitRequested()) {
             gameEngine.update(1.0f / 60.0f);
             
             Display.update();

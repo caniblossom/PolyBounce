@@ -27,70 +27,38 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.opengl;
+package com.github.caniblossom.polybounce.renderer.shader;
 
-import java.nio.FloatBuffer;
-import org.lwjgl.opengl.GL15;
+import java.util.List;
 
 /**
- * A (relatively useless) wrapper for an OpenGL array buffer.
- * Will probably explode if constructed without proper OpenGL context active.
+ * Abstract base class for vertex data types.
  * @author Jani Salo
  */
-public class VertexBuffer {
-    private int bufferName = 0;
+public abstract class Vertex {
+    private final float[] data;
     
     /**
-     * Constructs a new vertex buffer.
-     * @throws RuntimeException 
+     * @param data array of floats containing the vertex data
      */
-    public VertexBuffer() throws RuntimeException {
-        bufferName = GL15.glGenBuffers();
+    public Vertex(final float[] data) {
+        this.data = data;
+    }
+    
+    /**
+     * @return the vertex as an array.
+     */
+    public float[] getAsAnArray() {
+        return data;
+    }
 
-        if (bufferName == 0) {
-            throw new RuntimeException("Error creating vertex buffer");
+    /**
+     * Adds the vertex to a list.
+     * @param list to add the vertex to.
+     */
+    public void addToList(final List<Float> list) {
+        for (Float f : data) {
+            list.add(f);
         }
-    }
-    
-    /**
-     * Binds the related buffer as current GL_ARRAY_BUFFER.
-     */
-    public void bind() {
-        assert isGood();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, bufferName);
-    }
-    
-    /**
-     * Binds null object as current GL_ARRAY_BUFFER.
-     */
-    public void unbind() {
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-    }
-
-    /**
-     * Writes contents of an list to the buffer. Any old data is lost.
-     * @param buffer float buffer containing the vertex data
-     */
-    public void write(FloatBuffer buffer) {
-        assert isGood();
-        
-        bind();
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_DYNAMIC_DRAW);
-        unbind();
-    }
-    
-    /**
-     * @return true if and only if the OpenGL buffer object is good to use.
-     */
-    public boolean isGood() {
-        return bufferName != 0;
-    }
-
-    /**
-     * Deleted the OpenGL buffer object.
-     */
-    public void deleteBuffer() {
-        GL15.glDeleteBuffers(bufferName);
-        bufferName = 0;
     }
 }

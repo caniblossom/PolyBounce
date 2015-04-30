@@ -27,42 +27,57 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.assets;
+package com.github.caniblossom.polybounce.renderer.opengl;
 
-import com.github.caniblossom.polybounce.game.Level;
-import com.github.caniblossom.polybounce.game.Structure;
-import com.github.caniblossom.polybounce.math.PolygonBuilder;
-import com.github.caniblossom.polybounce.math.Vector2;
+import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.GL30;
 
 /**
- * A little class for generating levels.
+ * Very lightweight wrapper for OpenGL vertex array.
  * @author Jani Salo
  */
-public class LevelGenerator {
+public class VertexArray {
+    private int arrayName = 0;
+    
     /**
-     * Generates a new level
-     * @param length length of the level in structures
-     * @return new level
+     * Constructs a new vertex array.
+     * @throws RuntimeException 
      */
-    public Level generate(int length) {
-        final Level level = new Level();
+    public VertexArray() throws RuntimeException {
+        arrayName = GL30.glGenVertexArrays();
 
-        Structure last = new Arc(new Vector2(0.0f, 0.0f), 1);
-
-        level.addStructure(last);
-        level.setPlayerSpawnPosition(last.getTopSpawnPosition());
-
-        for (int i = 0; i < length; i++) {
-            final Vector2 lastMin = last.getBoundingBox().getPosition();
-            final Vector2 lastMax = last.getBoundingBox().getMaximum();
-            
-            last = new Arc(new Vector2(lastMax.getX() + 1.0f, lastMin.getY() + (float) Math.random() - 0.5f), 1);
-            level.addStructure(last);
+        if (arrayName == 0) {
+            throw new RuntimeException("Error creating vertex array.");
         }
-        
-        final Vector2 offset = last.getTopSpawnPosition();
-        level.setGoal(new PolygonBuilder().createBox(offset.sum(new Vector2(-0.5f, -0.5f)), offset.sum(new Vector2(0.5f, 0.5f))));
+    }
+    
+    /**
+     * Binds as current vertex array.
+     */
+    public void bind() {
+        assert isGood();
+        GL30.glBindVertexArray(arrayName);
+    }
+    
+    /**
+     * Binds null object as current vertex array.
+     */
+    public void unbind() {
+        GL30.glBindVertexArray(0);
+    }
+    
+    /**
+     * @return true if and only if the OpenGL vertex array is good to use.
+     */
+    public boolean isGood() {
+        return arrayName != 0;
+    }
 
-        return level;
+    /**
+     * Deletes the OpenGL vertex array.
+     */
+    public void deleteArray() {
+        GL30.glDeleteVertexArrays(arrayName);
+        arrayName = 0;
     }
 }

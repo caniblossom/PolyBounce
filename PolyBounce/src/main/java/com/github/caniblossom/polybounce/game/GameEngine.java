@@ -30,6 +30,7 @@
 package com.github.caniblossom.polybounce.game;
 
 import com.github.caniblossom.polybounce.assets.LevelGenerator;
+import com.github.caniblossom.polybounce.math.BoundingBox;
 import com.github.caniblossom.polybounce.renderer.RenderingEngine;
 import com.github.caniblossom.polybounce.math.Vector2;
 import com.github.caniblossom.polybounce.physics.PhysicsEngine;
@@ -41,15 +42,15 @@ import org.lwjgl.input.Keyboard;
  */
 public class GameEngine {
     private static final float TIME_STEP  = 1.0f / 60.0f;
-    private static final float INERTIA    = 0.995f;
+    private static final float INERTIA    = 0.99f;
     private static final float TIME_SCALE = 5.0f;
     
     private static final Vector2 GRAVITY = new Vector2(0.0f, -0.5f);
 
     private static final float PLAYER_ACCELERATION = 4.0f;    
-    private static final float PLAYER_THRUST = 0.0f;    
+    private static final float PLAYER_THRUST = 0.05f;    
     
-    private static final float LEVEL_DROP_OUT_PADDING = 16.0f;
+    private static final float LEVEL_PADDING = 8.0f;
     
     private final PhysicsEngine physicsEngine;
     private final RenderingEngine renderingEngine;
@@ -57,36 +58,78 @@ public class GameEngine {
     private Player player;
     private Level level;
     
-    // Resets the game.
-    private void reset() {
-        LevelGenerator generator = new LevelGenerator();
+    private boolean quitRequested = false;
+    
+    // Computed the world box from level box.
+    private BoundingBox computeWorldBox(final Level level) {
+        BoundingBox box = level.getLevelBounds();
+        return new BoundingBox(box.getPosition().difference(new Vector2(LEVEL_PADDING, LEVEL_PADDING)), box.getWidth() + 2.0f * LEVEL_PADDING, box.getHeight() + 2.0f * LEVEL_PADDING);
+    }
 
-        level = generator.generate(6);
+    // Generates a new level.
+    private void createNewLevel() {
+        LevelGenerator generator = new LevelGenerator();
+        level = generator.generate(10);
+    }
+    
+    // Restarts the level.
+    private void restart() {
         player = new Player(level.getPlayerSpawnPosition());
 
-        physicsEngine.reset();
+        physicsEngine.reset(computeWorldBox(level));
         physicsEngine.add(player.getBody());
         
         for (Structure structure : level.getUnmodifiableViewToStructures()) {
-            physicsEngine.addRigidBodies(structure.getUnmodifiableViewToRigidBodyList());
-            physicsEngine.addStaticBodies(structure.getUnmodifiableViewToStaticBodyList());
+            physicsEngine.addRigidBodies(structure.createCopyOfRigidBodies());
+            physicsEngine.addStaticBodies(structure.createCopyOfStaticBodies());
         }
-    }
-
-    // Simply checks if the player has fallen too far away.
-    private boolean playerHasDroppedOut() {
-        return player.getBody().getCenterOfMass().getY() < level.getLevelBounds().getPosition().getY() - LEVEL_DROP_OUT_PADDING;
+        
+        renderingEngine.signalRestartLevel();
     }
     
-    // Reads input and acts on it.
-    private void handleInput(final float dt) {
+    // Simply checks if the player has fallen too far away.
+    private boolean playerHasDroppedOut() {
+        return player.getBody().getCenterOfMass().getY() < level.getLevelBounds().getPosition().getY() - LEVEL_PADDING;
+    }
+    
+    // Reads controls input and acts on it.
+    private void handleControlInput(final float dt) {
         if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
             player.accelerate(PLAYER_ACCELERATION, dt);
             player.thrust(new Vector2(-PLAYER_THRUST, 0.0f), dt);
         } else if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
             player.accelerate(-PLAYER_ACCELERATION, dt);
             player.thrust(new Vector2(PLAYER_THRUST, 0.0f), dt);
-        } 
+        }
+    }
+
+    // Reads menu input and acts on it.
+    private void handleMenuInput() {
+        boolean createNewLevel = false;
+        boolean restartLevel = false;
+        
+        while (Keyboard.next()) {
+            if (Keyboard.getEventKeyState() == false) {
+                switch (Keyboard.getEventKey()) {
+                    case Keyboard.KEY_Q:
+                        quitRequested = true;
+                        break;
+                    case Keyboard.KEY_N:
+                        createNewLevel = true;
+                        break;
+                    case Keyboard.KEY_R:
+                        restartLevel = true;
+                        break;
+                }
+            }            
+        }
+        
+        if (createNewLevel) {
+            createNewLevel();
+            restart();
+        } else if (restartLevel) {
+            restart();
+        }
     }
         
     /**
@@ -95,10 +138,11 @@ public class GameEngine {
      * @param viewHeight viewport height in pixels
      */
     public GameEngine(final int viewWidth, final int viewHeight) {
-        physicsEngine = new PhysicsEngine(TIME_STEP, INERTIA, GRAVITY);
+        physicsEngine = new PhysicsEngine(TIME_STEP, INERTIA, GRAVITY, new BoundingBox(new Vector2(0.0f, 0.0f), 1.0f, 1.0f));
         renderingEngine = new RenderingEngine(viewWidth, viewHeight);
         
-        reset();    
+        createNewLevel();    
+        restart();
     } 
     
     
@@ -108,10 +152,13 @@ public class GameEngine {
      */   
     public void update(final float dt) {
         if (playerHasDroppedOut()) {
-            reset();
+            createNewLevel();
+            restart();
         }
         
-        handleInput(TIME_SCALE * dt);
+        handleMenuInput();
+        handleControlInput(TIME_SCALE * dt);
+
         physicsEngine.update(TIME_SCALE * dt);
 
         renderingEngine.resetRenderingData();
@@ -120,7 +167,14 @@ public class GameEngine {
         renderingEngine.setCamera(player.getBody().getPosition(), 4.0f);        
         renderingEngine.drawCurrentFrame();
     }
-
+    
+    /**
+     * @return true if and only if quit was requested by something.
+     */
+    public boolean isQuitRequested() {
+        return quitRequested;
+    }
+           
     /**
      * @return true if and only if all OpenGL resources are good to use.
      */

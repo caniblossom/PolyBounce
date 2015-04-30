@@ -29,6 +29,7 @@
  */
 package com.github.caniblossom.polybounce.renderer;
 
+import com.github.caniblossom.polybounce.renderer.shader.SimpleShaderProgram;
 import java.nio.FloatBuffer;
 
 /**
@@ -91,6 +92,7 @@ public abstract class SimpleShaderRenderingTask implements RenderingTask {
         try {
             shaderProgram = new SimpleShaderProgram();
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw e;
         }
 

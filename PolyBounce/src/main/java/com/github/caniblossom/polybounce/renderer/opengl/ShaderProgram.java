@@ -27,8 +27,12 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.opengl;
+package com.github.caniblossom.polybounce.renderer.opengl;
 
+import com.github.caniblossom.polybounce.renderer.shader.SimpleShaderProgram;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Scanner;
 import org.lwjgl.opengl.GL20;
 
 /**
@@ -37,6 +41,21 @@ import org.lwjgl.opengl.GL20;
  */
 public class ShaderProgram {
     private int programName = 0;
+    
+    // Loads a shader source from a resource.
+    protected static String getShaderSourceFromResource(final String name) {
+        final InputStream is = SimpleShaderProgram.class.getClassLoader().getResourceAsStream(name);
+        final Scanner scanner = new Scanner(is).useDelimiter("\\A");
+        final String source = scanner.hasNext() ? scanner.next() : "";
+        
+        try {
+            is.close();
+        } catch (IOException e) {
+            // TODO Handle.
+        }
+
+        return source;        
+    }
     
     /**
      * @return name of the program object
@@ -56,7 +75,7 @@ public class ShaderProgram {
     public ShaderProgram(final String vertexShaderSource, final String fragmentShaderSource, final String[] inputNameList, final String[] outputNameList) throws RuntimeException {
         int vertexShaderName = 0;
         int fragmentShaderName = 0;
-        
+
         try {
             vertexShaderName = ShaderUtil.createShader(vertexShaderSource, GL20.GL_VERTEX_SHADER);
             fragmentShaderName = ShaderUtil.createShader(fragmentShaderSource, GL20.GL_FRAGMENT_SHADER);
@@ -71,7 +90,7 @@ public class ShaderProgram {
         
             throw e;
         }  
- 
+
         GL20.glDeleteShader(fragmentShaderName);
         GL20.glDeleteShader(vertexShaderName);
     }

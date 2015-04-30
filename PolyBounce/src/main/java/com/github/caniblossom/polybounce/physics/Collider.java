@@ -31,11 +31,7 @@ package com.github.caniblossom.polybounce.physics;
 
 import com.github.caniblossom.polybounce.math.Vector2;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-// TODO Implement proper friction.
-// TODO Clean up code.
 
 /**
  * A class for handling collisions between rigid bodies.
@@ -157,7 +153,7 @@ public class Collider {
                 handleCollision(active, passive, collision);
                 handleFriction(active, passive, collision);
                 
-                fixBrokenPhysics(active, passive, collision, 1.0f);
+                fixBrokenPhysics(active, passive, collision, 0.999f);
             }
         }
     }

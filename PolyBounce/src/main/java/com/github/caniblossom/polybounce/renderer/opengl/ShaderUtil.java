@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.opengl;
+package com.github.caniblossom.polybounce.renderer.opengl;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
@@ -97,11 +97,6 @@ public class ShaderUtil {
         GL20.glShaderSource(shaderName, source);
         GL20.glCompileShader(shaderName);
 
-        if (GL11.glGetError() != GL11.GL_NO_ERROR) {
-            GL20.glDeleteProgram(shaderName);
-            throw new RuntimeException("OpenGL error while creating shader.");
-        } 
-        
         try {
             checkShader(shaderName);
         } catch (RuntimeException e) {
@@ -126,7 +121,7 @@ public class ShaderUtil {
         if (programName == 0) {
             throw new RuntimeException("Error creating program.");
         }
-        
+
         GL20.glAttachShader(programName, vertexShaderName);
         GL20.glAttachShader(programName, fragmentShaderName);
         
@@ -134,10 +129,6 @@ public class ShaderUtil {
 
         GL20.glLinkProgram(programName);
     
-        if (GL11.glGetError() != GL11.GL_NO_ERROR) {
-            GL20.glDeleteShader(programName);
-            throw new RuntimeException("OpenGL error while creating shader program.");
-        } 
         
         try {
             checkProgram(programName);

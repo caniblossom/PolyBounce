@@ -176,7 +176,7 @@ public abstract class Body {
      * @return new convex polygon representing the hull of the body in world space currently. 
      */
     public abstract ConvexPolygon getHull();
-
+    
     /**
      * Updates the position and rotation of the body
      * @param dt change in time

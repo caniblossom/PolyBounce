@@ -55,6 +55,16 @@ public class BoundingBox {
     }
     
     /**
+     * Copy constructor
+     * @param box bounding box to copy.
+     */
+    public BoundingBox(final BoundingBox box) {
+        this.position = new Vector2(box.position);
+        this.width = box.width;
+        this.height = box.height;
+    }
+    
+    /**
      * @return lower left corner of the box
      */
     public Vector2 getPosition() {

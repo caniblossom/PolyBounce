@@ -71,6 +71,18 @@ public class RigidBody extends Body {
     }
     
     /**
+     * Copy constructor.
+     * @param body body to copy
+     */
+    public RigidBody(final RigidBody body) {
+        super(body.getMass(), body.getBounciness(), body.getStaticFriction(), body.getDynamicFriction(), new Vector2(body.getPosition()), body.getRotation(), new Vector2(body.getVelocity()), body.getAngularVelocity());
+        
+        this.hull = new ConvexPolygon(body.hull);
+        this.massPerVertex = body.massPerVertex;
+        this.momentOfInertiaAroundCenterOfMass = body.momentOfInertiaAroundCenterOfMass;
+    }
+    
+    /**
      * @return mass per vertex.
      */
     public float getMassPerVertex() {

@@ -1,0 +1,13 @@
+#version 150                                                 
+                                                            
+uniform float alpha;                                              
+uniform sampler2D sampler;                                 
+              
+in vec2 texCoord;         
+                                  
+out vec4 colorOut;                                           
+                                                            
+void main() {                                               
+    vec4 color = texture(sampler, texCoord);                                                            
+    colorOut = vec4(color.rgb, alpha * color.a);       
+}                                                             

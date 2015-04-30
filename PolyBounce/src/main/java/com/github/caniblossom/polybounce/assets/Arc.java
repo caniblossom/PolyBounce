@@ -43,7 +43,7 @@ import com.github.caniblossom.polybounce.physics.StaticBody;
 public class Arc extends Structure {
     private static final float MASS_A             = 1.0f;
     private static final float BOUNCINESS_A       = 0.2f;
-    private static final float STATIC_FRICTION_A  = 0.2f;
+    private static final float STATIC_FRICTION_A  = 0.4f;
     private static final float DYNAMIC_FRICTION_A = 0.5f;
     
     private static final float MASS_B             = 1000.0f;
@@ -83,7 +83,7 @@ public class Arc extends Structure {
         box = combineBoundingBoxes(staticBodyList, box);
         box = combineBoundingBoxes(rigidBodyList, box);
 
-        topSpawnPosition = new Vector2(3.0f, 1.0f + 5.5f * (float) layers).sum(position);
+        topSpawnPosition = new Vector2(3.0f, 3.0f + 4.5f * (float) layers).sum(position);
         boundingBox = box;
     }
 

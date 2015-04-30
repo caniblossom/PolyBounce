@@ -30,7 +30,7 @@
 package com.github.caniblossom.polybounce.renderer;
 
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
-import com.github.caniblossom.polybounce.opengl.VertexBuffer;
+import com.github.caniblossom.polybounce.renderer.opengl.VertexBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -123,22 +123,23 @@ public class PolygonRenderingTask extends SimpleShaderRenderingTask {
         // some rendering. Not only that, but I'm quite sure that OpenGL 3.0
         // requires you to have a VAO around to do any drawing at all.
 
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glDepthFunc(GL11.GL_LEQUAL);
-
         GL30.glBindVertexArray(vertexArrayName);
         vertexBuffer.bind();
 
         // TODO Enable for debugging.
         // GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
         
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glDepthFunc(GL11.GL_LEQUAL);
+
         useAndSetupShaderProgram();
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, currentVertexCount);
         
-        vertexBuffer.unbind();
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL30.glBindVertexArray(0);
+        vertexBuffer.unbind();
     }
-    
+
     /**
      * Sets the polygon data to be rendered.
      * @param polygonList list of convex polygons

@@ -79,7 +79,7 @@ public class MatrixUtil {
     }
 
     /**
-     * Creates a vies matrix for a camera directly facing the XY plane.
+     * Creates a view matrix for a camera directly facing the XY plane.
      * @param x x position of the camera
      * @param y y position of the camera
      * @param distance relative distance

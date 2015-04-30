@@ -32,6 +32,7 @@ package com.github.caniblossom.polybounce.renderer;
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.Segment2;
 import com.github.caniblossom.polybounce.math.Vector2;
+import com.github.caniblossom.polybounce.renderer.shader.SimpleShaderVertex;
 import java.util.List;
 
 /**
@@ -40,55 +41,25 @@ import java.util.List;
  */
 public class Tessellator {
     private List<Float> output = null;
-     
-    // Adds a 3-vector to the output list.
-    private void outputVector3(final float x, final float y, final float z) {
-        output.add(x);
-        output.add(y);
-        output.add(z);
-    }
-    
-    
-    // Adds the color and normal for front triangles to the output list.
-    private void outputFrontColorAndNormal(final Color color) {
-        outputVector3(color.getRed(), color.getGreen(), color.getBlue());
-        outputVector3(0.0f, 0.0f, 1.0f);
-    }
-    
-    // Adds the color and normal for front triangles to the output list.
-    private void outputSideColorAndNormal(final Segment2 s, final Color color) {
-        outputVector3(color.getRed(), color.getGreen(), color.getBlue());
-        outputVector3(s.getRightNormal().getX(), s.getRightNormal().getY(), 0.0f);
-    }
 
     // Adds front triangle to the output list.
     private void outputFrontTriangle(final Vector2 a, final Vector2 b, final Vector2 c, final Color color, final float depth) {
         // There is currently no method for adding back triangles, as the camera will 
         // never look at the scene from such an angle that they would actually be visible.
-        
-        outputVector3(a.getX(), a.getY(), depth);
-        outputFrontColorAndNormal(color);
-        outputVector3(b.getX(), b.getY(), depth);
-        outputFrontColorAndNormal(color);
-        outputVector3(c.getX(), c.getY(), depth);
-        outputFrontColorAndNormal(color);
+        new SimpleShaderVertex(a.getX(), a.getY(), depth, color.getRed(), color.getGreen(), color.getBlue(), 0.0f, 0.0f, 1.0f).addToList(output);
+        new SimpleShaderVertex(b.getX(), b.getY(), depth, color.getRed(), color.getGreen(), color.getBlue(), 0.0f, 0.0f, 1.0f).addToList(output);
+        new SimpleShaderVertex(c.getX(), c.getY(), depth, color.getRed(), color.getGreen(), color.getBlue(), 0.0f, 0.0f, 1.0f).addToList(output);
     }
     
     // Adds two triangles making up a side quad to the output list.
     private void outputSideQuad(final Segment2 s, final Color color, final float frontDepth, final float backDepth) {
-        outputVector3(s.getA().getX(), s.getA().getY(), frontDepth);
-        outputSideColorAndNormal(s, color);
-        outputVector3(s.getA().getX(), s.getA().getY(), backDepth);
-        outputSideColorAndNormal(s, color);
-        outputVector3(s.getB().getX(), s.getB().getY(), backDepth);
-        outputSideColorAndNormal(s, color);
+        new SimpleShaderVertex(s.getA().getX(), s.getA().getY(), frontDepth, color.getRed(), color.getGreen(), color.getBlue(), s.getRightNormal().getX(), s.getRightNormal().getY(), 0.0f).addToList(output);
+        new SimpleShaderVertex(s.getA().getX(), s.getA().getY(), backDepth, color.getRed(), color.getGreen(), color.getBlue(), s.getRightNormal().getX(), s.getRightNormal().getY(), 0.0f).addToList(output);
+        new SimpleShaderVertex(s.getB().getX(), s.getB().getY(), backDepth, color.getRed(), color.getGreen(), color.getBlue(), s.getRightNormal().getX(), s.getRightNormal().getY(), 0.0f).addToList(output);
 
-        outputVector3(s.getB().getX(), s.getB().getY(), backDepth);
-        outputSideColorAndNormal(s, color);
-        outputVector3(s.getB().getX(), s.getB().getY(), frontDepth);
-        outputSideColorAndNormal(s, color);
-        outputVector3(s.getA().getX(), s.getA().getY(), frontDepth);
-        outputSideColorAndNormal(s, color);
+        new SimpleShaderVertex(s.getB().getX(), s.getB().getY(), backDepth, color.getRed(), color.getGreen(), color.getBlue(), s.getRightNormal().getX(), s.getRightNormal().getY(), 0.0f).addToList(output);
+        new SimpleShaderVertex(s.getB().getX(), s.getB().getY(), frontDepth, color.getRed(), color.getGreen(), color.getBlue(), s.getRightNormal().getX(), s.getRightNormal().getY(), 0.0f).addToList(output);
+        new SimpleShaderVertex(s.getA().getX(), s.getA().getY(), frontDepth, color.getRed(), color.getGreen(), color.getBlue(), s.getRightNormal().getX(), s.getRightNormal().getY(), 0.0f).addToList(output);
     }
     
     /**
