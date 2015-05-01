@@ -1,7 +1,9 @@
 ### Week 7
+Total accumulated hours: 124
 - 2015.04.29 /  ~8h: Fix physics, clean code, add rendering code
 - 2015.04.30 /  ~8h: Implement spatial sorting for physics
 - 2015.04.30 /  ~2h: Koodikatselmointi probably
+- 2015.04.31 /  ~6h: Finish the game (with few bugs)
 
 ### Week 6
 Total accumulated hours: 100

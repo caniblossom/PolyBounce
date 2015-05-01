@@ -27,27 +27,27 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.game;
+package com.github.caniblossom.polybounce.game.objects;
 
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.PolygonBuilder;
 import com.github.caniblossom.polybounce.math.Vector2;
-import com.github.caniblossom.polybounce.physics.RigidBody;
+import com.github.caniblossom.polybounce.physics.body.RigidBody;
 
 /**
  * Class for player.
  * @author Jani Salo
  */
 public class Player {
-    private final static float RADIUS           = 1.0f;
-    private final static float MASS             = 2.0f;    
-    private final static float BOUNCINESS       = 0.9f;    
+    private final static float RADIUS           = 1.5f;
+    private final static float MASS             = 1.0f;    
+    private final static float BOUNCINESS       = 0.4f;    
     private final static float STATIC_FRICTION  = 0.2f;    
     private final static float DYNAMIC_FRICTION = 0.5f;    
     private final static float MAX_ACCELERATION = 2.0f; 
     private final static float MAX_THRUST       = 5.0f;
     
-    private final static int HULL_VERTEX_COUNT = 6;
+    private final static int HULL_VERTEX_COUNT = 5;
     
     private final RigidBody body;
     

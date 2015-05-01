@@ -29,8 +29,12 @@
  */
 package com.github.caniblossom.polybounce.physics;
 
+import com.github.caniblossom.polybounce.physics.body.Body;
 import com.github.caniblossom.polybounce.math.BoundingBox;
 import com.github.caniblossom.polybounce.math.Vector2;
+import com.github.caniblossom.polybounce.physics.body.Body;
+import com.github.caniblossom.polybounce.physics.body.RigidBody;
+import com.github.caniblossom.polybounce.physics.body.StaticBody;
 import java.util.ArrayList;
 import java.util.List;
 

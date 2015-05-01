@@ -27,15 +27,16 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.game;
+package com.github.caniblossom.polybounce.game.objects;
 
 import com.github.caniblossom.polybounce.math.BoundingBox;
 import com.github.caniblossom.polybounce.math.PolygonBuilder;
 import com.github.caniblossom.polybounce.math.Vector2;
-import com.github.caniblossom.polybounce.physics.Body;
-import com.github.caniblossom.polybounce.physics.RigidBody;
-import com.github.caniblossom.polybounce.physics.StaticBody;
+import com.github.caniblossom.polybounce.physics.body.Body;
+import com.github.caniblossom.polybounce.physics.body.RigidBody;
+import com.github.caniblossom.polybounce.physics.body.StaticBody;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -79,30 +80,17 @@ public abstract class Structure {
     }
     
     /**
-     * @return a full copy of rigid bodies in the level
+     * @return an unmodifiable view to rigid body list.
      */
-    public List<RigidBody> createCopyOfRigidBodies() {
-        final ArrayList<RigidBody> list = new ArrayList();
-        
-        for (RigidBody body : rigidBodyList) {
-            list.add(new RigidBody(body));
-        }
-
-        return list;
+    public List<RigidBody> getUnmodifiableViewToRigidBodyList() {
+        return Collections.unmodifiableList(rigidBodyList);
     }
 
     /**
-     * @return a full copy of static bodies in the level
+     * @return an unmodifiable view to static body list.
      */
-    public List<StaticBody> createCopyOfStaticBodies() {
-        final ArrayList<StaticBody> list = new ArrayList();
-        
-        for (StaticBody body : staticBodyList) {
-            list.add(new StaticBody(body));
-        }
-
-        return list;
-
+    public List<StaticBody> getUnmodifiableViewToStaticBodyList() {
+        return Collections.unmodifiableList(staticBodyList);
     }
 
     /**
@@ -114,4 +102,10 @@ public abstract class Structure {
      * @return the position for objects to be put on top of the box in world space
      */
     public abstract Vector2 getTopSpawnPosition();
+    
+    /**
+     * Should call the copy constructor.
+     * @return copy of the structure
+     */
+    public abstract Structure getCopy(); 
 }

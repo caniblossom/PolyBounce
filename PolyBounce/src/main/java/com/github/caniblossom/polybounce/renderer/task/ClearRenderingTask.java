@@ -27,15 +27,49 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.renderer;
+package com.github.caniblossom.polybounce.renderer.task;
+
+import org.lwjgl.opengl.GL11;
 
 /**
- * An interface for anything that might represent OpenGL rendering tasks.
+ * A very simple render task for clearing the canvas.
  * @author Jani Salo
  */
-public interface RenderingTask {
+public class ClearRenderingTask implements RenderingTask {
+    final float r, g, b, a;
+    final float z;
+    
     /**
-     * Called to run the task.
+     * Constructs a new task with given clear values.
+     * @param r red component of the clear color
+     * @param g green component of the clear color
+     * @param b blue component of the clear color
+     * @param a alpha component of the clear color
+     * @param z value to clear the depth buffer to
      */
-    public void run();
+    public ClearRenderingTask(final float r, final float g, final float b, final float a, final float z) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
+        this.z = z;
+    }
+
+    /**
+     * Constructs a new task with black color, full alpha and z-buffer to farthest maximum.
+     */
+    public ClearRenderingTask() {
+        this(0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+    }
+
+    /**
+     * Clears the canvas and the depth buffer.
+     */
+    @Override
+    public void run() {
+        GL11.glClearColor(r, g, b, a);
+        GL11.glClearDepth(z);
+
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+    }
 }

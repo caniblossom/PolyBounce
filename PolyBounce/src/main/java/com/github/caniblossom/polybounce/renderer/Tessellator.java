@@ -29,6 +29,7 @@
  */
 package com.github.caniblossom.polybounce.renderer;
 
+import com.github.caniblossom.polybounce.renderer.misc.Color;
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.Segment2;
 import com.github.caniblossom.polybounce.math.Vector2;

@@ -27,12 +27,16 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.assets;
+package com.github.caniblossom.polybounce.game;
 
-import com.github.caniblossom.polybounce.game.Level;
-import com.github.caniblossom.polybounce.game.Structure;
-import com.github.caniblossom.polybounce.math.PolygonBuilder;
+import com.github.caniblossom.polybounce.game.objects.Structure;
+import com.github.caniblossom.polybounce.game.objects.Level;
+import com.github.caniblossom.polybounce.game.objects.Arc;
+import com.github.caniblossom.polybounce.game.objects.Goal;
+import com.github.caniblossom.polybounce.game.objects.Ramp;
 import com.github.caniblossom.polybounce.math.Vector2;
+
+// TODO Clean up.
 
 /**
  * A little class for generating levels.
@@ -40,14 +44,14 @@ import com.github.caniblossom.polybounce.math.Vector2;
  */
 public class LevelGenerator {
     /**
-     * Generates a new level
+     * Generates a new level.
      * @param length length of the level in structures
      * @return new level
      */
     public Level generate(int length) {
         final Level level = new Level();
 
-        Structure last = new Arc(new Vector2(0.0f, 0.0f), 1);
+        Structure last = new Arc(4.0f, 4.0f, new Vector2(0.0f, 0.0f), 2);
 
         level.addStructure(last);
         level.setPlayerSpawnPosition(last.getTopSpawnPosition());
@@ -55,14 +59,23 @@ public class LevelGenerator {
         for (int i = 0; i < length; i++) {
             final Vector2 lastMin = last.getBoundingBox().getPosition();
             final Vector2 lastMax = last.getBoundingBox().getMaximum();
-            
-            last = new Arc(new Vector2(lastMax.getX() + 1.0f, lastMin.getY() + (float) Math.random() - 0.5f), 1);
-            level.addStructure(last);
-        }
-        
-        final Vector2 offset = last.getTopSpawnPosition();
-        level.setGoal(new PolygonBuilder().createBox(offset.sum(new Vector2(-0.5f, -0.5f)), offset.sum(new Vector2(0.5f, 0.5f))));
 
+            final float r = (float) Math.random();
+            final float w = (float) Math.random() * 8.0f;
+            final float h = (float) Math.random() * 4.0f;
+            
+            if (r < 0.4f) {
+                last = new Arc(w, h, new Vector2(lastMax.getX() + 1.0f, 0.0f), 1 + (int) (Math.random() * 2.999));
+                level.addStructure(last);
+            } else {
+                last = new Ramp(w, h, new Vector2(lastMax.getX() + 1.0f, lastMax.getY() - 1.0f));
+                level.addStructure(last);                
+            }
+            
+        }
+
+        level.setGoal(new Goal(3.0f, new Vector2(last.getBoundingBox().getMaximum().getX() + 4.0f, 4.0f)));
+        
         return level;
     }
 }

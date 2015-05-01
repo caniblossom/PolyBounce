@@ -29,6 +29,9 @@
  */
 package com.github.caniblossom.polybounce.physics;
 
+import com.github.caniblossom.polybounce.physics.body.StaticBody;
+import com.github.caniblossom.polybounce.physics.body.RigidBody;
+import com.github.caniblossom.polybounce.physics.body.Body;
 import com.github.caniblossom.polybounce.math.BoundingBox;
 import com.github.caniblossom.polybounce.math.Vector2;
 import java.util.ArrayList;
@@ -99,7 +102,7 @@ public class PhysicsEngine {
             collisionList.clear();
             spatialTable.findPossibleIntersections(collisionList, body, dt);
 
-            if (collider.isSafeToUpdate(body, collisionList, dt)) {
+            if (collider.canUpdateCollisionFree(body, collisionList, dt)) {
                 body.update(dt);
             }
         }
@@ -183,19 +186,31 @@ public class PhysicsEngine {
     } 
     
     /**
+     * Tests for a future collision between bodies.
+     * @param active body to be tested
+     * @param passiveList list of bodies to test again
+     * @param dt change in time
+     * @return true if and only if the body to be tested is going to collide to any of the target bodies
+     */
+    public boolean willCollide(final Body active, final List<? extends Body> passiveList, final float dt) {
+        return !collider.canUpdateCollisionFree(active, (List<Body>) passiveList, dt);
+    }
+    
+    /**
      * Updates the world.
      * @param dt change in time
      */
     public void update(final float dt) {
         final int stepCount = dt < timeStep ? 1 : (int) Math.ceil(dt / timeStep);
         final float stepLength = dt / (float) stepCount;
-        
-        // Doing this just once per update seems to make things less glitchy.
-        applyExternalForces(dt);            
-        
+                
         for (int step = 0; step < stepCount; step++) {
             collide(stepLength);
             step(stepLength);
         }
+        
+        // Doing this just once per update seems to make things less glitchy.
+        // Also put this here so it won't mess up the win detection.
+        applyExternalForces(dt);            
     }
 }

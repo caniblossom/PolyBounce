@@ -29,6 +29,7 @@
  */
 package com.github.caniblossom.polybounce.renderer;
 
+import com.github.caniblossom.polybounce.renderer.task.RenderingTask;
 import java.util.ArrayList;
 
 /**

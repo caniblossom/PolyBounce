@@ -27,11 +27,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.game;
+package com.github.caniblossom.polybounce.game.objects;
 
 import com.github.caniblossom.polybounce.math.BoundingBox;
-import com.github.caniblossom.polybounce.math.ConvexPolygon;
-import com.github.caniblossom.polybounce.math.PolygonBuilder;
 import com.github.caniblossom.polybounce.math.Vector2;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,9 +43,9 @@ public class Level {
     private final ArrayList<Structure> structureList;
 
     private Vector2 playerSpawnPosition;
-    private ConvexPolygon goalPolygon;
+    private Structure goalStructure;
 
-    private BoundingBox boundingBox;
+    private BoundingBox initialBoundingBox;
     
     /**
      * Constructs a new level.
@@ -55,8 +53,24 @@ public class Level {
     public Level() {
         this.structureList = new ArrayList();
         this.playerSpawnPosition = new Vector2(0.0f, 0.0f);
-        this.goalPolygon = new PolygonBuilder().createBox(new Vector2(-1.0f, -1.0f), new Vector2(1.0f, 1.0f));
-        this.boundingBox = new BoundingBox(new Vector2(0.0f, 0.0f), 0.0f, 0.0f);
+        this.goalStructure = new Goal(1.0f, new Vector2(0.0f, 0.0f));
+        this.initialBoundingBox = new BoundingBox(new Vector2(0.0f, 0.0f), 0.0f, 0.0f);
+    }
+    
+    /**
+     * Copy constructors.
+     * @param level level to copy
+     */
+    public Level(final Level level) {
+        this.structureList = new ArrayList();
+
+        for (Structure structure : level.structureList) {
+            this.structureList.add(structure.getCopy());
+        }
+        
+        this.playerSpawnPosition = new Vector2(level.playerSpawnPosition);
+        this.goalStructure = level.goalStructure.getCopy();
+        this.initialBoundingBox = new BoundingBox(level.initialBoundingBox);
     }
     
     /**
@@ -66,9 +80,9 @@ public class Level {
     public void addStructure(final Structure structure) {
         structureList.add(structure);
        
-        boundingBox = structureList.get(0).getBoundingBox();
+        initialBoundingBox = structureList.get(0).getBoundingBox();
         for (Structure s : structureList) {
-            boundingBox = s.getBoundingBox().combine(boundingBox);
+            initialBoundingBox = s.getBoundingBox().combine(initialBoundingBox);
         }
     }
     
@@ -87,17 +101,17 @@ public class Level {
     }
     
     /**
-     * @return goal of the level
+     * @return goal structure for the level
      */
-    public ConvexPolygon getGoal() {
-        return goalPolygon;
+    public Structure getGoal() {
+        return goalStructure;
     }
     
     /**
-     * @return bounding box containing the whole level.
+     * @return bounding box containing the whole level in its original state.
      */
-    public BoundingBox getLevelBounds() {
-        return boundingBox;
+    public BoundingBox getLevelInitialBounds() {
+        return initialBoundingBox;
     }
 
     /**
@@ -108,9 +122,9 @@ public class Level {
     }
     
     /**
-     * @param poly polygon to set as the level goal
+     * @param goal new goal for the level
      */
-    public void setGoal(final ConvexPolygon poly) {
-        goalPolygon = poly;
+    public void setGoal(final Structure goal) {
+        this.goalStructure = goal;
     }
 }

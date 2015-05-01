@@ -27,45 +27,15 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.renderer;
+package com.github.caniblossom.polybounce.renderer.task;
 
 /**
- * Represents a simple three component color.
+ * An interface for anything that might represent OpenGL rendering tasks.
  * @author Jani Salo
  */
-public class Color {
-    final float r, g, b;
-    
+public interface RenderingTask {
     /**
-     * Constructs a new color with components.
-     * @param r red component
-     * @param g green component
-     * @param b blue component
+     * Called to run the task.
      */
-    public Color(final float r, final float g, final float b) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-    }
-    
-    /**
-     * @return red component
-     */
-    public float getRed() {
-        return r;
-    }
-    
-    /**
-     * @return green component
-     */
-    public float getGreen() {
-        return g;
-    }
-
-    /**
-     * @return blue component
-     */
-    public float getBlue() {
-        return b;
-    }
+    public void run();
 }

@@ -27,9 +27,12 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.caniblossom.polybounce.renderer;
+package com.github.caniblossom.polybounce.renderer.task;
 
+import com.github.caniblossom.polybounce.renderer.misc.Color;
+import com.github.caniblossom.polybounce.renderer.task.SimpleShaderRenderingTask;
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
+import com.github.caniblossom.polybounce.renderer.Tessellator;
 import com.github.caniblossom.polybounce.renderer.opengl.VertexBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;

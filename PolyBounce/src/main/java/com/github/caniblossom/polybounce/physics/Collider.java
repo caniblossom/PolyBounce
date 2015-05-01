@@ -29,6 +29,7 @@
  */
 package com.github.caniblossom.polybounce.physics;
 
+import com.github.caniblossom.polybounce.physics.body.Body;
 import com.github.caniblossom.polybounce.math.Vector2;
 import java.util.ArrayList;
 import java.util.List;
@@ -113,7 +114,7 @@ public class Collider {
      * @param dt change in time
      * @return true if and only if updating the active body doesn't result in an intersection
      */
-    public boolean isSafeToUpdate(final Body active, final List<Body> passiveList, final float dt) {
+    public boolean canUpdateCollisionFree(final Body active, final List<Body> passiveList, final float dt) {
         assert dt != 0.0f;
 
         for (Body passive : passiveList) {

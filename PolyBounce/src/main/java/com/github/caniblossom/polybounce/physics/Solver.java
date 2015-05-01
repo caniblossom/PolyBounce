@@ -29,6 +29,7 @@
  */
 package com.github.caniblossom.polybounce.physics;
 
+import com.github.caniblossom.polybounce.physics.body.Body;
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.math.Segment2;
 import com.github.caniblossom.polybounce.math.Segment2Intersection;
