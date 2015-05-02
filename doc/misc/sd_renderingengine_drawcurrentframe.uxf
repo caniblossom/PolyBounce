@@ -4,9 +4,9 @@
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>460</x>
-      <y>180</y>
-      <w>160</w>
+      <x>360</x>
+      <y>70</y>
+      <w>140</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>:RenderingEngine</panel_attributes>
@@ -15,111 +15,45 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>350</x>
-      <y>240</y>
-      <w>200</w>
+      <x>260</x>
+      <y>150</y>
+      <w>180</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
 drawCurrentFrame()</panel_attributes>
-    <additional_attributes>180.0;20.0;10.0;20.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLGeneric</id>
-    <coordinates>
-      <x>880</x>
-      <y>180</y>
-      <w>190</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>:PolygonRenderingTask</panel_attributes>
-    <additional_attributes/>
+    <additional_attributes>160.0;20.0;10.0;20.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>540</x>
+      <x>430</x>
+      <y>510</y>
+      <w>450</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+setProjectionTransformation(120.0, aspectRatio, 0.0625, 16.0)</panel_attributes>
+    <additional_attributes>430.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>430</x>
       <y>540</y>
-      <w>230</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>lt=-
-setProjectionTransformation()</panel_attributes>
-    <additional_attributes>210.0;20.0;10.0;20.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLGeneric</id>
-    <coordinates>
-      <x>530</x>
-      <y>260</y>
-      <w>20</w>
-      <h>550</h>
-    </coordinates>
-    <panel_attributes>bg=white</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLGeneric</id>
-    <coordinates>
-      <x>970</x>
-      <y>560</y>
-      <w>20</w>
-      <h>30</h>
-    </coordinates>
-    <panel_attributes/>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLGeneric</id>
-    <coordinates>
-      <x>970</x>
-      <y>620</y>
-      <w>20</w>
-      <h>30</h>
-    </coordinates>
-    <panel_attributes/>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>540</x>
-      <y>600</y>
-      <w>240</w>
+      <w>450</w>
       <h>50</h>
     </coordinates>
-    <panel_attributes>lt=-
-setLightColor()
+    <panel_attributes>lt=&lt;&lt;&lt;-
+setLightColor(1.0, 1.0, 1.0)
 </panel_attributes>
-    <additional_attributes>220.0;20.0;10.0;20.0</additional_attributes>
+    <additional_attributes>430.0;20.0;10.0;20.0</additional_attributes>
   </element>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>690</x>
-      <y>180</y>
-      <w>160</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>:RenderingManager</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>760</x>
-      <y>210</y>
-      <w>30</w>
-      <h>490</h>
-    </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;470.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLGeneric</id>
-    <coordinates>
-      <x>1100</x>
-      <y>180</y>
+      <x>1000</x>
+      <y>70</y>
       <w>160</w>
       <h>40</h>
     </coordinates>
@@ -129,121 +63,19 @@ setLightColor()
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>760</x>
-      <y>680</y>
-      <w>20</w>
-      <h>130</h>
-    </coordinates>
-    <panel_attributes/>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLGeneric</id>
-    <coordinates>
-      <x>970</x>
-      <y>750</y>
-      <w>20</w>
-      <h>60</h>
-    </coordinates>
-    <panel_attributes/>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>770</x>
-      <y>730</y>
-      <w>220</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;-
-run()</panel_attributes>
-    <additional_attributes>200.0;20.0;10.0;20.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>770</x>
-      <y>690</y>
-      <w>220</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>lt=-
-run()</panel_attributes>
-    <additional_attributes>200.0;20.0;10.0;20.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>970</x>
-      <y>210</y>
-      <w>30</w>
-      <h>210</h>
-    </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;190.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>970</x>
+      <x>630</x>
       <y>640</y>
-      <w>30</w>
-      <h>130</h>
+      <w>20</w>
+      <h>180</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;110.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>540</x>
-      <y>660</y>
-      <w>240</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;-
-runTasks()</panel_attributes>
-    <additional_attributes>220.0;20.0;10.0;20.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>530</x>
-      <y>210</y>
-      <w>30</w>
-      <h>70</h>
-    </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLFrame</id>
-    <coordinates>
-      <x>360</x>
-      <y>130</y>
-      <w>940</w>
-      <h>740</h>
-    </coordinates>
-    <panel_attributes>sd RenderingEngine drawCurrentFrame</panel_attributes>
+    <panel_attributes/>
     <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>970</x>
-      <y>580</y>
-      <w>30</w>
-      <h>60</h>
-    </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
   </element>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>1160</x>
-      <y>710</y>
+      <x>1070</x>
+      <y>730</y>
       <w>20</w>
       <h>30</h>
     </coordinates>
@@ -253,57 +85,57 @@ runTasks()</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1160</x>
-      <y>210</y>
-      <w>30</w>
-      <h>520</h>
-    </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;500.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>740</x>
-      <y>540</y>
-      <w>250</w>
+      <x>640</x>
+      <y>710</y>
+      <w>450</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
-</panel_attributes>
-    <additional_attributes>230.0;20.0;10.0;20.0</additional_attributes>
+run()</panel_attributes>
+    <additional_attributes>430.0;20.0;10.0;20.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>750</x>
-      <y>600</y>
+      <x>640</x>
+      <y>650</y>
       <w>240</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
-</panel_attributes>
+run()</panel_attributes>
     <additional_attributes>220.0;20.0;10.0;20.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>960</x>
-      <y>690</y>
+      <x>430</x>
+      <y>620</y>
       <w>220</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
-</panel_attributes>
+runTasks()</panel_attributes>
     <additional_attributes>200.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>420</x>
+      <y>100</y>
+      <w>30</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
   </element>
   <element>
     <id>UMLFrame</id>
     <coordinates>
-      <x>440</x>
-      <y>310</y>
-      <w>690</w>
-      <h>200</h>
+      <x>330</x>
+      <y>230</y>
+      <w>600</w>
+      <h>240</h>
     </coordinates>
     <panel_attributes>optional</panel_attributes>
     <additional_attributes/>
@@ -311,8 +143,8 @@ runTasks()</panel_attributes>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>440</x>
-      <y>340</y>
+      <x>330</x>
+      <y>260</y>
       <w>230</w>
       <h>30</h>
     </coordinates>
@@ -326,32 +158,142 @@ layer=1</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>540</x>
-      <y>380</y>
-      <w>230</w>
+      <x>430</x>
+      <y>330</y>
+      <w>450</w>
       <h>40</h>
     </coordinates>
-    <panel_attributes>lt=-
-setPolygonData()</panel_attributes>
-    <additional_attributes>210.0;20.0;10.0;20.0</additional_attributes>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+setPolygonData(polygonList, colorList)</panel_attributes>
+    <additional_attributes>430.0;20.0;10.0;20.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>740</x>
-      <y>380</y>
+      <x>430</x>
+      <y>370</y>
       <w>250</w>
-      <h>40</h>
+      <h>60</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
-</panel_attributes>
-    <additional_attributes>230.0;20.0;10.0;20.0</additional_attributes>
+renderingDataChanged := false</panel_attributes>
+    <additional_attributes>10.0;40.0;40.0;40.0;40.0;10.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>970</x>
-      <y>400</y>
+      <x>420</x>
+      <y>170</y>
+      <w>20</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>420</x>
+      <y>190</y>
+      <w>30</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>860</x>
+      <y>350</y>
+      <w>20</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>860</x>
+      <y>100</y>
+      <w>30</w>
+      <h>270</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;250.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>780</x>
+      <y>70</y>
+      <w>190</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>:PolygonRenderingTask</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>560</x>
+      <y>70</y>
+      <w>160</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>:RenderingManager</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>420</x>
+      <y>320</y>
+      <w>20</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>420</x>
+      <y>430</y>
+      <w>30</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>860</x>
+      <y>370</y>
+      <w>30</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;160.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>420</x>
+      <y>500</y>
+      <w>20</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>860</x>
+      <y>530</y>
       <w>20</w>
       <h>60</h>
     </coordinates>
@@ -361,42 +303,119 @@ setPolygonData()</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>970</x>
-      <y>450</y>
+      <x>630</x>
+      <y>100</y>
       <w>30</w>
-      <h>130</h>
+      <h>560</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;110.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;540.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>860</x>
+      <y>670</y>
+      <w>20</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>1190</x>
+      <y>70</y>
+      <w>160</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>:ImageRenderingTask</panel_attributes>
+    <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>540</x>
-      <y>420</y>
-      <w>270</w>
-      <h>80</h>
+      <x>1070</x>
+      <y>100</y>
+      <w>30</w>
+      <h>650</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;630.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1260</x>
+      <y>100</y>
+      <w>30</w>
+      <h>710</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;690.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>1260</x>
+      <y>790</y>
+      <w>20</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>640</x>
+      <y>770</y>
+      <w>640</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
-renderingDataChanged := false</panel_attributes>
-    <additional_attributes>10.0;60.0;60.0;60.0;60.0;10.0;10.0;10.0</additional_attributes>
+run()</panel_attributes>
+    <additional_attributes>620.0;20.0;10.0;20.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1160</x>
-      <y>730</y>
+      <x>860</x>
+      <y>690</y>
       <w>30</w>
-      <h>160</h>
+      <h>210</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;140.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;190.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>970</x>
-      <y>800</y>
+      <x>420</x>
+      <y>660</y>
+      <w>30</w>
+      <h>240</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;220.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>630</x>
+      <y>810</y>
+      <w>30</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1260</x>
+      <y>810</y>
       <w>30</w>
       <h>90</h>
     </coordinates>
@@ -406,23 +425,34 @@ renderingDataChanged := false</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>760</x>
-      <y>800</y>
+      <x>1070</x>
+      <y>750</y>
       <w>30</w>
-      <h>90</h>
+      <h>150</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;130.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>530</x>
-      <y>800</y>
+      <x>860</x>
+      <y>580</y>
       <w>30</w>
-      <h>90</h>
+      <h>110</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLFrame</id>
+    <coordinates>
+      <x>270</x>
+      <y>10</y>
+      <w>1140</w>
+      <h>870</h>
+    </coordinates>
+    <panel_attributes>sd RenderingEngine drawCurrentFrame</panel_attributes>
+    <additional_attributes/>
   </element>
 </diagram>

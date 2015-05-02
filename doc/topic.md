@@ -3,12 +3,13 @@ A simple 2D physics demo / small game.
 
 The goal of this project is to implement a simple physics engine for convex two dimensional polygons and a small game implementing that engine. 
 
-The goal of the game is to guide a simple polygon through a environment made out of other polygons. The challenge is that the environment will disintegrate as a result of player action (and gravity), as the player tries to leverage it to reach the goal.
+The goal of the game is to guide a polygon through an environment made out of other polygons; The challenge is that the environment will disintegrate as a result of player action (and gravity), as the player tries to leverage it to reach the goal.
 
 ### User actions
 ##### Game actions
-- Roll player character polygon
-- Reset or regenerate level
+- Move player character polygon
+- Reset current level
+- Start a new game
 - Quit game
 
 ### Engine targets
@@ -18,7 +19,7 @@ The goal of the game is to guide a simple polygon through a environment made out
 - proper friction
 
 ### Game targets
-- randomly generated level
+- randomly generated levels
 - controls with rolling
 - rendered with OpenGL using LWJGL
 

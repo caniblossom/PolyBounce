@@ -154,8 +154,8 @@ public class Solver {
     }
 
     /**
-     * Lists collisions caused by the translational motion of an active body.
-     * @param resultList list to append collisions to
+     * Lists collisions caused by the motion of an active body.
+     * @param resultList list to append the collisions to
      * @param active active or primary body
      * @param passive passive or secondary body
      * @param dt change in time

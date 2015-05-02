@@ -30,7 +30,6 @@
 package com.github.caniblossom.polybounce.renderer.task;
 
 import com.github.caniblossom.polybounce.renderer.misc.Color;
-import com.github.caniblossom.polybounce.renderer.task.SimpleShaderRenderingTask;
 import com.github.caniblossom.polybounce.math.ConvexPolygon;
 import com.github.caniblossom.polybounce.renderer.Tessellator;
 import com.github.caniblossom.polybounce.renderer.opengl.VertexBuffer;

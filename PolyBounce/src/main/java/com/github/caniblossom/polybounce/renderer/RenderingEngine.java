@@ -29,6 +29,7 @@
  */
 package com.github.caniblossom.polybounce.renderer;
 
+import com.github.caniblossom.polybounce.renderer.task.RenderingManager;
 import com.github.caniblossom.polybounce.renderer.task.Image;
 import com.github.caniblossom.polybounce.renderer.misc.Color;
 import com.github.caniblossom.polybounce.renderer.task.ImageRenderingTask;

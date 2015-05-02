@@ -42,7 +42,11 @@ import org.lwjgl.opengl.GL20;
 public class ShaderProgram {
     private int programName = 0;
     
-    // Loads a shader source from a resource.
+    /**
+     * Loads shader source from a text file.
+     * @param name name of the resource containing the shader
+     * @return string containing the shader source
+     */
     protected static String getShaderSourceFromResource(final String name) {
         final InputStream is = SimpleShaderProgram.class.getClassLoader().getResourceAsStream(name);
         final Scanner scanner = new Scanner(is).useDelimiter("\\A");
